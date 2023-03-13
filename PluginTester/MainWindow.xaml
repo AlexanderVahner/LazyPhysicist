@@ -8,8 +8,8 @@
         Title="MainWindow" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75*"/>
-            <ColumnDefinition Width="322*"/>
+            <ColumnDefinition Width="449*"/>
+            <ColumnDefinition Width="351*"/>
         </Grid.ColumnDefinitions>
 
     </Grid>

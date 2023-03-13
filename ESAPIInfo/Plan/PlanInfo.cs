@@ -40,11 +40,6 @@ namespace ESAPIInfo.Plan
             return targetsString + oarsString;
         }
 
-        public void UploadNto(NtoInfo nto)
-        {
-
-        }
-
         private ExternalPlanSetup plan;
         public ExternalPlanSetup Plan
         {

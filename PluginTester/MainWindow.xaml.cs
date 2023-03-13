@@ -1,4 +1,4 @@
-﻿using FillTheOptimizer.API;
+﻿using LazyOptimizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,34 +24,45 @@ namespace PluginTester
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ESAPI.Application app = ESAPI.Application.CreateApplication();
+        private ESAPI.Application app;
         public MainWindow()
         {
             InitializeComponent();
-            Patient patient = app.OpenPatientById("STT 4656468");
-            Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
-            ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "LazyDest");
 
-            if (plan == null)
+            try
             {
-                MessageBox.Show("Can't find plan");
-            }
-            else
-            {
-                Script script = new Script();
-                script.Run(new ScriptArgs()
+                app = ESAPI.Application.CreateApplication();
+                
+                Patient patient = app.OpenPatientById("0220005213");
+                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
+                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "CV1");
+
+                if (plan == null)
                 {
-                    CurrentUser = app.CurrentUser,
-                    Patient = patient,
-                    Plan = plan,
-                    Window = this
-                });
+                    MessageBox.Show("Can't find plan");
+                }
+                else
+                {
+                    Script script = new Script();
+                    script.Run(new ScriptArgs()
+                    {
+                        CurrentUser = app.CurrentUser,
+                        Patient = patient,
+                        Plan = plan,
+                        Window = this
+                    });
+                }
+                
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
             }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            app?.Dispose();
+            app.Dispose();
         }
     }
 }

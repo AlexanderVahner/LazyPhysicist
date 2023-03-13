@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 
 namespace LazyOptimizer.App
 {
-    public class DataProvider : IDisposable
+    public class DataService : IDataService
     {
         private readonly SQLiteService db;
-        public DataProvider(DataProviderSettings settings)
+        private readonly string dbPath;
+        public DataService(DataServiceSettings settings)
         {
             this.settings = settings;
-            string dbPath = Environment.ExpandEnvironmentVariables(settings.DBPath);
+            dbPath = Environment.ExpandEnvironmentVariables(settings.DBPath);
             if (!File.Exists(dbPath))
             {
                 Logger.Write(this, $"{dbPath} doesn't exist", LogMessageType.Error);
@@ -31,12 +32,14 @@ namespace LazyOptimizer.App
                 }
             }
         }
-        public void GetPlans(IList<PlanDBRecord> destination, PlansFilterArgs args)
+        public void GetPlans(PlansFilterArgs args)
         {
             if (Connected)
             {
+                DBPlans.Clear();
+
                 StringBuilder sqlRequest = new StringBuilder("SELECT rowid, PatientId, CourseId, PlanId, Technique, MachineId, SelectionFrequency, StructuresString, Description,");
-                sqlRequest.AppendLine($@"Levenshtein(StructuresString, '{args.StructuresString}') AS LDistance");
+                sqlRequest.AppendLine($@"Levenshtein(StructuresString, ?) AS LDistance");
                 sqlRequest.AppendLine("FROM Plans");
 
                 if (args != null)
@@ -60,10 +63,10 @@ namespace LazyOptimizer.App
                     }
                     
                 }
-                sqlRequest.AppendLine("ORDER BY LDistance DESC ");
+                sqlRequest.AppendLine("ORDER BY LDistance ");
                 sqlRequest.Append(args.Limit > 0 ? $" LIMIT {args.Limit};" : ";");
 
-                db.Select(destination, sqlRequest.ToString());
+                db.Select(DBPlans, sqlRequest.ToString(), new object[] { args.StructuresString });
             }
         }
         public void GetObjectives(IList<ObjectiveDBRecord> destination, long PlanRowId)
@@ -107,8 +110,6 @@ namespace LazyOptimizer.App
                                 + "SELECT last_insert_rowid();";
 
                             int rowId;
-                            //object result = db.GetValue(sql.ToString(), new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresString });
-                            //Logger.Write(this, "rowid " + db.LastInsertedRowId().ToString(), LogMessageType.Info);
                             rowId = int.Parse(db.GetValue(sql, new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresString }).ToString());
 
                             List<ObjectiveInfo> objectives = new List<ObjectiveInfo>();
@@ -196,11 +197,16 @@ namespace LazyOptimizer.App
         {
             db.Dispose();
         }
-        private readonly DataProviderSettings settings;
-        public DataProviderSettings Settings => settings;
+
+        private List<PlanDBRecord> dbPlans;
+        public List<PlanDBRecord> DBPlans => dbPlans ?? (dbPlans = new List<PlanDBRecord>());
+
+        private readonly DataServiceSettings settings;
+        public DataServiceSettings Settings => settings;
+        public string DBPath => dbPath;
     }
 
-    public class DataProviderSettings
+    public class DataServiceSettings
     {
         public string DBPath;
     }

@@ -116,7 +116,7 @@ namespace PlansCache
 
             DateTime startTime = DateTime.Now;
             
-            DataProvider dataProvider = new DataProvider(new DataProviderSettings() { DBPath = dbPath });
+            DataService dataProvider = new DataService(new DataServiceSettings() { DBPath = dbPath });
             if (dataProvider.Connected)
             {
                 DateTime lastCheckDate = new DateTime(1789, 7, 14);

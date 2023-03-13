@@ -77,7 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\App.cs" />
-    <Compile Include="App\DataProvider.cs" />
+    <Compile Include="App\DataService.cs" />
+    <Compile Include="App\IDataService.cs" />
     <Compile Include="App\PlansFilterArgs.cs" />
     <Compile Include="App\Settings.cs" />
     <Compile Include="DB\DBRecord.cs" />

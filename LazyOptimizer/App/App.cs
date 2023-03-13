@@ -21,7 +21,7 @@ namespace LazyOptimizer.App
 {
     public class App : IDisposable
     {
-        private DataProvider dataProvider;
+        private IDataService dataService;
         private MainVM mainVM;
         private Patient patient;
         private PlanInfo planInfo;
@@ -44,7 +44,7 @@ namespace LazyOptimizer.App
                 
                 if (planInfo.IsReadyForOptimizerLoad)
                 {
-                    dataProvider = new DataProvider(new DataProviderSettings() { DBPath = $"{settings.UserPath}\\{settings.SqliteDBName}" });
+                    dataService = new DataService(new DataServiceSettings() { DBPath = $"{settings.UserPath}\\{settings.SqliteDBName}" });
 
                     filterArgs = new PlansFilterArgs()
                     {
@@ -55,7 +55,7 @@ namespace LazyOptimizer.App
                     };
 
                     UpdateFilterArgs(filterArgs);
-                    UpdatePlans(DBPlans, filterArgs);
+                    UpdatePlans(filterArgs);
                 }
                 else
                 {
@@ -69,23 +69,22 @@ namespace LazyOptimizer.App
             }
         }
 
-        public void UpdatePlans(IList<PlanDBRecord> plans, PlansFilterArgs filterArgs)
+        public void UpdatePlans(PlansFilterArgs filterArgs)
         {
-            string many() => plans.Count > 1 ? "s" : "";
+            string many(int listCount) => listCount > 1 ? "s" : "";
             
-            if (dataProvider?.Connected ?? false)
+            if (dataService?.Connected ?? false)
             {
-                plans.Clear();
-                dataProvider.GetPlans(plans, filterArgs);
-                habitsVM.UpdatePlans(plans);
+                dataService.GetPlans(filterArgs);
+                habitsVM.UpdatePlans(dataService.DBPlans);
 
-                if (plans.Count == 0)
+                if (dataService.DBPlans.Count == 0)
                 {
                     Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them.", LogMessageType.Warning);
                 }
                 else
                 {
-                    Logger.Write(this, $"You have {plans.Count} matched plan{many()}.", LogMessageType.Info);
+                    Logger.Write(this, $"You have {dataService.DBPlans.Count} matched plan{many(dataService.DBPlans.Count)}.", LogMessageType.Info);
                 }
             }
         }
@@ -100,8 +99,8 @@ namespace LazyOptimizer.App
             {
                 if ((plan?.DBObjectives.Count ?? -1) == 0)
                 {
-                    dataProvider.GetObjectives(plan.DBObjectives, (int)plan.DBPlan.rowid);
-                    plan.Nto.NtoDB = dataProvider.GetNto((int)plan.DBPlan.rowid);
+                    dataService.GetObjectives(plan.DBObjectives, (int)plan.DBPlan.rowid);
+                    plan.Nto.NtoDB = dataService.GetNto((int)plan.DBPlan.rowid);
                 }
             };
             habitsVM.LoadIntoPlanClick += (s, objectives) => LoadObjectivesIntoPlan(objectives);
@@ -110,7 +109,7 @@ namespace LazyOptimizer.App
             mainVM.FiltersChanged += (s, e) =>
             {
                 UpdateFilterArgs(filterArgs);
-                UpdatePlans(DBPlans, filterArgs);
+                UpdatePlans(filterArgs);
             };
 
             window.Closing += (s, e) => Dispose();
@@ -157,17 +156,17 @@ namespace LazyOptimizer.App
         {
             if (File.Exists(settings.PlansCacheAppPath))
             {
-                dataProvider.Connected = false;
+                dataService.Connected = false;
                 using (System.Diagnostics.Process process = new Process())
                 {
                     // Configure the process using the StartInfo properties.
                     process.StartInfo.FileName = settings.PlansCacheAppPath;
-                    process.StartInfo.Arguments = $@"-db ""{dataProvider.Settings.DBPath}"" -all -verbose -debug";
+                    process.StartInfo.Arguments = $@"-db ""{dataService.DBPath}"" -all -verbose -debug";
                     process.Start();
                     process.WaitForExit();
                 };
-                dataProvider.Connected = true;
-                UpdatePlans(DBPlans, filterArgs);
+                dataService.Connected = true;
+                UpdatePlans(filterArgs);
             }
             
         }
@@ -263,11 +262,9 @@ namespace LazyOptimizer.App
             args.Technique = mainVM.MatchTechnique ? planInfo.Technique : "";
         }
 
-        public List<PlanDBRecord> DBPlans { get; } = new List<PlanDBRecord>();
-        
         public void Dispose()
         {
-            dataProvider?.Dispose();
+            dataService?.Dispose();
         }
     }
 }
