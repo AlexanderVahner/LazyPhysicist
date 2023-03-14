@@ -7,6 +7,11 @@ using System.Windows;
 using System.Data.SQLite;
 using System.Reflection;
 using LazyPhysicist.Common;
+using System.IO;
+using System.Windows.Controls.Primitives;
+using System.Windows.Shapes;
+using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LazyOptimizer.DB
 {
@@ -21,14 +26,29 @@ namespace LazyOptimizer.DB
             this.dbFileName = dbFileName;
             try
             {
-                
+                if (!File.Exists(dbFileName))
+                {
+                    SQLiteConnection.CreateFile(dbFileName);
+                }
                 connection = new SQLiteConnection($@"Data Source=""{dbFileName}""");
-                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));
                 Connected = true;
+                CreateTables();
+
+                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));
+                
             }
             catch (Exception e)
             {
                 Logger.Write(this, e.Message, LogMessageType.Error);
+            }
+        }
+
+        private void CreateTables()
+        {
+            if (Connected)
+            {
+                string sql = Properties.Resources.data_db;
+                Execute(sql);
             }
         }
 

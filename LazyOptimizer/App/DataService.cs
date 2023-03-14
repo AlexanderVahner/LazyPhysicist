@@ -19,17 +19,10 @@ namespace LazyOptimizer.App
         {
             this.settings = settings;
             dbPath = Environment.ExpandEnvironmentVariables(settings.DBPath);
-            if (!File.Exists(dbPath))
+            db = new SQLiteService(dbPath);
+            if (!db.Connected)
             {
-                Logger.Write(this, $"{dbPath} doesn't exist", LogMessageType.Error);
-            }
-            else
-            {
-                db = new SQLiteService(dbPath);
-                if (!db.Connected)
-                {
-                    Logger.Write(this, $@"Can't connect to DB ""{dbPath}""", LogMessageType.Error);
-                }
+                Logger.Write(this, $@"Can't connect to DB ""{dbPath}""", LogMessageType.Error);
             }
         }
         public void GetPlans(PlansFilterArgs args)
@@ -195,7 +188,7 @@ namespace LazyOptimizer.App
         }
         public void Dispose()
         {
-            db.Dispose();
+            db?.Dispose();
         }
 
         private List<PlanDBRecord> dbPlans;
