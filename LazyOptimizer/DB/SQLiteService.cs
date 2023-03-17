@@ -122,45 +122,6 @@ namespace LazyOptimizer.DB
             Select(list, sqlRequest, parameters);
             destination = list.FirstOrDefault();
         }
-        public void Select<T>(IList<T> destination, IEnumerable<FilterCondition> conditions, string orderBy = "")
-        {
-            if (destination != null)
-            {
-                Type type = typeof(T);
-                DBTableNameAttribute tableNameAttr = type.GetCustomAttributes(typeof(DBTableNameAttribute), false).FirstOrDefault() as DBTableNameAttribute;
-                string tableName = tableNameAttr?.DBName ?? "";
-                if (tableName != "")
-                {
-                    string sqlString = $"SELECT rowid, * FROM {tableName} ";
-                    if (conditions.Count() > 0)
-                    {
-                        sqlString += "WHERE ";
-                        foreach (FilterCondition c in conditions)
-                        {
-                            sqlString += c.ConditionString + " AND ";
-                        }
-                        sqlString += " (1 = 1) ";
-                    }
-                    if (orderBy != "")
-                    {
-                        sqlString += "ORDER BY " + orderBy;
-                    }
-
-                    sqlString += ";";
-
-                    Select(destination, sqlString);
-                }
-                else
-                {
-                    Logger.Write(this, $"SELECT: Class {type.Name} doesn't have a correct DBTableName Attribute.", LogMessageType.Error);
-                }
-
-            }
-            else
-            {
-                Logger.Write(this, "SELECT: Destination collection is NULL.", LogMessageType.Error);
-            }
-        }
         public int Execute(string sqlRequest, IEnumerable<object> parameters = null)
         {
             int result = 0;

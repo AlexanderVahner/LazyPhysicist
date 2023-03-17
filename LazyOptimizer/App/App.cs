@@ -112,6 +112,8 @@ namespace LazyOptimizer.App
                 UpdatePlans(filterArgs);
             };
 
+            window.Width = 900;
+            window.Height = 800;
             window.Closing += (s, e) => Dispose();
             window.Content = mainPage;
 

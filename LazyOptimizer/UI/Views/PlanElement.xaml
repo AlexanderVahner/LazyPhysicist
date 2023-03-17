@@ -11,12 +11,12 @@
     </UserControl.DataContext>-->
     <Grid>
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding PlanName}" FontSize="14"/>
-                <TextBlock Text="{Binding SelectionFrequency}" Background="{Binding SelectionFrequencyBackground}" Foreground="White" HorizontalAlignment="Right" Padding="3"/>
-            </StackPanel>
+            <DockPanel>
+                <TextBlock Text="{Binding PlanName}" FontSize="14" FontWeight="Bold" Margin="0 0 5 0"/>
+                <TextBlock DockPanel.Dock="Right" Text="{Binding SelectionFrequency}" Background="{Binding SelectionFrequencyBackground}" Foreground="White" HorizontalAlignment="Right" Padding="3"/>
+            </DockPanel>
             <TextBox Text="{Binding Description}"/>
-            <TextBlock Text="{Binding StructuresString}" FontSize="8"/>
+            <TextBlock Text="{Binding StructuresString}" FontSize="7"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -60,46 +60,6 @@ namespace ESAPIInfo.Plan
             }
         }
 
-        public void LoadIntoPlan(PlanInfo plan)
-        {
-            if (plan?.Plan == null)
-            {
-                Logger.Write(this, "Can't load the objective. The Plan is null", LogMessageType.Error);
-            }
-            else
-            {
-                if (!plan.IsReadyForOptimizerLoad)
-                {
-                    Logger.Write(this, "Can't load the objective. The Plan is not unapproved, or it doesn't have beams", LogMessageType.Error);
-                }
-                else
-                {
-                    if (Structure == null)
-                    {
-                        Logger.Write(this, "Can't load the objective. Structure is not defined", LogMessageType.Error);
-                    }
-                    else
-                    {
-                        switch (Type)
-                        {
-                            case ObjectiveType.Point:
-                                plan.Plan.OptimizationSetup.AddPointObjective(Structure, Operator, new DoseValue(Dose, DoseValue.DoseUnit.Gy), Volume, Priority);
-                                break;
-                            case ObjectiveType.Mean:
-                                plan.Plan.OptimizationSetup.AddMeanDoseObjective(Structure, new DoseValue(Dose, DoseValue.DoseUnit.Gy), Priority);
-                                break;
-                            case ObjectiveType.EUD:
-                                plan.Plan.OptimizationSetup.AddEUDObjective(Structure, Operator, new DoseValue(Dose, DoseValue.DoseUnit.Gy), ParameterA, Priority);
-                                break;
-                            case ObjectiveType.Unknown:
-                                Logger.Write(this, "Can't load the objective. Type is unknown.", LogMessageType.Error);
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-
         public ObjectiveType Type { get; set; } = ObjectiveType.Unknown;
         public Structure Structure { get; set; } = null;
         public string StructureId { get; set; } = "";

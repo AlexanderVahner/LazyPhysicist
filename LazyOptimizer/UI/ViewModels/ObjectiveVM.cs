@@ -4,8 +4,10 @@ using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -62,5 +64,53 @@ namespace LazyOptimizer.UI.ViewModels
         }
 
         public string Info => $"{ObjectiveDB.Dose} {ObjectiveDB.Volume} {ObjectiveDB.ParameterA}";
+        public double? Dose => ObjectiveDB?.Dose;
+        public double? Volume => ObjectiveDB?.Volume;
+        public double? ParameterA => ObjectiveDB?.ParameterA;
+        public ObjectiveType ObjectiveDBType => (ObjectiveType)(objectiveDB?.ObjType ?? 99);
+        public OptimizationObjectiveOperator ObjectiveDBOperator => (OptimizationObjectiveOperator)(objectiveDB?.Operator ?? 99);
+        public string ArrowImageSource
+        {
+            get
+            {
+                string result = "/LazyOptimizer.esapi;component/UI/Views/Unknown.png";
+                if (objectiveDB != null)
+                {
+                    if (ObjectiveDBType == ObjectiveType.Mean)
+                    {
+                        result = "/LazyOptimizer.esapi;component/UI/Views/Mean.png";
+
+                    }
+                    else if (ObjectiveDBType == ObjectiveType.EUD)
+                    {
+                        switch (ObjectiveDBOperator)
+                        {
+                            case OptimizationObjectiveOperator.Upper:
+                                result = "/LazyOptimizer.esapi;component/UI/Views/UpperEUD.png";
+                                break;
+                            case OptimizationObjectiveOperator.Lower:
+                                result = "/LazyOptimizer.esapi;component/UI/Views/LowerEUD.png";
+                                break;
+                            case OptimizationObjectiveOperator.Exact:
+                                result = "/LazyOptimizer.esapi;component/UI/Views/TargetEUD.png";
+                                break;
+                        }
+                    }
+                    else if (ObjectiveDBType == ObjectiveType.Point)
+                    {
+                        switch (ObjectiveDBOperator)
+                        {
+                            case OptimizationObjectiveOperator.Upper:
+                                result = "/LazyOptimizer.esapi;component/UI/Views/Upper.png";
+                                break;
+                            case OptimizationObjectiveOperator.Lower:
+                                result = "/LazyOptimizer.esapi;component/UI/Views/Lower.png";
+                                break;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LazyPhysicist.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,19 @@ using System.Threading.Tasks;
 
 namespace LazyOptimizer.App
 {
-    public class PlansFilterArgs
+    public class PlansFilterArgs : Notifier
     {
-        public string StructuresString { get; set; }
-        public double SingleDose { get; set; } = .0;
-        public int FractionsCount { get; set; } = 0;
-        public string Technique { get; set; } = "";
-        public string MachineId { get; set; } = "";
-        public int Limit { get; set; } = 0;
+        private string structuresString;
+        private double singleDose = .0;
+        private int fractionsCount = 0;
+        private string technique = "";
+        private string machineId = "";
+        private int limit = 0;
+        public string StructuresString { get => structuresString; set => SetProperty(ref structuresString, value); }
+        public double SingleDose { get => singleDose; set => SetProperty(ref singleDose, value); }
+        public int FractionsCount { get => fractionsCount; set => SetProperty(ref fractionsCount, value); }
+        public string Technique { get => technique; set => SetProperty(ref technique, value); }
+        public string MachineId { get => machineId; set => SetProperty(ref machineId, value); }
+        public int Limit { get => limit; set => SetProperty(ref limit, value); }
     }
 }

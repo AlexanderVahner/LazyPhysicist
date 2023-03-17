@@ -14,14 +14,14 @@
     <Grid>
         <DockPanel>
             <RichTextBox x:Name="LogBox" DockPanel.Dock="Bottom" Height ="70"></RichTextBox>
-            <StackPanel DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top" Margin="5 5 5 5">
                 <StackPanel Orientation="Horizontal">
-                    <StackPanel>
+                    <StackPanel Margin="0 0 5 0">
                         <CheckBox Content="Match technique" IsChecked="{Binding MatchTechnique}"/>
                         <CheckBox Content="Match Treatment Machine" IsChecked="{Binding MatchMachine}"/>
                     </StackPanel>
-                    <Button Content="Refresh Habits" Command="{Binding RefreshHabits}"/>
-                    <Button Content="{Binding BtnSettingsContent}" Command="{Binding TogglePages}"/>
+                    <Button Content="Refresh Habits" Command="{Binding RefreshHabits}" Margin="0 0 5 0"/>
+                    <Button Content="{Binding BtnSettingsContent}" Command="{Binding TogglePages}" Margin="0 0 5 0"/>
                 </StackPanel>
             </StackPanel>
             <Frame x:Name="MainFrame" Content="{Binding CurrentPage}" NavigationUIVisibility="Hidden"/>

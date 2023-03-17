@@ -9,27 +9,62 @@
     <!--<UserControl.DataContext>
         <viewmodels:StructureVM/>
     </UserControl.DataContext>-->
-    <Grid>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Image x:Key="ImageLower" Source="..\..\Resources\Lower.png" />
+            <Image x:Key="ImageLowerEUD" Source="..\..\Resources\LowerEUD.png" />
+            <Image x:Key="ImageUpper" Source="..\..\Resources\Upper.png" />
+            <Image x:Key="ImageUpperEUD" Source="..\..\Resources\UpperEUD.png" />
+            <Image x:Key="ImageMean" Source="..\..\Resources\Mean.png" />
+            <Image x:Key="ImageTargetEUD" Source="..\..\Resources\TargetEUD.png" />
+            <Image x:Key="ImageUnknown" Source="..\..\Resources\Unknown.png" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid MinWidth="300" Margin="0 0 0 10">
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding DBStructureId}"/>
-                <ComboBox x:Name="APIStructureComboBox" 
-                                        ItemsSource="{Binding StructureSuggestions}" 
-                                        SelectedItem="{Binding APIStructureHack}" 
-                                        IsEditable="True" 
-                                        Text="{Binding Path=APIStructure.Id}"
-                                        IsReadOnly="True"/>
-            </StackPanel>
+            <Grid Margin="0 2 0 2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding DBStructureId}" FontSize="14" FontWeight="Bold"/>
+                <ComboBox Grid.Column="1" x:Name="APIStructureComboBox" 
+                                    ItemsSource="{Binding StructureSuggestions}" 
+                                    SelectedItem="{Binding APIStructureHack}" 
+                                    IsEditable="True" 
+                                    Text="{Binding Path=APIStructure.Id}"
+                                    IsReadOnly="True"
+                                    Width="150"
+                                    HorizontalAlignment="Right"
+                                    FontWeight="Bold"/>
+            </Grid>
             <ListBox ItemsSource="{Binding Objectives}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <Grid DockPanel.Dock="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="Fill" Source="{Binding ArrowImageSource}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Volume}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Dose}"/>
+                            <TextBlock Grid.Column="3" Text="{Binding ParameterA}"/>
+                            <TextBox Grid.Column="4" Width="60" Text="{Binding Priority}"/>
+                        </Grid>
+                        <!--<StackPanel Orientation="Horizontal">
+                            <Image Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill" Source="{Binding ArrowImageSource}"/>
                             <TextBlock Text="{Binding Info}"/>
-                            <TextBox Text="{Binding Priority}"/>
-                        </StackPanel>
+                            <TextBox />
+                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            
         </StackPanel>
     </Grid>
 </UserControl>

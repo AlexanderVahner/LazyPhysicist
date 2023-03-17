@@ -43,6 +43,6 @@ namespace LazyOptimizer.UI.ViewModels
             }
         }
         public string NtoInfo => APINto == null ? "Not set" :
-            (APINto.IsAutomatic ? $"Automatic, Priority: {APINto.Priority}" : $"Manual, Priority: {APINto.Priority}, {APINto.DistanceFromTargetBorderInMM}mm, {APINto.StartDosePercentage}%=>{APINto.EndDosePercentage}%, f={APINto.FallOff}");
+            "NTO: " + (APINto.IsAutomatic ? $"Automatic, Priority: {APINto.Priority}" : $"Manual, Priority: {APINto.Priority}, {APINto.DistanceFromTargetBorderInMM}mm, {APINto.StartDosePercentage}%=>{APINto.EndDosePercentage}%, f={APINto.FallOff}");
     }
 }

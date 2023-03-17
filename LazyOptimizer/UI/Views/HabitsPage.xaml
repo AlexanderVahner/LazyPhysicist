@@ -12,42 +12,19 @@
     </Page.DataContext>
     <Grid>
         <DockPanel>
-            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" MinWidth="300" DockPanel.Dock="Left">
+            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" Width="300" DockPanel.Dock="Left">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <local:PlanElement DataContext="{Binding}"/>
+                        <local:PlanElement DataContext="{Binding}" Width="285"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Margin="5">
-                    <StackPanel Orientation="Horizontal">
-
-                        <TextBlock> OAR's Priority:</TextBlock>
-                        <Button Content="=0" Command="{Binding SetOarsPriority}" CommandParameter="0"  Width="40"/>
-                        <Button Content="As Is" Command="{Binding SetOarsPriority}" CommandParameter="-1" Width="40"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="Set:" Command="{Binding SetOarsPriority}" CommandParameter="{Binding PrioritySetter}" Width="30"/>
-                            <TextBox Text="{Binding PrioritySetter}" Width="30"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <CheckBox IsChecked="{Binding AddNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}"/>
-                </StackPanel>
-
-                <ListBox ItemsSource="{Binding SelectedDBPlan.Structures}" MinWidth="300">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <local:StructureElement DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                
-            </DockPanel>
-            <DockPanel MinWidth="200">
+            <DockPanel Width="200" DockPanel.Dock="Right">
                 <StackPanel DockPanel.Dock="Bottom">
                     <Button Content="Load into plan" Command="{Binding LoadIntoPlan}" Margin="5"/>
                 </StackPanel>
+                <TextBlock DockPanel.Dock="Top">Not defined</TextBlock>
                 <ListBox ItemsSource="{Binding UnusedStructures}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -56,6 +33,46 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
+            
+            <DockPanel>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" FontWeight="Bold">Vol., %</TextBlock>
+                    <TextBlock Grid.Column="2" FontWeight="Bold">Dose, Gy</TextBlock>
+                    <TextBlock Grid.Column="3" FontWeight="Bold">gEUD, a</TextBlock>
+                    <TextBlock Grid.Column="4" FontWeight="Bold">Priority</TextBlock>
+                </Grid>
+                <StackPanel DockPanel.Dock="Bottom" Margin="5">
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBlock> OAR's Priority:</TextBlock>
+                        <Button Content="=0" Command="{Binding SetOarsPriority}" CommandParameter="0"  Width="40" Margin="5 0 0 0"/>
+                        <Button Content="As Is" Command="{Binding SetOarsPriority}" CommandParameter="-1" Width="40" Margin="5 0 0 0"/>
+                        <StackPanel Orientation="Horizontal"  Margin="5 0 0 0">
+                            <Button Content="Set:" Command="{Binding SetOarsPriority}" CommandParameter="{Binding PrioritySetter}" Width="30"/>
+                            <TextBox Text="{Binding PrioritySetter}" Width="30"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <CheckBox IsChecked="{Binding AddNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}" Margin="0 5
+                              0 0"/>
+                </StackPanel>
+
+                <ListBox ItemsSource="{Binding SelectedDBPlan.Structures}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <local:StructureElement DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                
+            </DockPanel>
+            
         </DockPanel>
     </Grid>
 </Page>
