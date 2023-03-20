@@ -126,7 +126,7 @@ namespace PlansCache
                 }
 
                 Logger.Write(app, $"Welcome, {app.CurrentUser.Name}!", LogMessageType.Info);
-                Logger.Write(app, "Check" + (allPatients ? " since the beginning of time" : "") + " in progress...");
+                Logger.Write(app, "Check " + (allPatients ? "since the beginning of time" : $"from {lastCheckDate}") + " in progress...");
 
                 IEnumerable<PatientSummary> summaries = allPatients ? app.PatientSummaries : app.PatientSummaries.Where(ps => ps.CreationDateTime > lastCheckDate);
                 PlanInfo planInfo = new PlanInfo();

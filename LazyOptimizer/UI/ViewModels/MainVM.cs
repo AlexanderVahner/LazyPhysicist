@@ -1,4 +1,5 @@
-﻿using LazyPhysicist.Common;
+﻿using LazyOptimizer.App;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,7 @@ namespace LazyOptimizer.UI.ViewModels
         private string btnSettingsContent = "Settings";
         private Page currentPage;
 
+        public Settings Settings { get; set; }
         public Page CurrentPage
         {
             get => currentPage;

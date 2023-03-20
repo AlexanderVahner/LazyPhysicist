@@ -34,7 +34,6 @@ namespace LazyOptimizer.UI.Views
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 };
-
                 LogBox.Document.Blocks.Add(logMessage);
                 LogBox.ScrollToEnd();
             };

@@ -183,7 +183,7 @@ namespace LazyOptimizer.DB
         }
         public void Dispose()
         {
-            connection.Dispose();
+            connection?.Dispose();
         }
         public bool Connected
         {

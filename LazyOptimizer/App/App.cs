@@ -1,4 +1,5 @@
-﻿using ESAPIInfo.Plan;
+﻿using Common;
+using ESAPIInfo.Plan;
 using LazyOptimizer.DB;
 using LazyOptimizer.UI.ViewModels;
 using LazyOptimizer.UI.Views;
@@ -27,8 +28,10 @@ namespace LazyOptimizer.App
         private PlanInfo planInfo;
         private Settings settings;
         private PlansFilterArgs filterArgs;
+        private readonly string userPath = Environment.ExpandEnvironmentVariables(@"%APPDATA%\LazyOptimizer");
+        private readonly string settingsFileName = "Settings.xml";
 
-        private HabitsVM habitsVM = new HabitsVM();
+        private HabitsVM habitsVM;
         public App(ScriptArgs args)
         {
             Logger.Logged += (s, message, type) => Debug.WriteLine($"{type} from {s?.GetType().Name ?? "UNKNOWN"}: {message}");
@@ -38,8 +41,13 @@ namespace LazyOptimizer.App
                 patient = args.Patient;
                 planInfo = new PlanInfo() { Plan = args.Plan };
 
-                settings = new Settings();
-                mainVM = new MainVM();
+                if (!FileSystem.CheckPathOrCreate(userPath))
+                {
+                    Logger.Write(this, $"Can't make user path \"{userPath}\".", LogMessageType.Error);
+                    return;
+                }
+                settings = ReadSettings($"{userPath}\\{settingsFileName}");
+
                 InitializeUI(args.Window);
                 
                 if (planInfo.IsReadyForOptimizerLoad)
@@ -71,7 +79,7 @@ namespace LazyOptimizer.App
 
         public void UpdatePlans(PlansFilterArgs filterArgs)
         {
-            string many(int listCount) => listCount > 1 ? "s" : "";
+            string many(int listCount) => listCount == 1 ? "" : "s";
             
             if (dataService?.Connected ?? false)
             {
@@ -91,10 +99,17 @@ namespace LazyOptimizer.App
 
         public void InitializeUI(Window window)
         {
-            mainVM = new MainVM();
+            mainVM = new MainVM
+            {
+                Settings = settings
+            };
             MainPage mainPage = new MainPage() { DataContext = mainVM };
 
-            habitsVM.CurrentPlan = planInfo;
+            habitsVM = new HabitsVM
+            {
+                Settings = settings,
+                CurrentPlan = planInfo
+            };
             habitsVM.SelectedDBPlanChanged += (s, plan) =>
             {
                 if ((plan?.DBObjectives.Count ?? -1) == 0)
@@ -114,6 +129,7 @@ namespace LazyOptimizer.App
 
             window.Width = 900;
             window.Height = 800;
+            window.Title = "LazyOptimizer";
             window.Closing += (s, e) => Dispose();
             window.Content = mainPage;
 
@@ -135,11 +151,12 @@ namespace LazyOptimizer.App
             };
             SettingsPage settingsPage = new SettingsPage()
             {
-                DataContext = settingsVM
+                DataContext = settingsVM,
+                Settings = settings
             };
 
             mainVM.CurrentPage = habitsPage;
-            mainVM.RefreshHabitsClick += (s, e) => RefreshHabits();
+            mainVM.RefreshHabitsClick += (s, e) => PlansCacheAppStart();
             mainVM.TogglePagesClick += (s, e) =>
             {
                 mainVM.BtnSettingsContent = mainVM.BtnSettingsContent == "Settings" ? "Back To Plans" : "Settings";
@@ -149,26 +166,46 @@ namespace LazyOptimizer.App
                 }
                 else
                 {
+                    WriteSettings($"{userPath}\\{settingsFileName}");
                     mainVM.CurrentPage = habitsPage;
                 }
             };
         }
 
-        public void RefreshHabits()
+        public void InitializeData()
+        {
+
+        }
+
+        public void PlansCacheAppStart()
         {
             if (File.Exists(settings.PlansCacheAppPath))
             {
+                StringBuilder appArgs = new StringBuilder($"-db \"{dataService.DBPath}\"");
+                if (settings.PlansCacheRecheckAllPatients)
+                {
+                    appArgs.Append(" -all");
+                }
+                if (settings.PlansCacheVerboseMode)
+                {
+                    appArgs.Append(" -verbose");
+                }
+                if (settings.DebugMode)
+                {
+                    appArgs.Append(" -debug");
+                }
                 dataService.Connected = false;
                 using (System.Diagnostics.Process process = new Process())
                 {
-                    // Configure the process using the StartInfo properties.
                     process.StartInfo.FileName = settings.PlansCacheAppPath;
-                    process.StartInfo.Arguments = $@"-db ""{dataService.DBPath}"" -all -verbose -debug";
+                    process.StartInfo.Arguments = appArgs.ToString();
                     process.Start();
                     process.WaitForExit();
                 };
                 dataService.Connected = true;
                 UpdatePlans(filterArgs);
+
+                settings.PlansCacheRecheckAllPatients = false;
             }
             
         }
@@ -264,8 +301,27 @@ namespace LazyOptimizer.App
             args.Technique = mainVM.MatchTechnique ? planInfo.Technique : "";
         }
 
+        private Settings ReadSettings(string path)
+        {
+            Settings settings = null;
+            if (File.Exists(path))
+            {
+                Xml.ReadXmlToObject(path, ref settings);
+            }
+            else
+            {
+                settings = new Settings();
+            }
+            return settings;
+        }
+        private void WriteSettings(string path)
+        {
+            Xml.WriteXmlFromObject(path, settings);
+        }
+
         public void Dispose()
         {
+            WriteSettings($"{userPath}\\{settingsFileName}");
             dataService?.Dispose();
         }
     }

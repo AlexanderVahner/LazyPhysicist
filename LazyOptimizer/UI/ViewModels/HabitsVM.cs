@@ -1,5 +1,6 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
+using LazyOptimizer.App;
 using LazyOptimizer.DB;
 using LazyPhysicist.Common;
 using System;
@@ -109,13 +110,6 @@ namespace LazyOptimizer.UI.ViewModels
             set => SetProperty(ref prioritySetter, value);
         }
 
-        private bool addNto = true;
-        public bool AddNto
-        {
-            get => addNto;
-            set => SetProperty(ref addNto, value);
-        }
-
         public delegate void SelectedPlanChangedEventHandler(object sender, PlanVM dbPlan);
         public event SelectedPlanChangedEventHandler SelectedDBPlanChanged;
 
@@ -138,7 +132,7 @@ namespace LazyOptimizer.UI.ViewModels
                         if (objectives.Count > 0)
                         {
                             LoadIntoPlanClick?.Invoke(this, objectives);
-                            if (AddNto)
+                            if (Settings.LoadNto)
                             {
                                 LoadNtoIntoPlanClick?.Invoke(this, SelectedDBPlan.Nto.APINto);
                             }
@@ -179,6 +173,8 @@ namespace LazyOptimizer.UI.ViewModels
                 },
                 o => SelectedDBPlan != null && SelectedDBPlan.Structures.Count > 0
             );
+
+        public Settings Settings { get; set; }
 
         public delegate void LoadIntoPlanClickEventHandler(object sender, List<ObjectiveInfo> objectives);
         public event LoadIntoPlanClickEventHandler LoadIntoPlanClick;

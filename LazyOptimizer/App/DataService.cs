@@ -141,13 +141,16 @@ namespace LazyOptimizer.App
         }
         public DateTime? GetLastCheckDate()
         {
-            DateTime? result = null;
+            DateTime result = new DateTime(1789, 7, 14);
             if (Connected)
             {
                 try
                 {
-                    string stringDate = (db.GetValue("SELECT LastCheckDate FROM Vars LIMIT 1;") ?? result).ToString();
-                    result = DateTime.Parse(stringDate);
+                    string stringDate = (db.GetValue("SELECT LastCheckDate FROM Vars LIMIT 1;") ?? "").ToString();
+                    if (stringDate != "")
+                    {
+                        result = DateTime.Parse(stringDate);
+                    }
                 }
                 catch (Exception e)
                 {

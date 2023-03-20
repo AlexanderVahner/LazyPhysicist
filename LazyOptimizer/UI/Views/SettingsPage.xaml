@@ -11,14 +11,35 @@
         <viewmodels:SettingsVM/>
     </Page.DataContext>
     <Grid>
-        <StackPanel>
-            <TextBlock>User Path</TextBlock>
-            <TextBox Text="{Binding Settings.UserPath}"/>
-            <TextBlock>SQLite DB Name</TextBlock>
-            <TextBox Text="{Binding Settings.SqliteDBName}"/>
-            <TextBlock>Select Limit for Plans</TextBlock>
-            <TextBox Text="{Binding Settings.PlansSelectLimit}"/>
-            <Button Content="Save"/>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Plugin" Grid.Column="0" Padding="5">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Selection Count Limit for Cached Plans:</TextBlock>
+                    <TextBox Text="{Binding Settings.PlansSelectLimit}" Width="50" Margin="5 0 0 0"/>
+                </StackPanel>
+                
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="PlansCache App" Grid.Column="1" Padding="5">
+            <StackPanel>
+                <TextBlock>PlansCache App Path</TextBlock>
+                <DockPanel Margin="0 5 0 0">
+                    <Button Content=" ... " DockPanel.Dock="Right" Click="Button_Click"/>
+                    <TextBox x:Name="PlansCacheAppPathText" Text="{Binding Settings.PlansCacheAppPath}"/>
+                </DockPanel>                
+                <CheckBox IsChecked="{Binding Settings.PlansCacheVerboseMode}" Content="Verbose mode"  Margin="0 5 0 0"/>
+                <CheckBox IsChecked="{Binding Settings.PlansCacheRecheckAllPatients}" Content="Recheck all patients next time"  Margin="0 5 0 0"/>
+            </StackPanel>
+        </GroupBox>
+        <CheckBox IsChecked="{Binding Settings.DebugMode}" Content="Debug Mode" Grid.Row="1" Margin="10"/>    
+            
     </Grid>
 </Page>

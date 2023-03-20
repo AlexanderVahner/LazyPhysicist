@@ -12,10 +12,10 @@
     </Page.DataContext>
     <Grid>
         <DockPanel>
-            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" Width="300" DockPanel.Dock="Left">
+            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" MinWidth="300" DockPanel.Dock="Left">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <local:PlanElement DataContext="{Binding}" Width="285"/>
+                        <local:PlanElement DataContext="{Binding}" MaxWidth="285"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -43,9 +43,9 @@
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="1" FontWeight="Bold">Vol., %</TextBlock>
-                    <TextBlock Grid.Column="2" FontWeight="Bold">Dose, Gy</TextBlock>
-                    <TextBlock Grid.Column="3" FontWeight="Bold">gEUD, a</TextBlock>
+                    <TextBlock Grid.Column="1" FontWeight="Bold">Vol,%</TextBlock>
+                    <TextBlock Grid.Column="2" FontWeight="Bold">Dose,Gy</TextBlock>
+                    <TextBlock Grid.Column="3" FontWeight="Bold">gEUD,a</TextBlock>
                     <TextBlock Grid.Column="4" FontWeight="Bold">Priority</TextBlock>
                 </Grid>
                 <StackPanel DockPanel.Dock="Bottom" Margin="5">
@@ -59,7 +59,7 @@
                             <TextBox Text="{Binding PrioritySetter}" Width="30"/>
                         </StackPanel>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding AddNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}" Margin="0 5
+                    <CheckBox IsChecked="{Binding Settings.LoadNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}" Margin="0 5
                               0 0"/>
                 </StackPanel>
 
