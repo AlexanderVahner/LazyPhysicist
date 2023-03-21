@@ -147,10 +147,9 @@ namespace LazyOptimizer.UI.ViewModels
         public MetaCommand SetOarsPriority => new MetaCommand(
                 priorityString =>
                 {
-                    double priority;
                     if (SelectedDBPlan != null)
                     {
-                        if (double.TryParse(priorityString as string, out priority))
+                        if (double.TryParse(priorityString as string, out double priority))
                         {
                             SelectedDBPlan.Structures
                                 .Where(s => !s.IsTarget)

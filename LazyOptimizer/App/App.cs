@@ -28,8 +28,6 @@ namespace LazyOptimizer.App
         private PlanInfo planInfo;
         private Settings settings;
         private PlansFilterArgs filterArgs;
-        private readonly string userPath = Environment.ExpandEnvironmentVariables(@"%APPDATA%\LazyOptimizer");
-        private readonly string settingsFileName = "Settings.xml";
 
         private HabitsVM habitsVM;
         public App(ScriptArgs args)
@@ -41,18 +39,12 @@ namespace LazyOptimizer.App
                 patient = args.Patient;
                 planInfo = new PlanInfo() { Plan = args.Plan };
 
-                if (!FileSystem.CheckPathOrCreate(userPath))
-                {
-                    Logger.Write(this, $"Can't make user path \"{userPath}\".", LogMessageType.Error);
-                    return;
-                }
-                settings = ReadSettings($"{userPath}\\{settingsFileName}");
-
+                settings = Settings.ReadSettings();
                 InitializeUI(args.Window);
                 
                 if (planInfo.IsReadyForOptimizerLoad)
                 {
-                    dataService = new DataService(new DataServiceSettings() { DBPath = $"{settings.UserPath}\\{settings.SqliteDBName}" });
+                    dataService = new DataService(new DataServiceSettings() { DBPath = $"{settings.SqliteDbPath}" });
 
                     filterArgs = new PlansFilterArgs()
                     {
@@ -166,7 +158,7 @@ namespace LazyOptimizer.App
                 }
                 else
                 {
-                    WriteSettings($"{userPath}\\{settingsFileName}");
+                    settings.Save();
                     mainVM.CurrentPage = habitsPage;
                 }
             };
@@ -206,6 +198,10 @@ namespace LazyOptimizer.App
                 UpdatePlans(filterArgs);
 
                 settings.PlansCacheRecheckAllPatients = false;
+            }
+            else
+            {
+                Logger.Write(this, "PlansCache App not found.", LogMessageType.Error);
             }
             
         }
@@ -301,27 +297,11 @@ namespace LazyOptimizer.App
             args.Technique = mainVM.MatchTechnique ? planInfo.Technique : "";
         }
 
-        private Settings ReadSettings(string path)
-        {
-            Settings settings = null;
-            if (File.Exists(path))
-            {
-                Xml.ReadXmlToObject(path, ref settings);
-            }
-            else
-            {
-                settings = new Settings();
-            }
-            return settings;
-        }
-        private void WriteSettings(string path)
-        {
-            Xml.WriteXmlFromObject(path, settings);
-        }
+        
 
         public void Dispose()
         {
-            WriteSettings($"{userPath}\\{settingsFileName}");
+            settings?.Save();
             dataService?.Dispose();
         }
     }

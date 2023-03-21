@@ -14,6 +14,7 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class PlanVM : ViewModel
     {
+        private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
         private PlanDBRecord dbPlan;
         private List<ObjectiveDBRecord> dbObjectives;
         private ObservableCollection<StructureVM> structures;
@@ -69,9 +70,12 @@ namespace LazyOptimizer.UI.ViewModels
                     comparsion = new List<StructuresComparsion>(comparsion.OrderBy(c => c.Distance));
                     foreach (StructuresComparsion sc in comparsion)
                     {
-                        if (sc.StructureVM?.APIStructure?.Structure == null && sc.APIStructure?.Structure != null && StructureSuggestions.Contains(sc.APIStructure))
+                        if (sc.StructureVM?.APIStructure?.Structure == null 
+                            && sc.APIStructure?.Structure != null 
+                            && StructureSuggestions.Contains(sc.APIStructure)
+                            && (sc.Distance < (sc.APIStructure.Id.Length * ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF)))
                         {
-                            sc.StructureVM.APIStructure = sc.APIStructure;
+                            sc.StructureVM.APIStructure = sc.APIStructure; // StructureVM removes structure from StructureSuggestions in APIStructure property, when it assigned
                             if (StructureSuggestions.Count == 0)
                             {
                                 break;

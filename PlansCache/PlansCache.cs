@@ -8,6 +8,7 @@ using VMS.TPS.Common.Model.Types;
 using ESAPIInfo.Plan;
 using LazyOptimizer.App;
 using LazyPhysicist.Common;
+using PlansCache.Properties;
 
 // TODO: Replace the following version attributes by creating AssemblyInfo.cs. You can do this in the properties of the Visual Studio project.
 [assembly: AssemblyVersion("1.0.0.1")]
@@ -27,6 +28,8 @@ namespace PlansCache
         private static bool allPatients = false;
 
         private static string currentUserId = "";
+        private static IDataService dataService;
+        private static DateTime lastCheckDate;
 
         [STAThread]
         static void Main(string[] args)
@@ -57,13 +60,7 @@ namespace PlansCache
 
             if (dbPath == "")
             {
-                Console.WriteLine("Welcome! \nThis app reads all plans optimization objectives in all patients using ESAPI, \nand writes data to a DB for the FillTheOptimizer Plugin.\n"
-                    + "Using:\n"
-                    + "\tCheckOptHabits -db \"<DBFilePath>\" [-all] [-verbose] [-debug]\n"
-                    + "\t\t-db \"<DBFilePath>\"    - Path to DB.\n"
-                    + "\t\t-all                  - recheck all patients.\n"
-                    + "\t\t-verbose              - show additional info.\n"
-                    + "\t\t-debug                - show debug info.\n");
+                Console.WriteLine(Resources.README);
                 Console.ReadKey();
                 return;
             }
@@ -112,42 +109,67 @@ namespace PlansCache
         }
         static void Execute(Application app)
         {
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => OnClosing(); // Doesn't work :(
+
             currentUserId = app.CurrentUser.Id;
 
             DateTime startTime = DateTime.Now;
-            
-            DataService dataProvider = new DataService(new DataServiceSettings() { DBPath = dbPath });
-            if (dataProvider.Connected)
+
+            dataService = new DataService(new DataServiceSettings() { DBPath = dbPath });
+            if (dataService.Connected)
             {
-                DateTime lastCheckDate = new DateTime(1789, 7, 14);
+                lastCheckDate = new DateTime(1789, 7, 14);
                 if (!allPatients)
                 {
-                    lastCheckDate = dataProvider.GetLastCheckDate() ?? lastCheckDate;
+                    lastCheckDate = dataService.GetLastCheckDate() ?? lastCheckDate;
                 }
 
                 Logger.Write(app, $"Welcome, {app.CurrentUser.Name}!", LogMessageType.Info);
                 Logger.Write(app, "Check " + (allPatients ? "since the beginning of time" : $"from {lastCheckDate}") + " in progress...");
 
-                IEnumerable<PatientSummary> summaries = allPatients ? app.PatientSummaries : app.PatientSummaries.Where(ps => ps.CreationDateTime > lastCheckDate);
+                IEnumerable<PatientSummary> summaries = allPatients ? app.PatientSummaries : app.PatientSummaries.Where(ps => ps.CreationDateTime >= lastCheckDate).OrderBy(ps => ps.CreationDateTime);
                 PlanInfo planInfo = new PlanInfo();
+
+
+                // Progress vars
+                int pantientsCount = summaries.Count();
+                int currentPatientNumber = 0;
+                const int skipCountForProgress = 10;
+                int currentSkip = 0;
+                double progress = 0;
 
                 if (allPatients)
                 {
-                    dataProvider.ClearData();
+                    dataService.ClearData();
                 }
 
                 foreach (PatientSummary ps in summaries)
                 {
+                    // Progress 
+                    currentPatientNumber++;
+                    if (currentSkip++ == 0)
+                    {
+                        progress = (double)currentPatientNumber * 100 / pantientsCount;
+                        Console.Title = $"{progress:F1}% - Plans checking in progress";
+                    }
+                    if (currentSkip >= skipCountForProgress)
+                    {
+                        currentSkip = 0;
+                    }
+
                     Patient patient = app.OpenPatientById(ps.Id);
+                    lastCheckDate = ps.CreationDateTime ?? lastCheckDate;
+
                     foreach (Course course in patient.Courses)
                     {
                         foreach (ExternalPlanSetup plan in course.ExternalPlanSetups)
                         {
                             planInfo.Plan = plan;
 
-                            if (planInfo.ObjectivesCount > 0)
+                            if (planInfo.ObjectivesCount > 0
                             //&& PlanInfo.TreatedPlanStatuses.Contains(planInfo.ApprovalStatus)
-                            //&& planInfo.CreatorId == currentUserId)
+                            && planInfo.CreatorId == currentUserId
+                            )
                             {
 
                                 if (verbose)
@@ -156,7 +178,7 @@ namespace PlansCache
                                     Logger.Write(app, $"Objectives Count - {planInfo.ObjectivesCount}", LogMessageType.Debug);
                                 }
 
-                                dataProvider.SavePlanToDB(planInfo);
+                                dataService.SavePlanToDB(planInfo);
                             }
                             else
                             {
@@ -167,12 +189,12 @@ namespace PlansCache
                     app.ClosePatient();
                 }
 
-                dataProvider.SetLastCheckDate(DateTime.Now);
-                dataProvider.Connected = false;
+                dataService.SetLastCheckDate(lastCheckDate);
+                dataService.Connected = false;
 
                 TimeSpan executionTime = DateTime.Now - startTime;
 
-
+                Console.Title = "All is done";
                 Logger.Write(app, $"\nAll is done in {executionTime}.", LogMessageType.Info);
 
             }
@@ -180,6 +202,15 @@ namespace PlansCache
             {
                 Logger.Write(app, "Press Any Key.", LogMessageType.Info);
                 Console.ReadKey();
+            }
+            
+        }
+        static void OnClosing()
+        {
+            if (dataService?.Connected ?? false)
+            {
+                dataService.SetLastCheckDate(lastCheckDate);
+                dataService.Connected = false;
             }
         }
     }

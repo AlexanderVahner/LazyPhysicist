@@ -6,7 +6,7 @@
     <ProjectGuid>{22968F9B-18D8-4C7C-A06E-2BCD43F07BDE}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common</RootNamespace>
+    <RootNamespace>LazyPhysicist.Common</RootNamespace>
     <AssemblyName>Common.esapi</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

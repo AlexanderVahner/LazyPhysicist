@@ -54,7 +54,7 @@ namespace ESAPIInfo.Plan
         public string PlanId => Plan?.Id ?? "";
         public string PatientId => Plan?.Course?.Patient?.Id ?? "";
         public string CourseId => Plan?.Course?.Id ?? "";
-        public string CreatorId => Plan?.ApprovalHistory.ToList().OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.PlanningApproved).UserId ?? "";
+        public string CreatorId => Plan?.ApprovalHistory.ToList().OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).UserId ?? "";
         public PlanSetupApprovalStatus ApprovalStatus => Plan?.ApprovalStatus ?? PlanSetupApprovalStatus.Unknown;
         public double SingleDose => Plan?.DosePerFraction.Dose ?? .0;
         public int FractionsCount => Plan?.NumberOfFractions ?? 0;
@@ -81,6 +81,6 @@ namespace ESAPIInfo.Plan
         }
         
         public bool IsReadyForOptimizerLoad => EditablePlanStatuses.Contains(ApprovalStatus) && MachineId != "" && (Structures?.Count() ?? 0) > 0;
-        public bool StructureHasObjectives(Structure structure) => Plan?.OptimizationSetup.Objectives.FirstOrDefault(o => o.Structure == structure) == null ? false : true;
+        public bool StructureHasObjectives(Structure structure) => (Plan?.OptimizationSetup.Objectives.FirstOrDefault(o => o.Structure == structure)) != null;
     }
 }

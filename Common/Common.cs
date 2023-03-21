@@ -15,7 +15,7 @@ using VMS.TPS.Common.Model.Types;
 
 // TODO: Uncomment the following line if the script requires write access.
 // [assembly: ESAPIScript(IsWriteable = true)]
-
+/*
 namespace VMS.TPS
 {
   public class Script
@@ -25,9 +25,10 @@ namespace VMS.TPS
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void Execute(ScriptContext context /*, System.Windows.Window window, ScriptEnvironment environment*/)
+    public void Execute(ScriptContext context /*, System.Windows.Window window, ScriptEnvironment environment)
     {
       // TODO : Add here the code that is called when the script is launched from Eclipse.
     }
   }
 }
+*/

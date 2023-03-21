@@ -1,16 +1,46 @@
-﻿using LazyPhysicist.Common;
+﻿using Common;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace LazyOptimizer.App
 {
     public class Settings : Notifier
     {
-        private string userPath = @"%APPDATA%\LazyOptimizer";
-        private string sqliteDBName = "data.db";
+        private static string userPath = Environment.ExpandEnvironmentVariables(@"%APPDATA%\LazyOptimizer");
+        private const string settingsFileName = "settings.xml";
+        private static string settingsPath = $"{userPath}\\{settingsFileName}";
+        private const string sqliteDBName = "data.db";
+        public static Settings ReadSettings()
+        {
+            Settings settings = null;
+            
+            if (!FileSystem.CheckPathOrCreate(userPath))
+            {
+                Logger.Write(null, $"Can't make user path \"{userPath}\".", LogMessageType.Error);
+            }
+            else
+            {
+                settingsPath = $"{userPath}\\{settingsFileName}";
+                if (File.Exists(settingsPath))
+                {
+                    Xml.ReadXmlToObject(settingsPath, ref settings);
+                }
+                else
+                {
+                    settings = new Settings();
+                }
+            }
+            
+            return settings;
+        }
+
+        
         private string plansCacheAppPath = @"..\..\..\PlansCache\bin\debug\PlansCache.exe";
         private bool plansCacheVerboseMode = true;
         private bool plansCacheRecheckAllPatients = false;
@@ -22,9 +52,13 @@ namespace LazyOptimizer.App
 
         private bool debugMode = false;
 
+        public void Save()
+        {
+            Xml.WriteXmlFromObject(settingsPath, this);
+        }
 
         public string UserPath { get => userPath; set => SetProperty(ref userPath, value); }
-        public string SqliteDBName { get => sqliteDBName; set => SetProperty(ref sqliteDBName, value); }
+        public string SqliteDbPath => $"{userPath}\\{sqliteDBName}";
         public string PlansCacheAppPath { get => plansCacheAppPath; set => SetProperty(ref plansCacheAppPath, value); }
         public bool PlansCacheVerboseMode { get => plansCacheVerboseMode; set => SetProperty(ref plansCacheVerboseMode, value); }
         public bool PlansCacheRecheckAllPatients { get => plansCacheRecheckAllPatients; set => SetProperty(ref plansCacheRecheckAllPatients, value); }
