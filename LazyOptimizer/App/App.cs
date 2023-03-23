@@ -1,4 +1,5 @@
 ﻿using Common;
+using ESAPIInfo.Patients;
 using ESAPIInfo.Plan;
 using LazyOptimizer.DB;
 using LazyOptimizer.UI.ViewModels;
@@ -7,10 +8,12 @@ using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,102 +25,124 @@ namespace LazyOptimizer.App
 {
     public class App : IDisposable
     {
-        private IDataService dataService;
-        private MainVM mainVM;
-        private Patient patient;
-        private PlanInfo planInfo;
-        private Settings settings;
-        private PlansFilterArgs filterArgs;
-
-        private HabitsVM habitsVM;
+        private readonly AppContext context;
         public App(ScriptArgs args)
         {
             Logger.Logged += (s, message, type) => Debug.WriteLine($"{type} from {s?.GetType().Name ?? "UNKNOWN"}: {message}");
 
+            MainVM mainViewModel = InitializeUI(args.Window);
+
             if (args?.Patient != null && args?.Plan != null && args.Window != null)
             {
-                patient = args.Patient;
-                planInfo = new PlanInfo() { Plan = args.Plan };
-
-                settings = Settings.ReadSettings();
-                InitializeUI(args.Window);
-                
-                if (planInfo.IsReadyForOptimizerLoad)
+                context = new AppContext()
                 {
-                    dataService = new DataService(new DataServiceSettings() { DBPath = $"{settings.SqliteDbPath}" });
-
-                    filterArgs = new PlansFilterArgs()
+                    Patient = new PatientInfo(args.Patient),
+                    Plan = new PlanInfo(args.Plan),
+                    Settings = Settings.ReadSettings(),
+                    
+                };
+                if (CheckPlanEditability(context.Plan))
+                {
+                    context.PlansFilterArgs = new PlansFilterArgs()
                     {
-                        StructuresString = planInfo.StructuresString,
-                        FractionsCount = planInfo.FractionsCount,
-                        SingleDose = planInfo.SingleDose,
-                        Limit = settings.PlansSelectLimit
+                        StructuresString = context.Plan.StructuresString,
+                        FractionsCount = context.Plan.FractionsCount,
+                        SingleDose = context.Plan.SingleDose,
+                        MachineId = context.Plan.MachineId,
+                        Technique = context.Plan.Technique,
+                        MatchMachine = context.Settings.MatchMachine,
+                        MatchTechnique = context.Settings.MatchTechnique,
+                        Limit = context.Settings.PlansSelectLimit
                     };
 
-                    UpdateFilterArgs(filterArgs);
-                    UpdatePlans(filterArgs);
+                    context.DataService = new DataService(new DataServiceSettings() { DBPath = $"{context.Settings.SqliteDbPath}" });
+
+                    context.Settings.PropertyChanged += (s, e) =>
+                    {
+                        switch (e.PropertyName)
+                        {
+                            case "MatchMachine":
+                                context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
+                                break;
+                            case "MatchTechnique":
+                                context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
+                                break;
+                            case "PlansSelectLimit":
+                                context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
+                                break;
+                        }
+                    };
+
+                    context.PlansFilterArgs.PropertyChanged += (s, e) =>
+                    {
+                        SelectPlans(context);
+                    };
+
+                    mainViewModel.Context = context;
+                    mainViewModel.RefreshPlansClick += (s, context) =>
+                    {
+                        PlansCacheAppStart(context);
+                        SelectPlans(context);
+                        context.Settings.PlansCacheRecheckAllPatients = false;
+                    };
+
+                    SelectPlans(context);
                 }
                 else
                 {
-                    Logger.Write(this, "The plan is not ready for Optimization.\nMake some beams, or unapprove it.", LogMessageType.Error);
+                    Logger.Write(this, "The plan is not ready for Optimization.", LogMessageType.Error);
                 }
-                
             }
             else
             {
                 Logger.Write(this, "Plan is not opened.", LogMessageType.Error);
             }
         }
-
-        public void UpdatePlans(PlansFilterArgs filterArgs)
+        public bool CheckPlanEditability(PlanInfo plan)
         {
-            string many(int listCount) => listCount == 1 ? "" : "s";
-            
-            if (dataService?.Connected ?? false)
-            {
-                dataService.GetPlans(filterArgs);
-                habitsVM.UpdatePlans(dataService.DBPlans);
+            bool result = false;
 
-                if (dataService.DBPlans.Count == 0)
+            if (!PlanInfo.EditablePlanStatuses.Contains(plan.ApprovalStatus))
+            {
+                Logger.Write(this, "Unapprove plan for make chages.", LogMessageType.Warning);
+            }
+            else if (plan.MachineId == "")
+            {
+                Logger.Write(this, "Plan doesn't have beams.", LogMessageType.Warning);
+            }
+            else if (plan.Structures.Count() == 0)
+            {
+                Logger.Write(this, "Plan doesn't have structures.", LogMessageType.Warning);
+            }
+            else
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public void SelectPlans(AppContext context)
+        {            
+            if (context.DataService?.Connected ?? false)
+            {
+                context.DataService.GetPlans(context.PlansFilterArgs);
+
+                int plansCount = context.DataService.DBPlans.Count;
+                if (plansCount == 0)
                 {
-                    Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them.", LogMessageType.Warning);
+                    Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
                 }
                 else
                 {
-                    Logger.Write(this, $"You have {dataService.DBPlans.Count} matched plan{many(dataService.DBPlans.Count)}.", LogMessageType.Info);
+                    Logger.Write(this, $"You have {plansCount} matched plan" + (plansCount == 1 ? "." : "s."));
                 }
             }
         }
 
-        public void InitializeUI(Window window)
+        public MainVM InitializeUI(Window window)
         {
-            mainVM = new MainVM
-            {
-                Settings = settings
-            };
+            MainVM mainVM = new MainVM();
             MainPage mainPage = new MainPage() { DataContext = mainVM };
-
-            habitsVM = new HabitsVM
-            {
-                Settings = settings,
-                CurrentPlan = planInfo
-            };
-            habitsVM.SelectedDBPlanChanged += (s, plan) =>
-            {
-                if ((plan?.DBObjectives.Count ?? -1) == 0)
-                {
-                    dataService.GetObjectives(plan.DBObjectives, (int)plan.DBPlan.rowid);
-                    plan.Nto.NtoDB = dataService.GetNto((int)plan.DBPlan.rowid);
-                }
-            };
-            habitsVM.LoadIntoPlanClick += (s, objectives) => LoadObjectivesIntoPlan(objectives);
-            habitsVM.LoadNtoIntoPlanClick += (s, nto) => LoadNtoIntoPlan(nto);
-
-            mainVM.FiltersChanged += (s, e) =>
-            {
-                UpdateFilterArgs(filterArgs);
-                UpdatePlans(filterArgs);
-            };
 
             window.Width = 900;
             window.Height = 800;
@@ -125,79 +150,37 @@ namespace LazyOptimizer.App
             window.Closing += (s, e) => Dispose();
             window.Content = mainPage;
 
-            Logger.Write(this, "Welcome", LogMessageType.Info);
+            Logger.Write(this, "Welcome!", LogMessageType.Info);
 
-            if (planInfo.ObjectivesCount > 0)
-            {
-                Logger.Write(this, $"This plan already have Optimization Objectives. Keep in mind...", LogMessageType.Warning);
-            }
-
-            HabitsPage habitsPage = new HabitsPage()
-            {
-                DataContext = habitsVM
-            };
-
-            SettingsVM settingsVM = new SettingsVM()
-            {
-                Settings = settings
-            };
-            SettingsPage settingsPage = new SettingsPage()
-            {
-                DataContext = settingsVM,
-                Settings = settings
-            };
-
-            mainVM.CurrentPage = habitsPage;
-            mainVM.RefreshHabitsClick += (s, e) => PlansCacheAppStart();
-            mainVM.TogglePagesClick += (s, e) =>
-            {
-                mainVM.BtnSettingsContent = mainVM.BtnSettingsContent == "Settings" ? "Back To Plans" : "Settings";
-                if (Equals(mainVM.CurrentPage, habitsPage))
-                {
-                    mainVM.CurrentPage = settingsPage;
-                }
-                else
-                {
-                    settings.Save();
-                    mainVM.CurrentPage = habitsPage;
-                }
-            };
+            return mainVM;
         }
 
-        public void InitializeData()
+        public void PlansCacheAppStart(AppContext context)
         {
-
-        }
-
-        public void PlansCacheAppStart()
-        {
-            if (File.Exists(settings.PlansCacheAppPath))
+            if (File.Exists(context.Settings.PlansCacheAppPath))
             {
-                StringBuilder appArgs = new StringBuilder($"-db \"{dataService.DBPath}\"");
-                if (settings.PlansCacheRecheckAllPatients)
+                StringBuilder appArgs = new StringBuilder($"-db \"{context.DataService.DBPath}\"");
+                if (context.Settings.PlansCacheRecheckAllPatients)
                 {
                     appArgs.Append(" -all");
                 }
-                if (settings.PlansCacheVerboseMode)
+                if (context.Settings.PlansCacheVerboseMode)
                 {
                     appArgs.Append(" -verbose");
                 }
-                if (settings.DebugMode)
+                if (context.Settings.DebugMode)
                 {
                     appArgs.Append(" -debug");
                 }
-                dataService.Connected = false;
-                using (System.Diagnostics.Process process = new Process())
+                context.DataService.Connected = false;
+                using (Process process = new Process())
                 {
-                    process.StartInfo.FileName = settings.PlansCacheAppPath;
+                    process.StartInfo.FileName = context.Settings.PlansCacheAppPath;
                     process.StartInfo.Arguments = appArgs.ToString();
                     process.Start();
                     process.WaitForExit();
                 };
-                dataService.Connected = true;
-                UpdatePlans(filterArgs);
-
-                settings.PlansCacheRecheckAllPatients = false;
+                context.DataService.Connected = true;
             }
             else
             {
@@ -205,104 +188,10 @@ namespace LazyOptimizer.App
             }
             
         }
-        public void LoadNtoIntoPlan(NtoInfo nto)
-        {
-            patient.BeginModifications();
-            if (nto != null && planInfo?.Plan != null)
-            {
-                if (nto.IsAutomatic)
-                {
-                    planInfo.Plan.OptimizationSetup.AddAutomaticNormalTissueObjective(nto.Priority);
-                }
-                else
-                {
-                    planInfo.Plan.OptimizationSetup.AddNormalTissueObjective(nto.Priority, nto.DistanceFromTargetBorderInMM, nto.StartDosePercentage, nto.EndDosePercentage, nto.FallOff);
-                }
-
-            }
-        }
-
-        public void LoadObjectiveIntoPlan(ObjectiveInfo objective)
-        {
-            if (planInfo?.Plan == null)
-            {
-                Logger.Write(this, "Can't load the objective. The Plan is null", LogMessageType.Error);
-            }
-            else
-            {
-                if (!planInfo.IsReadyForOptimizerLoad)
-                {
-                    Logger.Write(this, "Can't load the objective. The Plan is not unapproved, or it doesn't have beams", LogMessageType.Error);
-                }
-                else
-                {
-                    if (objective.Structure == null)
-                    {
-                        Logger.Write(this, "Can't load the objective. Structure is not defined", LogMessageType.Error);
-                    }
-                    else
-                    {
-                        switch (objective.Type)
-                        {
-                            case ObjectiveType.Point:
-                                planInfo.Plan.OptimizationSetup.AddPointObjective(objective.Structure, objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
-                                break;
-                            case ObjectiveType.Mean:
-                                planInfo.Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
-                                break;
-                            case ObjectiveType.EUD:
-                                planInfo.Plan.OptimizationSetup.AddEUDObjective(objective.Structure, objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
-                                break;
-                            case ObjectiveType.Unknown:
-                                Logger.Write(this, "Can't load the objective. Type is unknown.", LogMessageType.Error);
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-        public void LoadObjectivesIntoPlan(List<ObjectiveInfo> objectives)
-        {
-            if (objectives != null)
-            {
-                MessageBoxResult answer = MessageBoxResult.Yes;
-                if (planInfo.ObjectivesCount > 0)
-                {
-                    answer = MessageBox.Show("The plan already has Optimization Objectives.\nDo you want to add all of it?\nClick No if you want to fill only empty structures", "Do you?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                    if (answer == MessageBoxResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-                patient.BeginModifications();
-                objectives.ForEach(o =>
-                    {
-                        if (answer == MessageBoxResult.No && planInfo.StructureHasObjectives(o.Structure))
-                        {
-                            return;
-                        }
-                        LoadObjectiveIntoPlan(o);
-                    });
-                Logger.Write(this, "Objectives added. Go optimize!", LogMessageType.Info);
-            }
-            else
-            {
-                Logger.Write(this, "Can't load objectives. Collection is null.", LogMessageType.Error);
-            }
-        }
-
-        private void UpdateFilterArgs(PlansFilterArgs args)
-        {
-            args.MachineId = mainVM.MatchMachine ? planInfo.MachineId : "";
-            args.Technique = mainVM.MatchTechnique ? planInfo.Technique : "";
-        }
-
         
-
         public void Dispose()
         {
-            settings?.Save();
-            dataService?.Dispose();
+            context?.Dispose();
         }
     }
 }

@@ -20,11 +20,11 @@ namespace LazyOptimizer.UI.ViewModels
             get => apiStructure;
             set
             {
-                if (!Equals(apiStructure, value) && value != null)
+                if (value != null && !Equals(apiStructure, value))
                 {
                     if (apiStructure?.Structure != null)
                     {
-                        StructureSuggestions.Add(apiStructure);
+                        StructureSuggestions.Insert(1, apiStructure); // Insertion into postion 1 because it must be under <none> element
                     }
                     
                     if (value?.Structure != null)

@@ -21,6 +21,14 @@ namespace ESAPIInfo.Structures
             return StructureInfo.TargetNames.FirstOrDefault(tn => structureId.StartsWith(tn)) != null;
         }
 
+        public StructureInfo()
+        {
+            
+        }
+        public StructureInfo(Structure structure)
+        {
+            Structure = structure;
+        }
         public Structure Structure { get; set; }
         public string Id
         {

@@ -1,9 +1,12 @@
-﻿using LazyOptimizer.App;
+﻿using ESAPIInfo.Plan;
+using LazyOptimizer.App;
+using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -13,39 +16,77 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class MainVM : ViewModel
     {
-        private string patientId;
-        private bool matchTechnique = true;
-        private bool matchMachine = true;
+        private App.AppContext context;
         private string btnSettingsContent = "Settings";
         private Page currentPage;
+        private HabitsPage habitsPage;
+        private SettingsPage settingsPage;
+        private void InitializeModel(App.AppContext context)
+        {
+            if (context != null)
+            {
+                if (context.Plan.ObjectivesCount > 0)
+                {
+                    Logger.Write(this, $"This plan already have Optimization Objectives. Keep in mind...", LogMessageType.Warning);
+                }
 
-        public Settings Settings { get; set; }
+                HabitsVM habitsVM = new HabitsVM(context);
+
+                habitsPage = new HabitsPage()
+                {
+                    DataContext = habitsVM
+                };
+
+                SettingsVM settingsVM = new SettingsVM()
+                {
+                    Settings = context.Settings
+                };
+                settingsPage = new SettingsPage()
+                {
+                    DataContext = settingsVM,
+                    Settings = context.Settings
+                };
+
+                CurrentPage = habitsPage;
+
+                NotifyPropertyChanged(nameof(MatchMachine));
+                NotifyPropertyChanged(nameof(MatchTechnique));
+            }
+        }
+
+        public App.AppContext Context
+        {
+            get => context;
+            set
+            {
+                if (context != value)
+                {
+                    context = value;
+                    InitializeModel(value);
+                }
+            }
+        }
         public Page CurrentPage
         {
             get => currentPage;
             set => SetProperty(ref currentPage, value);
         }
-        public string PatientId
-        {
-            get => patientId;
-            set => SetProperty(ref patientId, value);
-        }
         public bool MatchTechnique
         {
-            get => matchTechnique;
+            get => Context?.Settings?.MatchTechnique ?? false;
             set
             {
-                SetProperty(ref matchTechnique, value);
-                FiltersChanged?.Invoke(this, EventArgs.Empty);
+                SetProperty(v => { if (Context?.Settings?.MatchTechnique != null) Context.Settings.MatchTechnique = v; }, value);
+                NotifyPropertyChanged(nameof(MatchTechnique));
             }
         }
         public bool MatchMachine
         {
-            get => matchMachine;
+            get => Context?.Settings?.MatchMachine ?? false;
             set
             {
-                SetProperty(ref matchMachine, value);
-                FiltersChanged?.Invoke(this, EventArgs.Empty);
+                SetProperty(v => { if (Context?.Settings?.MatchMachine != null) Context.Settings.MatchMachine = v; }, value);
+                NotifyPropertyChanged(nameof(MatchMachine));
             }
         }
         public string BtnSettingsContent
@@ -53,20 +94,29 @@ namespace LazyOptimizer.UI.ViewModels
             get => btnSettingsContent;
             set => SetProperty(ref btnSettingsContent, value);
         }
-        public MetaCommand RefreshHabits => new MetaCommand(
+        public MetaCommand RefreshPlans => new MetaCommand(
                 o =>
                 {
-                    RefreshHabitsClick?.Invoke(this, EventArgs.Empty);
-                }
+                    RefreshPlansClick?.Invoke(this, Context);
+                },
+                o => RefreshPlansClick != null
             );
         public MetaCommand TogglePages => new MetaCommand(
                 o =>
                 {
-                    TogglePagesClick?.Invoke(this, EventArgs.Empty);
+                    BtnSettingsContent = BtnSettingsContent == "Settings" ? "Back To Plans" : "Settings";
+                    if (Equals(CurrentPage, habitsPage))
+                    {
+                        CurrentPage = settingsPage;
+                    }
+                    else
+                    {
+                        context.Settings.Save();
+                        CurrentPage = habitsPage;
+                    }
                 }
             );
-        public event EventHandler FiltersChanged;
-        public event EventHandler RefreshHabitsClick;
-        public event EventHandler TogglePagesClick;
+
+        public event EventHandler<App.AppContext> RefreshPlansClick;
     }
 }

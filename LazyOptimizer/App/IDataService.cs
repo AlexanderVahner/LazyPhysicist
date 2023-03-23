@@ -17,5 +17,8 @@ namespace LazyOptimizer.App
         void ClearData();
         DateTime? GetLastCheckDate();
         void SetLastCheckDate(DateTime date);
+        void IncreasePlanSelectionFrequency(long rowId);
+
+        event EventHandler<List<PlanDBRecord>> PlansSelected;
     }
 }

@@ -1,9 +1,11 @@
 ﻿using ESAPIInfo.Structures;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -33,14 +35,99 @@ namespace ESAPIInfo.Plan
                     }
                     else
                     {
-                        oarsString += structure.Id.Length > MaxLengthOfStructureId ? structure.Id.ToUpper().Remove(MaxLengthOfStructureId) : structure.Id.ToUpper() + "/";
+                        oarsString += structure.Id.Length > MaxLengthOfStructureId ? structure.Id.ToUpper().Remove(MaxLengthOfStructureId) : structure.Id.ToUpper();
                     }
                 }
             }
             return targetsString + oarsString;
         }
+        public PlanInfo()
+        {
+
+        }
+        public PlanInfo(ExternalPlanSetup plan)
+        {
+            Plan = plan;
+        }
+        public void LoadNtoIntoPlan(NtoInfo nto)
+        {
+            Patient.BeginModifications();
+            if (nto != null && Plan != null)
+            {
+                if (nto.IsAutomatic)
+                {
+                    Plan.OptimizationSetup.AddAutomaticNormalTissueObjective(nto.Priority);
+                }
+                else
+                {
+                    Plan.OptimizationSetup.AddNormalTissueObjective(nto.Priority, nto.DistanceFromTargetBorderInMM, nto.StartDosePercentage, nto.EndDosePercentage, nto.FallOff);
+                }
+            }
+        }
+
+        private void LoadObjective(ObjectiveInfo objective)
+        {
+            if (Plan == null)
+            {
+                Logger.Write(this, "Can't load the objective. The Plan is null", LogMessageType.Error);
+            }
+            else
+            {
+                if (!IsReadyForOptimizerLoad)
+                {
+                    Logger.Write(this, "Can't load the objective. The Plan is not unapproved, or it doesn't have beams", LogMessageType.Error);
+                }
+                else
+                {
+                    if (objective.Structure == null)
+                    {
+                        Logger.Write(this, "Can't load the objective. Structure is not defined", LogMessageType.Error);
+                    }
+                    else
+                    {
+                        switch (objective.Type)
+                        {
+                            case ObjectiveType.Point:
+                                Plan.OptimizationSetup.AddPointObjective(objective.Structure, objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
+                                break;
+                            case ObjectiveType.Mean:
+                                Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
+                                break;
+                            case ObjectiveType.EUD:
+                                Plan.OptimizationSetup.AddEUDObjective(objective.Structure, objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
+                                break;
+                            case ObjectiveType.Unknown:
+                                Logger.Write(this, "Can't load the objective. Type is unknown.", LogMessageType.Error);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        public void LoadObjectives(IEnumerable<ObjectiveInfo> objectives, bool onlyEmptyStructures = false)
+        {
+            if (objectives != null)
+            {
+                Patient.BeginModifications();
+                foreach (ObjectiveInfo objective in objectives)
+                {
+                    if (onlyEmptyStructures && StructureHasObjectives(objective.Structure))
+                    {
+                        continue;
+                    }
+                    LoadObjective(objective);
+                }
+                Logger.Write(this, "Objectives added.", LogMessageType.Info);
+            }
+            else
+            {
+                Logger.Write(this, "Can't load objectives. Collection is null.", LogMessageType.Error);
+            }
+        }
+        
 
         private ExternalPlanSetup plan;
+
         public ExternalPlanSetup Plan
         {
             get => plan;
@@ -48,10 +135,32 @@ namespace ESAPIInfo.Plan
             {
                 plan = value;
                 nto = null;
+                structures = null;
             }
         }
-        public IEnumerable<Structure> Structures => Plan?.StructureSet?.Structures;
+        //public IEnumerable<Structure> Structures => Plan?.StructureSet?.Structures;
+
+        private List<StructureInfo> structures;
+        public List<StructureInfo> Structures
+        {
+            get
+            {
+                if (structures == null)
+                {
+                    structures = new List<StructureInfo>();
+                    if (Plan?.StructureSet != null)
+                    {
+                        foreach (Structure s in Plan.StructureSet.Structures)
+                        {
+                            structures.Add(new StructureInfo(s));
+                        }
+                    }
+                }
+                return structures;
+            }
+        }
         public string PlanId => Plan?.Id ?? "";
+        public Patient Patient => Plan?.Course?.Patient;
         public string PatientId => Plan?.Course?.Patient?.Id ?? "";
         public string CourseId => Plan?.Course?.Id ?? "";
         public string CreatorId => Plan?.ApprovalHistory.ToList().OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).UserId ?? "";

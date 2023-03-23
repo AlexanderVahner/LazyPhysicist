@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\App.cs" />
+    <Compile Include="App\AppContext.cs" />
     <Compile Include="App\DataService.cs" />
     <Compile Include="App\IDataService.cs" />
     <Compile Include="App\PlansFilterArgs.cs" />
@@ -140,10 +141,6 @@
     <ProjectReference Include="..\ESAPIInfo\ESAPIInfo.csproj">
       <Project>{e50a0135-0d78-4ac9-8335-314b8d7a7ae9}</Project>
       <Name>ESAPIInfo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ESAPIModify\ESAPIModify.csproj">
-      <Project>{3bc4effb-4b47-4bda-aa3e-f6dbc9518908}</Project>
-      <Name>ESAPIModify</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

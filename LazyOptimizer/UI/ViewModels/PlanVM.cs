@@ -6,21 +6,28 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
     public class PlanVM : ViewModel
     {
         private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
+        private App.AppContext context;
         private PlanDBRecord dbPlan;
         private List<ObjectiveDBRecord> dbObjectives;
         private ObservableCollection<StructureVM> structures;
         private ObservableCollection<StructureInfo> structureSuggestions;
         private NtoVM nto;
-        public PlanVM() { }
+        //public PlanVM() { }
+        public PlanVM(App.AppContext context, PlanDBRecord DBPlan)
+        {
+            this.context = context;
+            this.dbPlan = DBPlan;
+            CurrentPlan = context.Plan;
+        }
         public PlanDBRecord DBPlan
         {
             get => dbPlan;
@@ -29,21 +36,31 @@ namespace LazyOptimizer.UI.ViewModels
                 SetProperty(ref dbPlan, value);
             }
         }
-        public void LoadStructures(PlanInfo apiPlan)
+        public App.AppContext Context
         {
-            if (Structures.Count == 0 && apiPlan != null && dbObjectives != null)
+            get => context;
+            set
             {
-                APIPlan = apiPlan;
-
-                foreach (Structure structure in apiPlan.Structures.OrderBy(s => s.Id))
+                if (context != value)
                 {
-                    StructureSuggestions.Add(new StructureInfo() { Structure = structure });
+                    context = value;
+                }
+            }
+        }
+        private void LoadStructures()
+        {
+            if (structures.Count == 0 && CurrentPlan != null && DBObjectives != null)
+            {
+
+                foreach (StructureInfo structure in CurrentPlan.Structures.OrderBy(s => s.Id))
+                {
+                    StructureSuggestions.Add(structure);
                 }
 
                 string structureId = "";
                 StructureVM structureVM = null;
                 List<StructureVM> tempStructures = new List<StructureVM>();
-                foreach (ObjectiveDBRecord objective in dbObjectives.OrderBy(o => o.StructureId))
+                foreach (ObjectiveDBRecord objective in DBObjectives.OrderBy(o => o.StructureId))
                 {
                     if (!Equals(objective.StructureId, structureId) && (objective.StructureId ?? "") != "")
                     {
@@ -70,8 +87,8 @@ namespace LazyOptimizer.UI.ViewModels
                     comparsion = new List<StructuresComparsion>(comparsion.OrderBy(c => c.Distance));
                     foreach (StructuresComparsion sc in comparsion)
                     {
-                        if (sc.StructureVM?.APIStructure?.Structure == null 
-                            && sc.APIStructure?.Structure != null 
+                        if (sc.StructureVM?.APIStructure?.Structure == null
+                            && sc.APIStructure?.Structure != null
                             && StructureSuggestions.Contains(sc.APIStructure)
                             && (sc.Distance < (sc.APIStructure.Id.Length * ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF)))
                         {
@@ -99,7 +116,7 @@ namespace LazyOptimizer.UI.ViewModels
             public StructureInfo APIStructure;
             public int Distance;
         }
-        public PlanInfo APIPlan { get; set; }
+        public PlanInfo CurrentPlan { get; set; }
         public string PlanName => $"{DBPlan?.PatientId}/{DBPlan?.CourseId}/{DBPlan?.PlanId}";
         public string StructuresString => DBPlan?.StructuresString;
         public string Description
@@ -128,9 +145,48 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-        public List<ObjectiveDBRecord> DBObjectives => dbObjectives ?? (dbObjectives = new List<ObjectiveDBRecord>());
-        public ObservableCollection<StructureVM> Structures => structures ?? (structures = new ObservableCollection<StructureVM>());
+        public List<ObjectiveDBRecord> DBObjectives
+        {
+            get 
+            {   
+                if (dbObjectives == null)
+                {
+                    dbObjectives = new List<ObjectiveDBRecord>();
+                    if (dbPlan != null)
+                    {
+                        Context.DataService.GetObjectives(dbObjectives, (long)DBPlan.rowid);
+                    }
+                }
+                return dbObjectives;
+            }
+        }
+        public ObservableCollection<StructureVM> Structures
+        {
+            get
+            {
+                if (structures == null)
+                {
+                    structures = new ObservableCollection<StructureVM>();
+                    LoadStructures();
+                }
+                return structures;
+            }
+        }
         public ObservableCollection<StructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<StructureInfo>());
-        public NtoVM Nto => nto ?? (nto = new NtoVM());
+        public NtoVM Nto
+        {
+            get 
+            {   
+                if (nto == null)
+                {
+                    nto = new NtoVM();
+                    if (dbPlan != null)
+                    {
+                        nto.NtoDB = Context.DataService.GetNto((long)DBPlan.rowid);
+                    }
+}
+                return nto;
+            }
+        }
     }
 }

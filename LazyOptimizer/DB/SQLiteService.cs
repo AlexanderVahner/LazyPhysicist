@@ -79,6 +79,8 @@ namespace LazyOptimizer.DB
             {
                 Type type = typeof(T);
 
+                Logger.Write(this, sqlRequest, LogMessageType.Debug);
+
                 using (SQLiteCommand command = new SQLiteCommand(sqlRequest, connection))
                 {
                     if ((parameters?.Count() ?? 0) > 0)

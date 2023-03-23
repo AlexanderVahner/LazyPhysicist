@@ -46,20 +46,22 @@ namespace LazyOptimizer.App
                     {
                         sqlRequest.Append($@" AND (FractionsCount={args.FractionsCount})");
                     }
-                    if (args.Technique != "")
+                    if (args.MatchTechnique)
                     {
                         sqlRequest.Append($@" AND (Technique='{args.Technique}')");
                     }
-                    if (args.MachineId != "")
+                    if (args.MatchMachine)
                     {
                         sqlRequest.Append($@" AND (MachineId='{args.MachineId}')");
                     }
                     
                 }
-                sqlRequest.AppendLine("ORDER BY LDistance ");
+                sqlRequest.AppendLine(" ORDER BY LDistance, rowid DESC ");
                 sqlRequest.Append(args.Limit > 0 ? $" LIMIT {args.Limit};" : ";");
 
                 db.Select(DBPlans, sqlRequest.ToString(), new object[] { args.StructuresString });
+
+                PlansSelected?.Invoke(this, DBPlans);
             }
         }
         public void GetObjectives(IList<ObjectiveDBRecord> destination, long PlanRowId)
@@ -170,6 +172,13 @@ namespace LazyOptimizer.App
                 }
             }
         }
+        public void IncreasePlanSelectionFrequency(long rowId)
+        {
+            if (Connected)
+            {
+                db.Execute($@"UPDATE Plans SET ""SelectionFrequency"" = ""SelectionFrequency"" + 1 WHERE ROWID = {rowId};");
+            }
+        }
         public bool Connected
         {
             get
@@ -200,6 +209,8 @@ namespace LazyOptimizer.App
         private readonly DataServiceSettings settings;
         public DataServiceSettings Settings => settings;
         public string DBPath => dbPath;
+
+        public event EventHandler<List<PlanDBRecord>> PlansSelected;
     }
 
     public class DataServiceSettings

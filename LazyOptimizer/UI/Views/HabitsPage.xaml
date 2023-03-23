@@ -7,24 +7,28 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="HabitsPage">
-    <Page.DataContext>
+    <!--<Page.DataContext>
         <viewmodels:HabitsVM/>
-    </Page.DataContext>
+    </Page.DataContext>-->
     <Grid>
         <DockPanel>
-            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" MinWidth="300" DockPanel.Dock="Left">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <local:PlanElement DataContext="{Binding}" MaxWidth="285"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Finded Plans</TextBlock>
+                <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedDBPlan}" MinWidth="300" DockPanel.Dock="Left">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <local:PlanElement DataContext="{Binding}" MaxWidth="285"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            
             
             <DockPanel Width="200" DockPanel.Dock="Right">
                 <StackPanel DockPanel.Dock="Bottom">
                     <Button Content="Load into plan" Command="{Binding LoadIntoPlan}" Margin="5"/>
                 </StackPanel>
-                <TextBlock DockPanel.Dock="Top">Not defined</TextBlock>
+                <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
                 <ListBox ItemsSource="{Binding UnusedStructures}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -59,11 +63,11 @@
                             <TextBox Text="{Binding PrioritySetter}" Width="30"/>
                         </StackPanel>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding Settings.LoadNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}" Margin="0 5
+                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedDBPlan.Nto.NtoInfo}" Margin="0 5
                               0 0"/>
                 </StackPanel>
 
-                <ListBox ItemsSource="{Binding SelectedDBPlan.Structures}">
+                <ListBox ItemsSource="{Binding Structures}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <local:StructureElement DataContext="{Binding}"/>

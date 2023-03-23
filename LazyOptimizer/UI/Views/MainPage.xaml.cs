@@ -1,4 +1,5 @@
-﻿using LazyPhysicist.Common;
+﻿using LazyOptimizer.UI.ViewModels;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,14 +30,59 @@ namespace LazyOptimizer.UI.Views
 
             Logger.Logged += (s, message, type) =>
             {
-                Paragraph logMessage = new Paragraph(new Run($"{type} from {s?.GetType().Name ?? "UNKNOWN"}: {message}"))
+                if (mainVM == null)
+                {
+                    if (DataContext is MainVM vm && vm?.Context?.Settings != null)
+                    {
+                        mainVM = vm;
+                    }
+                }
+
+                isDebugMode = mainVM?.Context?.Settings?.DebugMode ?? false;
+
+                if (isDebugMode && type == LogMessageType.Debug)
+                {
+                    return;
+                }
+
+                Brush brush = Brushes.Black;
+                double fontSize = 12;
+                switch (type)
+                {
+                    case LogMessageType.Debug:
+                        brush = Brushes.Gray;
+                        fontSize = 10;
+                        break;
+                    case LogMessageType.Error:
+                        brush = Brushes.Red;
+                        break;
+                    case LogMessageType.Warning:
+                        brush = Brushes.Orange;
+                        break;
+                    case LogMessageType.Info:
+                        brush = Brushes.Green;
+                        break;
+                }
+                string text = "";
+                if (type == LogMessageType.Debug)
+                {
+                    text += $"Debug from {s?.GetType().Name ?? "???"}:\n";
+                }
+                text += message;
+
+                Paragraph logMessage = new Paragraph(new Run(text))
                 {
                     Margin = new Thickness(0),
-                    Padding = new Thickness(0)
+                    Padding = new Thickness(0),
+                    Foreground = brush,
+                    FontSize = fontSize
                 };
                 LogBox.Document.Blocks.Add(logMessage);
                 LogBox.ScrollToEnd();
             };
         }
+
+        private bool isDebugMode = false;
+        private MainVM mainVM = null;
     }
 }
