@@ -32,6 +32,7 @@ namespace LazyOptimizer.UI.ViewModels
                     UpdatePlans(plans);
                 };
                 NotifyPropertyChanged(nameof(LoadNto));
+                NotifyPropertyChanged(nameof(PrioritySetter));
             }
         }
         public void UpdatePlans(IEnumerable<PlanDBRecord> dbPlans)
@@ -139,15 +140,18 @@ namespace LazyOptimizer.UI.ViewModels
             }
         }
 
-        private string prioritySetter;
         public string PrioritySetter
         {
-            get => prioritySetter;
-            set => SetProperty(ref prioritySetter, value);
+            get => Context?.Settings?.DefaultPrioritySetValue ?? "";
+            set
+            {
+                if (value == "" || (double.TryParse(value, out double dv) && dv < 1000))
+                {
+                    SetProperty(v => { if (Context?.Settings?.DefaultPrioritySetValue != null) Context.Settings.DefaultPrioritySetValue = v; }, value);
+                    NotifyPropertyChanged(nameof(PrioritySetter));
+                }
+            }
         }
-
-        public delegate void SelectedPlanChangedEventHandler(object sender, PlanVM dbPlan);
-        public event SelectedPlanChangedEventHandler SelectedDBPlanChanged;
 
         public MetaCommand LoadIntoPlan => new MetaCommand(
                 o =>
@@ -240,6 +244,10 @@ namespace LazyOptimizer.UI.ViewModels
                                                 o.Priority = priority;
                                             }
                                         }));
+                        }
+                        else
+                        {
+                            Logger.Write(this, "Enter priority.", LogMessageType.Warning);
                         }
                     }
 

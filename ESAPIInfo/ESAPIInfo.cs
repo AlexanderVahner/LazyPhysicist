@@ -14,7 +14,7 @@ using VMS.TPS.Common.Model.Types;
 [assembly: AssemblyInformationalVersion("1.0")]
 
 // TODO: Uncomment the following line if the script requires write access.
-// [assembly: ESAPIScript(IsWriteable = true)]
+ [assembly: ESAPIScript(IsWriteable = true)]
 
 /*namespace VMS.TPS
 {

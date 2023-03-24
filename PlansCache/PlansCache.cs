@@ -9,6 +9,8 @@ using ESAPIInfo.Plan;
 using LazyOptimizer.App;
 using LazyPhysicist.Common;
 using PlansCache.Properties;
+using System.Runtime.InteropServices;
+using LazyPhysicist.Common.Console;
 
 // TODO: Replace the following version attributes by creating AssemblyInfo.cs. You can do this in the properties of the Visual Studio project.
 [assembly: AssemblyVersion("1.0.0.1")]
@@ -34,6 +36,8 @@ namespace PlansCache
         [STAThread]
         static void Main(string[] args)
         {
+            DisableConsoleQuickEdit.Go();
+
             for (int i = 0; i < args.Count(); i++)
             {
                 if (args[i] == "-db")
@@ -109,8 +113,6 @@ namespace PlansCache
         }
         static void Execute(Application app)
         {
-            AppDomain.CurrentDomain.ProcessExit += (s, e) => OnClosing(); // Doesn't work :(
-
             currentUserId = app.CurrentUser.Id;
 
             DateTime startTime = DateTime.Now;
@@ -205,13 +207,6 @@ namespace PlansCache
             }
             
         }
-        static void OnClosing()
-        {
-            if (dataService?.Connected ?? false)
-            {
-                dataService.SetLastCheckDate(lastCheckDate);
-                dataService.Connected = false;
-            }
-        }
     }
+    
 }

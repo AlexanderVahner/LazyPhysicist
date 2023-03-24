@@ -7,7 +7,7 @@ There are no comments and unit tests yet, but I hope everything will be.
 Stay tuned ;)
 
 ## ESAPI Version
-15.6
+15.6, 16.1
 
 ## LazyOptimizer --
 is a plugin that helps to fill the plan optimizer based on the user's previously created plans.

@@ -49,6 +49,7 @@ namespace LazyOptimizer.App
         private bool matchMachine = false;
         private bool matchTechnique = false;
         private bool loadNto = false;
+        private string defaultPrioritySetValue = "30";
 
         private bool debugMode = false;
 
@@ -68,6 +69,7 @@ namespace LazyOptimizer.App
         public bool MatchMachine { get => matchMachine; set => SetProperty(ref matchMachine, value); }
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool LoadNto { get => loadNto; set => SetProperty(ref loadNto, value); }
+        public string DefaultPrioritySetValue { get => defaultPrioritySetValue; set => SetProperty(ref defaultPrioritySetValue, value); }
 
         public bool DebugMode { get => debugMode; set => SetProperty(ref debugMode, value); }
 

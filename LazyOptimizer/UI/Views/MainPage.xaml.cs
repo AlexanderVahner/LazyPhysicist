@@ -40,7 +40,7 @@ namespace LazyOptimizer.UI.Views
 
                 isDebugMode = mainVM?.Context?.Settings?.DebugMode ?? false;
 
-                if (isDebugMode && type == LogMessageType.Debug)
+                if (!isDebugMode && type == LogMessageType.Debug)
                 {
                     return;
                 }
@@ -64,7 +64,7 @@ namespace LazyOptimizer.UI.Views
                         break;
                 }
                 string text = "";
-                if (type == LogMessageType.Debug)
+                if (type == LogMessageType.Debug && isDebugMode)
                 {
                     text += $"Debug from {s?.GetType().Name ?? "???"}:\n";
                 }

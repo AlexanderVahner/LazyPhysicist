@@ -117,7 +117,7 @@ namespace LazyOptimizer.UI.ViewModels
             public int Distance;
         }
         public PlanInfo CurrentPlan { get; set; }
-        public string PlanName => $"{DBPlan?.PatientId}/{DBPlan?.CourseId}/{DBPlan?.PlanId}";
+        public string PlanName => $"({DBPlan?.PatientId}).[{DBPlan?.CourseId}].{DBPlan?.PlanId}";
         public string StructuresString => DBPlan?.StructuresString;
         public string Description
         {
