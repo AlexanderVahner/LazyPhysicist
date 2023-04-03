@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazyOptimizer.DB
+namespace LazyOptimizerDataService.DB
 {
     [SQLiteFunction(Name = "Levenshtein", Arguments = 2, FuncType = FunctionType.Scalar)]
     public class LevenshteinDistanceFunction : SQLiteFunction

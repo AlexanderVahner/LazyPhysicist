@@ -82,22 +82,8 @@
   <ItemGroup>
     <Compile Include="App\App.cs" />
     <Compile Include="App\AppContext.cs" />
-    <Compile Include="App\DataService.cs" />
-    <Compile Include="App\IDataService.cs" />
-    <Compile Include="App\PlansFilterArgs.cs" />
     <Compile Include="App\Settings.cs" />
-    <Compile Include="CacheModel\CacheRoot.cs" />
-    <Compile Include="CacheModel\NtoCache.cs" />
-    <Compile Include="CacheModel\ObjectiveCache.cs" />
-    <Compile Include="CacheModel\PlanCache.cs" />
-    <Compile Include="DB\DBRecord.cs" />
-    <Compile Include="DB\DBTableNameAttribute.cs" />
-    <Compile Include="DB\EventDelegates.cs" />
-    <Compile Include="DB\LevenshteinDistanceFunction.cs" />
-    <Compile Include="DB\NtoDBRecord.cs" />
-    <Compile Include="DB\ObjectiveDBRecord.cs" />
-    <Compile Include="DB\PlanDBRecord.cs" />
-    <Compile Include="DB\SQLiteService.cs" />
+    <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -142,6 +128,10 @@
       <Project>{e50a0135-0d78-4ac9-8335-314b8d7a7ae9}</Project>
       <Name>ESAPIInfo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LazyOptimizerDataService\LazyOptimizerDataService.csproj">
+      <Project>{9ab6cf87-3ccd-41b1-ab11-29611f868d8f}</Project>
+      <Name>LazyOptimizerDataService</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Views\HabitsPage.xaml">
@@ -172,7 +162,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DB\data.db.sql" />
     <Resource Include="UI\Views\Unknown.png" />
     <None Include="Resources\Unknown.png" />
     <Resource Include="UI\Views\UpperEUD.png" />
@@ -188,6 +177,7 @@
     <None Include="Resources\LowerEUD.png" />
     <None Include="Resources\Lower.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

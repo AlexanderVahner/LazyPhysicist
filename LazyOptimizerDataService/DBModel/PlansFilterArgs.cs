@@ -1,14 +1,19 @@
 ﻿using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazyOptimizer.App
+namespace LazyOptimizerDataService.DBModel
 {
     public class PlansFilterArgs : Notifier
     {
+        public PlansFilterArgs()
+        {
+            PropertyChanged += (s, e) => Update();
+        }
         private string structuresString;
         private double singleDose = .0;
         private int fractionsCount = 0;
@@ -25,5 +30,11 @@ namespace LazyOptimizer.App
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool MatchMachine { get => matchMachine; set => SetProperty(ref matchMachine, value); }
         public int Limit { get => limit; set => SetProperty(ref limit, value); }
+        
+        public void Update()
+        {
+            UpdateRequest?.Invoke(this, this);
+        }
+        public event EventHandler<PlansFilterArgs> UpdateRequest;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizer.DB;
+using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -18,7 +18,7 @@ namespace LazyOptimizer.UI.ViewModels
         public ObjectiveInfo GetObjectiveInfo(Structure structure)
         {
             ObjectiveInfo result = null;
-            if (ObjectiveDB == null)
+            if (CachedObjective == null)
             {
                 Logger.Write(this, "Objective View Model doesn't have an ObjectiveDBRecord.", LogMessageType.Error);
             }
@@ -26,14 +26,14 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 result = new ObjectiveInfo()
                 {
-                    Type = (ObjectiveType)(ObjectiveDB.ObjType ?? 99),
+                    Type = (ObjectiveType)(CachedObjective.ObjType ?? 99),
                     Structure = structure,
-                    StructureId = ObjectiveDB.StructureId,
+                    StructureId = CachedObjective.StructureId,
                     Priority = Priority,
-                    Operator = (OptimizationObjectiveOperator)ObjectiveDB.Operator,
-                    Dose = ObjectiveDB.Dose ?? .0,
-                    Volume = ObjectiveDB.Volume ?? .0,
-                    ParameterA = ObjectiveDB.ParameterA ?? .0
+                    Operator = (Operator)CachedObjective.Operator,
+                    Dose = CachedObjective.Dose ?? .0,
+                    Volume = CachedObjective.Volume ?? .0,
+                    ParameterA = CachedObjective.ParameterA ?? .0
                 };
             }
 
@@ -42,16 +42,16 @@ namespace LazyOptimizer.UI.ViewModels
 
         public void ResetPriority()
         {
-            Priority = objectiveDB?.Priority ?? 0;
+            Priority = cachedObjective?.Priority ?? 0;
         }
 
-        private ObjectiveDBRecord objectiveDB;
-        public ObjectiveDBRecord ObjectiveDB
+        private CachedObjective cachedObjective;
+        public CachedObjective CachedObjective
         {
-            get => objectiveDB;
+            get => cachedObjective;
             set
             {
-                SetProperty(ref objectiveDB, value);
+                SetProperty(ref cachedObjective, value);
                 ResetPriority();
             }
         }
@@ -63,18 +63,18 @@ namespace LazyOptimizer.UI.ViewModels
             set => SetProperty(ref priority, value);
         }
 
-        public string Info => $"{ObjectiveDB.Dose} {ObjectiveDB.Volume} {ObjectiveDB.ParameterA}";
-        public double? Dose => ObjectiveDB?.Dose;
-        public double? Volume => ObjectiveDB?.Volume;
-        public double? ParameterA => ObjectiveDB?.ParameterA;
-        public ObjectiveType ObjectiveDBType => (ObjectiveType)(objectiveDB?.ObjType ?? 99);
-        public OptimizationObjectiveOperator ObjectiveDBOperator => (OptimizationObjectiveOperator)(objectiveDB?.Operator ?? 99);
+        public string Info => $"{CachedObjective.Dose} {CachedObjective.Volume} {CachedObjective.ParameterA}";
+        public double? Dose => CachedObjective?.Dose;
+        public double? Volume => CachedObjective?.Volume;
+        public double? ParameterA => CachedObjective?.ParameterA;
+        public ObjectiveType ObjectiveDBType => (ObjectiveType)(cachedObjective?.ObjType ?? 99);
+        public Operator ObjectiveDBOperator => (Operator)(cachedObjective?.Operator ?? 99);
         public string ArrowImageSource
         {
             get
             {
                 string result = "/LazyOptimizer.esapi;component/UI/Views/Unknown.png";
-                if (objectiveDB != null)
+                if (cachedObjective != null)
                 {
                     if (ObjectiveDBType == ObjectiveType.Mean)
                     {
@@ -85,13 +85,13 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         switch (ObjectiveDBOperator)
                         {
-                            case OptimizationObjectiveOperator.Upper:
+                            case Operator.Upper:
                                 result = "/LazyOptimizer.esapi;component/UI/Views/UpperEUD.png";
                                 break;
-                            case OptimizationObjectiveOperator.Lower:
+                            case Operator.Lower:
                                 result = "/LazyOptimizer.esapi;component/UI/Views/LowerEUD.png";
                                 break;
-                            case OptimizationObjectiveOperator.Exact:
+                            case Operator.Exact:
                                 result = "/LazyOptimizer.esapi;component/UI/Views/TargetEUD.png";
                                 break;
                         }
@@ -100,10 +100,10 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         switch (ObjectiveDBOperator)
                         {
-                            case OptimizationObjectiveOperator.Upper:
+                            case Operator.Upper:
                                 result = "/LazyOptimizer.esapi;component/UI/Views/Upper.png";
                                 break;
-                            case OptimizationObjectiveOperator.Lower:
+                            case Operator.Lower:
                                 result = "/LazyOptimizer.esapi;component/UI/Views/Lower.png";
                                 break;
                         }

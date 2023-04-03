@@ -16,7 +16,7 @@
                 <TextBlock DockPanel.Dock="Right" Text="{Binding SelectionFrequency}" Background="{Binding SelectionFrequencyBackground}" Foreground="White" HorizontalAlignment="Right" Padding="3"/>
             </DockPanel>
             <TextBox Text="{Binding Description}"/>
-            <TextBlock Text="{Binding StructuresString}" FontSize="7"/>
+            <TextBlock Text="{Binding CreationDate}" FontSize="10" Foreground="Gray" FontStyle="Italic" Margin="0 2 0 2"/>
         </StackPanel>
     </Grid>
 </UserControl>

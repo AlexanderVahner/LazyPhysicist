@@ -61,34 +61,6 @@ namespace LazyOptimizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BEGIN TRANSACTION;
-        ///CREATE TABLE IF NOT EXISTS &quot;Vars&quot; (
-        ///	&quot;LastCheckDate&quot;	TEXT
-        ///);
-        ///CREATE TABLE IF NOT EXISTS &quot;Objectives&quot; (
-        ///	&quot;PlanRowId&quot;	INTEGER NOT NULL,
-        ///	&quot;StructureId&quot;	TEXT NOT NULL,
-        ///	&quot;ObjType&quot;	INTEGER NOT NULL,
-        ///	&quot;Priority&quot;	REAL NOT NULL,
-        ///	&quot;Operator&quot;	INTEGER NOT NULL,
-        ///	&quot;Dose&quot;	REAL,
-        ///	&quot;Volume&quot;	REAL,
-        ///	&quot;ParameterA&quot;	REAL
-        ///);
-        ///CREATE TABLE IF NOT EXISTS &quot;Plans&quot; (
-        ///	&quot;PlanId&quot;	TEXT NOT NULL,
-        ///	&quot;PatientId&quot;	TEXT NOT NULL,
-        ///	&quot;CourseId&quot;	TEXT NOT NULL,
-        ///	&quot;FractionsCount&quot;	INTEGER NOT NULL DEFAULT 0,
-        ///	&quot;SingleD [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string data_db {
-            get {
-                return ResourceManager.GetString("data_db", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Lower {

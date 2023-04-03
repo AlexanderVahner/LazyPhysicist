@@ -1,5 +1,6 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizer.DB;
+using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,37 +13,41 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class NtoVM : ViewModel
     {
-        private NtoDBRecord ntoDB;
-        public NtoDBRecord NtoDB
+        private CachedNto cachedNto;
+        public CachedNto CachedNto
         {
-            get => ntoDB;
+            get => cachedNto;
             set
             {
-                SetProperty(ref ntoDB, value);
+                SetProperty(ref cachedNto, value);
                 NotifyPropertyChanged("NtoInfo");
             }
         }
-        private NtoInfo apiNto;
-        public NtoInfo APINto
+        private NtoInfo currentNto;
+        public NtoInfo CurrentNto
         {
             get
             {
-                if (apiNto == null && ntoDB != null)
+                if (currentNto == null && cachedNto != null)
                 {
-                    apiNto = new NtoInfo()
+                    currentNto = new NtoInfo()
                     {
-                        IsAutomaticLong = ntoDB.IsAutomatic,
-                        DistanceFromTargetBorderInMM = ntoDB.DistanceFromTargetBorderInMM ?? 0,
-                        StartDosePercentage = ntoDB.StartDosePercentage ?? 0,
-                        EndDosePercentage = ntoDB.EndDosePercentage ?? 0,
-                        FallOff = ntoDB.FallOff ?? 0,
-                        Priority = ntoDB.Priority ?? 0
+                        IsAutomatic = cachedNto.IsAutomatic,
+                        DistanceFromTargetBorderInMM = cachedNto.DistanceFromTargetBorderInMM ?? 0,
+                        StartDosePercentage = cachedNto.StartDosePercentage ?? 0,
+                        EndDosePercentage = cachedNto.EndDosePercentage ?? 0,
+                        FallOff = cachedNto.FallOff ?? 0,
+                        Priority = cachedNto.Priority ?? 0
                     };
                 }
-                return apiNto;
+                return currentNto;
             }
         }
-        public string NtoInfo => APINto == null ? "Not set" :
-            "NTO: " + (APINto.IsAutomatic ? $"Automatic, Priority: {APINto.Priority}" : $"Manual, Priority: {APINto.Priority}, {APINto.DistanceFromTargetBorderInMM}mm, {APINto.StartDosePercentage}%=>{APINto.EndDosePercentage}%, f={APINto.FallOff}");
+        public string NtoString => CurrentNto == null ? "Not set" :
+            "NTO: " + (CurrentNto.IsAutomatic ? $"Automatic, Priority: {CurrentNto.Priority}" : $"Manual, Priority: {CurrentNto.Priority}, {CurrentNto.DistanceFromTargetBorderInMM}mm, {CurrentNto.StartDosePercentage}%=>{CurrentNto.EndDosePercentage}%, f={CurrentNto.FallOff}");
+        public override string ToString()
+        {
+            return NtoString;
+        }
     }
 }

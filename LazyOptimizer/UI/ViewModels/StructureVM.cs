@@ -56,7 +56,7 @@ namespace LazyOptimizer.UI.ViewModels
         public ObservableCollection<StructureInfo> StructureSuggestions { get; set; }
         public ObservableCollection<ObjectiveVM> Objectives => objectives ?? (objectives = new ObservableCollection<ObjectiveVM>());
         public bool IsTarget => StructureInfo.IsTarget(DBStructureId);
-        public double MaxObjectiveDose => objectives?.Max(o => o?.ObjectiveDB?.Dose ?? .0) ?? .0;
+        public double MaxObjectiveDose => objectives?.Max(o => o?.CachedObjective?.Dose ?? .0) ?? .0;
         public double OrderByDoseDescProperty => MaxObjectiveDose + (IsTarget ? 1000 : 0);
     }
 }

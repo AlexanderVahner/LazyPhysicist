@@ -10,6 +10,25 @@ using VMS.TPS.Common.Model.Types;
 namespace ESAPIInfo.Plan
 {
     public enum ObjectiveType { Point = 0, Mean = 1, EUD = 2, Unknown = 99 }
+    public enum Operator // Copy of VMS.TPS.Common.Model.Types.OptimizationObjectiveOperator
+    {
+        //
+        // Summary:
+        //     Less than.
+        Upper = 0,
+        //
+        // Summary:
+        //     Greater or equal.
+        Lower = 1,
+        //
+        // Summary:
+        //     Exact (target).
+        Exact = 2,
+        //
+        // Summary:
+        //     None.
+        None = 99
+    }
     public class ObjectiveInfo
     {
         public static void GetObjectives(PlanInfo planInfo, IList<ObjectiveInfo> destination)
@@ -30,7 +49,7 @@ namespace ESAPIInfo.Plan
                     {
                         StructureId = objective.StructureId,
                         Priority = objective.Priority,
-                        Operator = objective.Operator
+                        Operator = (Operator)(int)objective.Operator
                     };
 
                     if (objective is OptimizationPointObjective pointObjective)
@@ -64,7 +83,7 @@ namespace ESAPIInfo.Plan
         public Structure Structure { get; set; } = null;
         public string StructureId { get; set; } = "";
         public double Priority { get; set; } = .0;
-        public OptimizationObjectiveOperator Operator { get; set; } = OptimizationObjectiveOperator.None;
+        public Operator Operator { get; set; } = Operator.None;
         public double Dose { get; set; } = .0;
         public double Volume { get; set; } = .0;
         public double ParameterA { get; set; } = .0;

@@ -35,21 +35,25 @@ namespace LazyOptimizer.App
                 {
                     settings = new Settings();
                 }
+#if DEBUG
+                settings.PlansCacheAppPath = @"..\..\..\PlansCache\bin\debug\PlansCache.exe";
+#endif
             }
             
             return settings;
         }
 
         
-        private string plansCacheAppPath = @"..\..\..\PlansCache\bin\debug\PlansCache.exe";
+        private string plansCacheAppPath = @"PlansCache.exe";
         private bool plansCacheVerboseMode = true;
         private bool plansCacheRecheckAllPatients = false;
 
         private int plansSelectLimit = 10;
-        private bool matchMachine = false;
-        private bool matchTechnique = false;
-        private bool loadNto = false;
+        private bool matchMachine = true;
+        private bool matchTechnique = true;
+        private bool loadNto = true;
         private string defaultPrioritySetValue = "30";
+        private string lastPriorityValue = "-1";
 
         private bool debugMode = false;
 
@@ -70,6 +74,7 @@ namespace LazyOptimizer.App
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool LoadNto { get => loadNto; set => SetProperty(ref loadNto, value); }
         public string DefaultPrioritySetValue { get => defaultPrioritySetValue; set => SetProperty(ref defaultPrioritySetValue, value); }
+        public string LastPriorityValue { get => lastPriorityValue; set => SetProperty(ref lastPriorityValue, value); }
 
         public bool DebugMode { get => debugMode; set => SetProperty(ref debugMode, value); }
 

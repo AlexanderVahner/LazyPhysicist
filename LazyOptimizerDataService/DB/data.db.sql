@@ -2,6 +2,15 @@ BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "Vars" (
 	"LastCheckDate"	TEXT
 );
+CREATE TABLE IF NOT EXISTS "Ntos" (
+	"PlanRowId"	INTEGER NOT NULL,
+	"IsAutomatic"	INTEGER NOT NULL,
+	"DistanceFromTargetBorderInMM"	REAL,
+	"StartDosePercentage"	REAL,
+	"EndDosePercentage"	REAL,
+	"FallOff"	REAL,
+	"Priority"	REAL
+);
 CREATE TABLE IF NOT EXISTS "Objectives" (
 	"PlanRowId"	INTEGER NOT NULL,
 	"StructureId"	TEXT NOT NULL,
@@ -18,19 +27,20 @@ CREATE TABLE IF NOT EXISTS "Plans" (
 	"CourseId"	TEXT NOT NULL,
 	"FractionsCount"	INTEGER NOT NULL DEFAULT 0,
 	"SingleDose"	NUMERIC NOT NULL,
+	"CreationDate"	TEXT,
 	"MachineId"	TEXT,
-	"Technique"	INTEGER,
+	"Technique"	TEXT,
 	"SelectionFrequency"	INTEGER DEFAULT 0,
 	"StructuresString"	TEXT,
 	"Description"	TEXT DEFAULT ''
 );
-CREATE TABLE IF NOT EXISTS "NTO" (
-	"PlanRowId"	INTEGER NOT NULL,
-	"IsAutomatic"	INTEGER NOT NULL,
-	"DistanceFromTargetBorderInMM"	REAL,
-	"StartDosePercentage"	REAL,
-	"EndDosePercentage"	REAL,
-	"FallOff"	REAL,
-	"Priority"	REAL
+CREATE INDEX IF NOT EXISTS "IdxPlans_CreationDate" ON "Plans" (
+	"CreationDate"	ASC
+);
+CREATE INDEX IF NOT EXISTS "IdxNTO_PlanRowId" ON "Ntos" (
+	"PlanRowId"	ASC
+);
+CREATE INDEX IF NOT EXISTS "IdxObjectives_PlanRowId" ON "Objectives" (
+	"PlanRowId"	ASC
 );
 COMMIT;

@@ -25,7 +25,7 @@ namespace LazyOptimizer.UI.ViewModels
         {
             if (context != null)
             {
-                if (context.Plan.ObjectivesCount > 0)
+                if (context.CurrentPlan.ObjectivesCount > 0)
                 {
                     Logger.Write(this, $"This plan already have Optimization Objectives. Keep in mind...", LogMessageType.Warning);
                 }

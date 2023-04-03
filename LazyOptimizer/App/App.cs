@@ -1,7 +1,6 @@
 ﻿using Common;
-using ESAPIInfo.Patients;
 using ESAPIInfo.Plan;
-using LazyOptimizer.DB;
+using LazyOptimizerDataService;
 using LazyOptimizer.UI.ViewModels;
 using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
@@ -20,6 +19,8 @@ using System.Windows;
 using System.Windows.Documents;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
+using LazyOptimizerDataService.DBModel;
+using LazyOptimizerDataService.DB;
 
 namespace LazyOptimizer.App
 {
@@ -32,30 +33,30 @@ namespace LazyOptimizer.App
 
             MainVM mainViewModel = InitializeUI(args.Window);
 
-            if (args?.Patient != null && args?.Plan != null && args.Window != null)
+            if (args?.Plan != null && args.Window != null)
             {
                 context = new AppContext()
                 {
-                    Patient = new PatientInfo(args.Patient),
-                    Plan = new PlanInfo(args.Plan),
+                    CurrentPlan = new PlanInfo(args.Plan),
                     Settings = Settings.ReadSettings(),
                     
                 };
-                if (CheckPlanEditability(context.Plan))
+                if (CheckPlanEditability(context.CurrentPlan))
                 {
                     context.PlansFilterArgs = new PlansFilterArgs()
                     {
-                        StructuresString = context.Plan.StructuresString,
-                        FractionsCount = context.Plan.FractionsCount,
-                        SingleDose = context.Plan.SingleDose,
-                        MachineId = context.Plan.MachineId,
-                        Technique = context.Plan.Technique,
+                        StructuresString = context.CurrentPlan.StructuresPseudoHash,
+                        FractionsCount = context.CurrentPlan.FractionsCount,
+                        SingleDose = context.CurrentPlan.SingleDose,
+                        MachineId = context.CurrentPlan.MachineId,
+                        Technique = context.CurrentPlan.Technique,
                         MatchMachine = context.Settings.MatchMachine,
                         MatchTechnique = context.Settings.MatchTechnique,
                         Limit = context.Settings.PlansSelectLimit
                     };
 
-                    context.DataService = new DataService(new DataServiceSettings() { DBPath = $"{context.Settings.SqliteDbPath}" });
+                    context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
+                    context.PlansContext = new PlansDbContext(context.DbService);
 
                     context.Settings.PropertyChanged += (s, e) =>
                     {
@@ -70,23 +71,17 @@ namespace LazyOptimizer.App
                             case "PlansSelectLimit":
                                 context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
                                 break;
-                        }
-                    };
 
-                    context.PlansFilterArgs.PropertyChanged += (s, e) =>
-                    {
-                        SelectPlans(context);
+                        }
                     };
 
                     mainViewModel.Context = context;
                     mainViewModel.RefreshPlansClick += (s, context) =>
                     {
                         PlansCacheAppStart(context);
-                        SelectPlans(context);
                         context.Settings.PlansCacheRecheckAllPatients = false;
+                        context.PlansFilterArgs.Update();
                     };
-
-                    SelectPlans(context);
                 }
                 else
                 {
@@ -121,24 +116,6 @@ namespace LazyOptimizer.App
             return result;
         }
 
-        public void SelectPlans(AppContext context)
-        {            
-            if (context.DataService?.Connected ?? false)
-            {
-                context.DataService.GetPlans(context.PlansFilterArgs);
-
-                int plansCount = context.DataService.DBPlans.Count;
-                if (plansCount == 0)
-                {
-                    Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
-                }
-                else
-                {
-                    Logger.Write(this, $"You have {plansCount} matched plan" + (plansCount == 1 ? "." : "s."));
-                }
-            }
-        }
-
         public MainVM InitializeUI(Window window)
         {
             MainVM mainVM = new MainVM();
@@ -159,7 +136,7 @@ namespace LazyOptimizer.App
         {
             if (File.Exists(context.Settings.PlansCacheAppPath))
             {
-                StringBuilder appArgs = new StringBuilder($"-db \"{context.DataService.DBPath}\"");
+                StringBuilder appArgs = new StringBuilder($"-db \"{context.Settings.SqliteDbPath}\"");
                 if (context.Settings.PlansCacheRecheckAllPatients)
                 {
                     appArgs.Append(" -all");
@@ -172,7 +149,7 @@ namespace LazyOptimizer.App
                 {
                     appArgs.Append(" -debug");
                 }
-                context.DataService.Connected = false;
+                context.PlansContext.Connected = false;
                 using (Process process = new Process())
                 {
                     process.StartInfo.FileName = context.Settings.PlansCacheAppPath;
@@ -180,7 +157,7 @@ namespace LazyOptimizer.App
                     process.Start();
                     process.WaitForExit();
                 };
-                context.DataService.Connected = true;
+                context.PlansContext.Connected = true;
             }
             else
             {
@@ -191,7 +168,7 @@ namespace LazyOptimizer.App
         
         public void Dispose()
         {
-            context?.Dispose();
+            context?.DbService?.Dispose();
         }
     }
 }

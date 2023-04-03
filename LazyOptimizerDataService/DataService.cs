@@ -1,5 +1,5 @@
-﻿using ESAPIInfo.Plan;
-using LazyOptimizer.DB;
+﻿using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazyOptimizer.App
-{
+namespace LazyOptimizerDataService
+{/*
     public class DataService : IDataService
     {
         private readonly SQLiteService db;
         private readonly string dbPath;
+        
         public DataService(DataServiceSettings settings)
         {
             this.settings = settings;
@@ -78,15 +79,16 @@ namespace LazyOptimizer.App
             if (Connected)
             {
                 string sqlRequest = "SELECT rowid, PlanRowId, IsAutomatic, DistanceFromTargetBorderInMM, StartDosePercentage, EndDosePercentage, FallOff, Priority FROM NTO WHERE (PlanRowId = ?) LIMIT 1;";
-                db.SelectOne(out result, sqlRequest, new object[] { PlanRowId });
+                db.SelectSingle(out result, sqlRequest, new object[] { PlanRowId });
             }
             return result;
         }
+
         public void SavePlanToDB(PlanInfo plan)
         {
             if (Connected)
             {
-                if (plan?.Plan == null)
+                if (!plan.IsAssigned)
                 {
                     Logger.Write(this, "The Plan is null.", LogMessageType.Error);
                 }
@@ -101,11 +103,11 @@ namespace LazyOptimizer.App
                         db.BeginTransaction();
                         try
                         {
-                            string sql = "INSERT INTO Plans (PatientId, CourseId, PlanId, FractionsCount, SingleDose, Technique, MachineId, StructuresString) VALUES (?, ?, ?, ?, ?, ?, ?, ?); "
+                            string sql = "INSERT INTO Plans (PatientId, CourseId, PlanId, FractionsCount, CreationDate, SingleDose, Technique, MachineId, StructuresString) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); "
                                 + "SELECT last_insert_rowid();";
 
                             int rowId;
-                            rowId = int.Parse(db.GetValue(sql, new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresString }).ToString());
+                            rowId = int.Parse(db.GetValue(sql, new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.CreationDate, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresPseudoHash }).ToString());
 
                             List<ObjectiveInfo> objectives = new List<ObjectiveInfo>();
                             ObjectiveInfo.GetObjectives(plan, objectives);
@@ -133,12 +135,32 @@ namespace LazyOptimizer.App
                 }
             }
         }
-        public void ClearData()
+        public void ClearData(DateTime fromDate = default)
         {
             if (Connected)
             {
-                Logger.Write(this, "Clearing Data.", LogMessageType.Debug);
-                db.Execute("DELETE FROM Plans; DELETE FROM Objectives; DELETE FROM NTO;");
+                if (fromDate == default)
+                {
+                    Logger.Write(this, "Clearing Data.", LogMessageType.Debug);
+                    db.Execute("DELETE FROM Plans; DELETE FROM Objectives; DELETE FROM NTO;");
+                }
+                else
+                {
+                    string strFromDate = fromDate.ToString("s");
+                    Logger.Write(this, $"Clearing Data from {strFromDate}.", LogMessageType.Debug);
+
+                    StringBuilder sql = new StringBuilder("BEGIN TRANSACTION;");
+                    sql.AppendLine("CREATE TEMP TABLE _PlanIds (PlanId INTEGER);")
+                        .AppendLine("INSERT INTO _PlanIds (PlanId INTEGER) SELECT rowid FROM Plans WHERE CreationDate >= ?;")
+                        .AppendLine("DELETE FROM NTO WHERE PlanRowId IN (SELECT PlanId FROM _PlanIds);")
+                        .AppendLine("DELETE FROM Objectives WHERE PlanRowId IN (SELECT PlanId FROM _PlanIds);")
+                        .AppendLine("DELETE FROM Plans WHERE rowid IN (SELECT PlanId FROM _PlanIds);")
+                        .AppendLine("DROP TABLE _PlanIds;")
+                        .AppendLine("COMMIT;");
+
+                    db.Execute(sql.ToString(), new object[] { strFromDate });
+                }
+                
             }
         }
         public DateTime? GetLastCheckDate()
@@ -216,5 +238,5 @@ namespace LazyOptimizer.App
     public class DataServiceSettings
     {
         public string DBPath;
-    }
+    }*/
 }

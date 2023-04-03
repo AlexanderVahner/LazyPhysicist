@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazyOptimizer.CacheModel
+namespace LazyOptimizerDataService.DBModel
 {
-    public class ObjectiveCache
+    public class Vars
     {
+        public DateTime LastCheckDate { get; set; }
     }
 }

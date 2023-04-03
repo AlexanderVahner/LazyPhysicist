@@ -1,7 +1,8 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
-using LazyOptimizer.App;
-using LazyOptimizer.DB;
+using LazyOptimizer.ESAPI;
+using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,7 @@ namespace LazyOptimizer.UI.ViewModels
     public class HabitsVM : ViewModel
     {
         private App.AppContext context;
-        private PlanVM selectedDBPlan;
-        //public HabitsVM() { }
+        private PlanVM selectedPlanVM;
         public HabitsVM(App.AppContext context)
         {
             Context = context;
@@ -27,24 +27,32 @@ namespace LazyOptimizer.UI.ViewModels
         {
             if (context != null)
             {
-                context.DataService.PlansSelected += (s, plans) =>
+                UpdatePlans(Context.PlansFilterArgs);
+                context.PlansFilterArgs.UpdateRequest += (s, args) =>
                 {
-                    UpdatePlans(plans);
+                    UpdatePlans(args);
                 };
                 NotifyPropertyChanged(nameof(LoadNto));
                 NotifyPropertyChanged(nameof(PrioritySetter));
             }
         }
-        public void UpdatePlans(IEnumerable<PlanDBRecord> dbPlans)
+        public void UpdatePlans(PlansFilterArgs args)
         {
             Plans.Clear();
-            if ((dbPlans?.Count() ?? 0) > 0)
+            var plans = Context.PlansContext.GetPlans(args);
+            if ((plans?.Count() ?? 0) > 0)
             {
-                foreach (PlanDBRecord plan in dbPlans)
+                foreach (var plan in plans)
                 {
                     PlanVM planVM = new PlanVM(Context, plan);
                     Plans.Add(planVM);
                 }
+
+                Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
+            }
+            else
+            {
+                Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
             }
         }
 
@@ -60,34 +68,31 @@ namespace LazyOptimizer.UI.ViewModels
                 }
             }
         }
-        public PlanInfo CurrentPlan  => Context?.Plan;
-        public List<PlanDBRecord> DBPlans => Context?.DataService?.DBPlans;
-        public List<ObjectiveDBRecord> DBObjectives { get; set; }
-        public PlanVM SelectedDBPlan
+        public PlanVM SelectedPlan
         {
-            get => selectedDBPlan;
+            get => selectedPlanVM;
             set
             {
-                if (!Equals(selectedDBPlan, value))
+                if (!Equals(selectedPlanVM, value))
                 {
-                    if (selectedDBPlan != null)
+                    if (selectedPlanVM != null)
                     {
-                        selectedDBPlan.StructureSuggestions.CollectionChanged -= StructureSuggestions_CollectionChanged;
+                        selectedPlanVM.StructureSuggestions.CollectionChanged -= StructureSuggestions_CollectionChanged;
                     }
                     Structures.Clear();
                     UnusedStructures.Clear();
 
-                    SetProperty(ref selectedDBPlan, value);
+                    SetProperty(ref selectedPlanVM, value);
 
-                    if (selectedDBPlan != null)
+                    if (selectedPlanVM != null)
                     {
-                        if (selectedDBPlan.Structures.Count > 0)
+                        if (selectedPlanVM.Structures.Count > 0)
                         {
-                            foreach(var structure in selectedDBPlan.Structures)
+                            foreach(StructureVM structure in selectedPlanVM.Structures)
                             {
                                 Structures.Add(structure);
                             }
-                            foreach (StructureInfo unusedStructure in selectedDBPlan.StructureSuggestions)
+                            foreach (StructureInfo unusedStructure in selectedPlanVM.StructureSuggestions)
                             {
                                 if (unusedStructure.Structure != null)
                                 {
@@ -96,7 +101,7 @@ namespace LazyOptimizer.UI.ViewModels
                             }
                             
                         }
-                        selectedDBPlan.StructureSuggestions.CollectionChanged += StructureSuggestions_CollectionChanged;
+                        selectedPlanVM.StructureSuggestions.CollectionChanged += StructureSuggestions_CollectionChanged;
                     }
                 }
                 
@@ -136,7 +141,7 @@ namespace LazyOptimizer.UI.ViewModels
             set
             {
                 SetProperty(v => { if (Context?.Settings?.LoadNto != null) Context.Settings.LoadNto = v; }, value);
-                NotifyPropertyChanged(nameof(LoadNto));
+                //NotifyPropertyChanged(nameof(LoadNto));
             }
         }
 
@@ -145,71 +150,25 @@ namespace LazyOptimizer.UI.ViewModels
             get => Context?.Settings?.DefaultPrioritySetValue ?? "";
             set
             {
-                if (value == "" || (double.TryParse(value, out double dv) && dv < 1000))
+                if (value == "" || (double.TryParse(value, out double dv) && dv <= 1000))
                 {
                     SetProperty(v => { if (Context?.Settings?.DefaultPrioritySetValue != null) Context.Settings.DefaultPrioritySetValue = v; }, value);
-                    NotifyPropertyChanged(nameof(PrioritySetter));
+                    //NotifyPropertyChanged(nameof(PrioritySetter));
                 }
             }
         }
-
-        public MetaCommand LoadIntoPlan => new MetaCommand(
-                o =>
-                {
-                    if (SelectedDBPlan != null)
-                    {
-                        bool fillOnlyEmptyStructures = false;
-                        MessageBoxResult answer = MessageBoxResult.Yes;
-                        if (Context.Plan.ObjectivesCount > 0)
-                        {
-                            answer = MessageBox.Show("The plan already has Optimization Objectives.\nDo you want to add all of it?\nClick No if you want to fill only empty structures", "Do you?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                            if (answer == MessageBoxResult.Cancel)
-                            {
-                                return;
-                            }
-                            fillOnlyEmptyStructures = answer == MessageBoxResult.No;
-                        }
-
-                        /*List<ObjectiveInfo> objectives = new List<ObjectiveInfo>();
-
-                        SelectedDBPlan.Structures
-                            .Where(s => s.APIStructure != null && s.Objectives.Count() > 0)
-                            .ToList()
-                            .ForEach(
-                                s => s.Objectives
-                                    .Where(obj => obj.ObjectiveDB != null)
-                                    .ToList()
-                                    .ForEach(obj => objectives.Add(obj.GetObjectiveInfo(s.APIStructure.Structure))));*/
-                        List<ObjectiveInfo> objectives = GetObjectivesForPlan().ToList();
-
-                        if (objectives.Count > 0)
-                        {
-                            Context.Plan.LoadObjectives(objectives, fillOnlyEmptyStructures);
-                            if (Context.Settings.LoadNto)
-                            {
-                                Context.Plan.LoadNtoIntoPlan(SelectedDBPlan.Nto.APINto);
-                            }
-                            Context.DataService.IncreasePlanSelectionFrequency((long)SelectedDBPlan.DBPlan.rowid);
-                        }
-                        
-                    }
-                    
-                },
-                o => SelectedDBPlan != null && SelectedDBPlan.Structures.FirstOrDefault(s => s.APIStructure.Structure != null) != null
-            );
-
         private IEnumerable<ObjectiveInfo> GetObjectivesForPlan()
         {
-            if ((SelectedDBPlan?.Structures.Count ?? 0) > 0)
+            if ((SelectedPlan?.Structures.Count ?? 0) > 0)
             {
-                foreach (var s in SelectedDBPlan.Structures)
+                foreach (StructureVM s in SelectedPlan.Structures)
                 {
-                    if (s.APIStructure != null && s.Objectives.Count() > 0)
+                    if (s.APIStructure != null && s.APIStructure.IsAssigned && s.Objectives.Count() > 0)
                     {
-                        
-                        foreach (var obj in s.Objectives)
+
+                        foreach (ObjectiveVM obj in s.Objectives)
                         {
-                            if (obj.ObjectiveDB != null)
+                            if (obj.CachedObjective != null)
                             {
                                 yield return obj.GetObjectiveInfo(s.APIStructure.Structure);
                             }
@@ -222,37 +181,75 @@ namespace LazyOptimizer.UI.ViewModels
                 yield break;
             }
         }
-        public MetaCommand SetOarsPriority => new MetaCommand(
-                priorityString =>
+        public MetaCommand LoadIntoPlan => new MetaCommand(
+            o =>
+            {
+                if (SelectedPlan != null)
                 {
-                    if (SelectedDBPlan != null)
+                    bool fillOnlyEmptyStructures = false;
+                    MessageBoxResult answer = MessageBoxResult.Yes;
+                    if (Context.CurrentPlan.ObjectivesCount > 0)
                     {
-                        if (double.TryParse(priorityString as string, out double priority))
+                        answer = MessageBox.Show("The plan already has Optimization Objectives.\nDo you want to add all of it?\nClick No if you want to fill only empty structures", "Do you?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                        if (answer == MessageBoxResult.Cancel)
                         {
-                            SelectedDBPlan.Structures
-                                .Where(s => !s.IsTarget)
-                                .ToList()
-                                .ForEach(
-                                    s => s.Objectives.ToList().ForEach(o =>
-                                        {
-                                            if (priority == -1)
-                                            {
-                                                o.ResetPriority();
-                                            }
-                                            else
-                                            {
-                                                o.Priority = priority;
-                                            }
-                                        }));
+                            return;
                         }
-                        else
-                        {
-                            Logger.Write(this, "Enter priority.", LogMessageType.Warning);
-                        }
+                        fillOnlyEmptyStructures = answer == MessageBoxResult.No;
                     }
 
-                },
-                o => SelectedDBPlan != null && SelectedDBPlan.Structures.Count > 0
-            );
+                    List<ObjectiveInfo> objectives = GetObjectivesForPlan().ToList();
+
+                    if (objectives.Count > 0)
+                    {
+                        PlanEdit.LoadObjectives(Context.CurrentPlan, objectives, fillOnlyEmptyStructures);
+                        if (Context.Settings.LoadNto)
+                        {
+                            PlanEdit.LoadNtoIntoPlan(Context.CurrentPlan, SelectedPlan.NtoVM.CurrentNto);
+                        }
+                        SelectedPlan.CachedPlan.SelectionFrequency++;
+                    }
+                        
+                }
+                    
+            },
+            o => SelectedPlan != null && SelectedPlan.Structures.FirstOrDefault(s => s.APIStructure?.Structure != null) != null
+        );
+
+        
+        public MetaCommand SetOarsPriority => new MetaCommand(
+            priorityString =>
+            {
+                if (SelectedPlan != null)
+                {
+                    if (double.TryParse(priorityString as string, out double priority))
+                    {
+                        foreach (var structure in SelectedPlan.Structures)
+                        {
+                            if (!structure.IsTarget)
+                            {
+                                foreach (var objective in structure.Objectives)
+                                {
+                                    if (priority == -1)
+                                    {
+                                        objective.ResetPriority();
+                                    }
+                                    else
+                                    {
+                                        objective.Priority = priority;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Logger.Write(this, "Enter priority.", LogMessageType.Warning);
+                    }
+                }
+
+            },
+            o => SelectedPlan != null && SelectedPlan.Structures.Count > 0
+        );
     }
 }

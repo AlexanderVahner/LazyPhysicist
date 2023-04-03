@@ -8,22 +8,17 @@ using System.Data.SQLite;
 using System.Reflection;
 using LazyPhysicist.Common;
 using System.IO;
-using System.Windows.Controls.Primitives;
-using System.Windows.Shapes;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
+using System.Data.Common;
 
-namespace LazyOptimizer.DB
+namespace LazyOptimizerDataService.DB
 {
-    public class SQLiteService : IDisposable
+    public class SQLiteService : IDbService
     {
-        private string dbFileName;
-        private SQLiteConnection connection;
+        private readonly SQLiteConnection connection;
         private SQLiteTransaction transaction;
         private bool connected = false;
         public SQLiteService(string dbFileName)
         {
-            this.dbFileName = dbFileName;
             try
             {
                 if (!File.Exists(dbFileName))
@@ -34,8 +29,7 @@ namespace LazyOptimizer.DB
                 Connected = true;
                 CreateTables();
 
-                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));
-                
+                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));                
             }
             catch (Exception e)
             {
@@ -56,7 +50,7 @@ namespace LazyOptimizer.DB
         {
             if (command != null && (parameters?.Count() ?? 0) > 0)
             {
-                string debugString = "Parameters: ";
+                StringBuilder debugString = new StringBuilder("Parameters: ");
                 foreach (object p in parameters)
                 {
                     SQLiteParameter parameter = new SQLiteParameter
@@ -64,14 +58,31 @@ namespace LazyOptimizer.DB
                         Value = p
                     };
                     command.Parameters.Add(parameter);
-                    debugString += p.ToString() + ", ";
+                    debugString.Append(p.ToString()).Append(", ");
                 }
-                Logger.Write(this, debugString, LogMessageType.Debug);
+                Logger.Write(this, debugString.ToString(), LogMessageType.Debug);
             }
             else
             {
                 Logger.Write(this, $"Can't add parameters into command.\nSQL: {command?.CommandText ?? "<EMPTY>"}\nParameters count: {parameters?.Count() ?? 0}", LogMessageType.Error);
             }
+        }
+
+        public DbDataReader Select(string sqlRequest, IEnumerable<object> parameters = null)
+        {
+            DbDataReader reader;
+
+            Logger.Write(this, sqlRequest, LogMessageType.Debug);
+
+            SQLiteCommand command = new SQLiteCommand(sqlRequest, connection);
+            if ((parameters?.Count() ?? 0) > 0)
+            {
+                AddParametersToCommand(command, parameters);
+            }
+
+            reader = command.ExecuteReader();
+
+            return reader;
         }
         public void Select<T>(IList<T> destination, string sqlRequest, IEnumerable<object> parameters = null)
         {
@@ -118,7 +129,7 @@ namespace LazyOptimizer.DB
                 Logger.Write(this, "SELECT: Destination collection is NULL.", LogMessageType.Error);
             }
         }
-        public void SelectOne<T>(out T destination, string sqlRequest, IEnumerable<object> parameters = null)
+        public void SelectSingle<T>(out T destination, string sqlRequest, IEnumerable<object> parameters = null)
         {
             List<T> list = new List<T>();
             Select(list, sqlRequest, parameters);
@@ -162,7 +173,7 @@ namespace LazyOptimizer.DB
             }
             return result;
         }
-        public int SetRecordValue(string tableName, long rowId, string fieldName, object value)
+        public int SetValue(string tableName, long rowId, string fieldName, object value)
         {
             string sql = $"UPDATE {tableName} SET {fieldName} = ? WHERE rowid = ?";
             return Execute(sql, new object[] { value, rowId });

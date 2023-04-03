@@ -24,7 +24,7 @@ namespace PluginTester
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ESAPI.Application app;
+        private readonly ESAPI.Application app;
         public MainWindow()
         {
             InitializeComponent();
@@ -47,7 +47,6 @@ namespace PluginTester
                     script.Run(new ScriptArgs()
                     {
                         CurrentUser = app.CurrentUser,
-                        Patient = patient,
                         Plan = plan,
                         Window = this
                     });
@@ -62,7 +61,7 @@ namespace PluginTester
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            app.Dispose();
+            app?.Dispose();
         }
     }
 }

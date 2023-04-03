@@ -63,7 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ESAPIInfo.cs" />
-    <Compile Include="Patients\PatientInfo.cs" />
     <Compile Include="Plan\NtoInfo.cs" />
     <Compile Include="Plan\ObjectiveInfo.cs" />
     <Compile Include="Plan\PlanInfo.cs" />

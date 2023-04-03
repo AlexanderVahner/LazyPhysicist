@@ -1,6 +1,7 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
-using LazyOptimizer.DB;
+using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
@@ -16,24 +17,23 @@ namespace LazyOptimizer.UI.ViewModels
     {
         private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
         private App.AppContext context;
-        private PlanDBRecord dbPlan;
-        private List<ObjectiveDBRecord> dbObjectives;
+        private CachedPlan cachedPlan;
+        private List<CachedObjective> objectivesCache;
         private ObservableCollection<StructureVM> structures;
         private ObservableCollection<StructureInfo> structureSuggestions;
-        private NtoVM nto;
-        //public PlanVM() { }
-        public PlanVM(App.AppContext context, PlanDBRecord DBPlan)
+        private NtoVM ntoVM;
+
+        public PlanVM(App.AppContext context, CachedPlan cachedPlan)
         {
             this.context = context;
-            this.dbPlan = DBPlan;
-            CurrentPlan = context.Plan;
+            this.cachedPlan = cachedPlan;
         }
-        public PlanDBRecord DBPlan
+        public CachedPlan CachedPlan
         {
-            get => dbPlan;
+            get => cachedPlan;
             set
             {
-                SetProperty(ref dbPlan, value);
+                SetProperty(ref cachedPlan, value);
             }
         }
         public App.AppContext Context
@@ -49,26 +49,29 @@ namespace LazyOptimizer.UI.ViewModels
         }
         private void LoadStructures()
         {
-            if (structures.Count == 0 && CurrentPlan != null && DBObjectives != null)
+            if ((structures?.Count ?? 0) == 0 && context.CurrentPlan != null && ObjectivesCache != null)
             {
 
-                foreach (StructureInfo structure in CurrentPlan.Structures.OrderBy(s => s.Id))
+                foreach (StructureInfo structure in context.CurrentPlan.Structures.OrderBy(s => s.Id))
                 {
-                    StructureSuggestions.Add(structure);
+                    if (structure.CanOptimize)
+                    {
+                        StructureSuggestions.Add(structure);
+                    }
                 }
 
                 string structureId = "";
                 StructureVM structureVM = null;
                 List<StructureVM> tempStructures = new List<StructureVM>();
-                foreach (ObjectiveDBRecord objective in DBObjectives.OrderBy(o => o.StructureId))
+                foreach (var cachedObjective in ObjectivesCache.OrderBy(o => o.StructureId))
                 {
-                    if (!Equals(objective.StructureId, structureId) && (objective.StructureId ?? "") != "")
+                    if (!Equals(cachedObjective.StructureId, structureId) && (cachedObjective.StructureId ?? "") != "")
                     {
-                        structureVM = new StructureVM() { DBStructureId = objective.StructureId, StructureSuggestions = StructureSuggestions };
+                        structureVM = new StructureVM() { DBStructureId = cachedObjective.StructureId, StructureSuggestions = StructureSuggestions };
                         tempStructures.Add(structureVM);
                     }
-                    structureVM?.Objectives.Add(new ObjectiveVM() { ObjectiveDB = objective });
-                    structureId = objective.StructureId;
+                    structureVM?.Objectives.Add(new ObjectiveVM() { CachedObjective = cachedObjective });
+                    structureId = cachedObjective.StructureId;
                 }
                 tempStructures = new List<StructureVM>(tempStructures.OrderByDescending(s => s.OrderByDoseDescProperty));
                 tempStructures.ForEach(s => Structures.Add(s));
@@ -81,7 +84,10 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         foreach (StructureInfo s_api in StructureSuggestions)
                         {
-                            comparsion.Add(new StructuresComparsion(s, s_api, Levenshtein.ComputeDistance(s.DBStructureId, s_api.Id)));
+                            string s1, s2;
+                            s1 = s.DBStructureId.Replace(" ", "").Replace("_", "");
+                            s2 = s_api.Id.Replace(" ", "").Replace("_", "");
+                            comparsion.Add(new StructuresComparsion(s, s_api, Levenshtein.ComputeDistance(s1, s2)));
                         }
                     }
                     comparsion = new List<StructuresComparsion>(comparsion.OrderBy(c => c.Distance));
@@ -116,18 +122,26 @@ namespace LazyOptimizer.UI.ViewModels
             public StructureInfo APIStructure;
             public int Distance;
         }
-        public PlanInfo CurrentPlan { get; set; }
-        public string PlanName => $"({DBPlan?.PatientId}).[{DBPlan?.CourseId}].{DBPlan?.PlanId}";
-        public string StructuresString => DBPlan?.StructuresString;
+        public string PlanName => $"({CachedPlan?.PatientId}).[{CachedPlan?.CourseId}].{CachedPlan?.PlanId}";
+        public string CreationDate => CachedPlan?.CreationDate.ToString("g") ?? "";
+        public string StructuresString => CachedPlan?.StructuresString;
         public string Description
         {
-            get => DBPlan?.DescriptionProperty;
-            set => SetProperty((v) => { if (DBPlan != null) DBPlan.DescriptionProperty = v; }, value);
+            get => CachedPlan?.Description;
+            set
+            {
+                SetProperty((v) => { if (CachedPlan != null) CachedPlan.Description = v; }, value);
+                context.PlansContext.UpdatePlan(cachedPlan);
+            }
         }
         public long? SelectionFrequency
         {
-            get => DBPlan?.SelectionFrequencyProperty;
-            set => SetProperty((v) => { if (DBPlan != null) DBPlan.SelectionFrequencyProperty = v; }, value);
+            get => CachedPlan?.SelectionFrequency;
+            set
+            {
+                SetProperty((v) => { if (CachedPlan != null) CachedPlan.SelectionFrequency = v; }, value);
+                context.PlansContext.UpdatePlan(cachedPlan);
+            }
         }
         public string SelectionFrequencyBackground
         {
@@ -145,19 +159,15 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-        public List<ObjectiveDBRecord> DBObjectives
+        public List<CachedObjective> ObjectivesCache
         {
             get 
             {   
-                if (dbObjectives == null)
+                if (objectivesCache == null && cachedPlan != null)
                 {
-                    dbObjectives = new List<ObjectiveDBRecord>();
-                    if (dbPlan != null)
-                    {
-                        Context.DataService.GetObjectives(dbObjectives, (long)DBPlan.rowid);
-                    }
+                    objectivesCache = Context.PlansContext.GetObjectives(CachedPlan.RowId);
                 }
-                return dbObjectives;
+                return objectivesCache;
             }
         }
         public ObservableCollection<StructureVM> Structures
@@ -173,19 +183,19 @@ namespace LazyOptimizer.UI.ViewModels
             }
         }
         public ObservableCollection<StructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<StructureInfo>());
-        public NtoVM Nto
+        public NtoVM NtoVM
         {
             get 
             {   
-                if (nto == null)
+                if (ntoVM == null)
                 {
-                    nto = new NtoVM();
-                    if (dbPlan != null)
+                    ntoVM = new NtoVM();
+                    if (cachedPlan != null)
                     {
-                        nto.NtoDB = Context.DataService.GetNto((long)DBPlan.rowid);
+                        ntoVM.CachedNto = Context.PlansContext.GetNto(CachedPlan.RowId);
                     }
 }
-                return nto;
+                return ntoVM;
             }
         }
     }

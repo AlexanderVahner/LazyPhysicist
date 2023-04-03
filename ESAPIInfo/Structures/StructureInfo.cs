@@ -10,11 +10,10 @@ namespace ESAPIInfo.Structures
     public class StructureInfo
     {
         public static readonly string[] TargetNames = { "PTV", "CTV", "GTV", "BOOST" };
-        public static readonly string[] SkipStructureDicomTypes = { "EXTERNAL", "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION" };
-        public static bool IsTarget(Structure structure)
-        {
-            return StructureInfo.IsTarget(structure?.Id ?? "");
-        }
+        //public static readonly string[] SkipStructureDicomTypes = { "EXTERNAL", "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION" };
+        public static readonly string[] SupportStructureDicomTypes = { "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION", "UNKNOWN" };
+        public static readonly string[] NonOptimizedStructureDicomTypes = { "SUPPORT", "FIXATION", "REGISTRATION", "UNKNOWN" };
+
 
         public static bool IsTarget(string structureId)
         {
@@ -29,6 +28,10 @@ namespace ESAPIInfo.Structures
         {
             Structure = structure;
         }
+        public bool IsTarget()
+        {
+            return Structure != null && StructureInfo.IsTarget(Structure.Id);
+        }
         public Structure Structure { get; set; }
         public string Id
         {
@@ -38,7 +41,10 @@ namespace ESAPIInfo.Structures
 
             }
         }
-            
+        public bool IsAssigned => Structure != null;
+        public string DicomType => Structure?.DicomType ?? "UNKNOWN";
+        public bool IsSupport => SupportStructureDicomTypes.Contains(DicomType);
+        public bool CanOptimize => !NonOptimizedStructureDicomTypes.Contains(DicomType);
         public override string ToString() => Id;
     }
 }

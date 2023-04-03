@@ -30,8 +30,7 @@ namespace LazyPhysicist.Common.Console
             IntPtr consoleHandle = GetStdHandle(STD_INPUT_HANDLE);
 
             // get current console mode
-            uint consoleMode;
-            if (!GetConsoleMode(consoleHandle, out consoleMode))
+            if (!GetConsoleMode(consoleHandle, out uint consoleMode))
             {
                 // ERROR: Unable to get console mode.
                 return false;
