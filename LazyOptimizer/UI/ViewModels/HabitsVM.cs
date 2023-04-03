@@ -207,7 +207,7 @@ namespace LazyOptimizer.UI.ViewModels
                         {
                             PlanEdit.LoadNtoIntoPlan(Context.CurrentPlan, SelectedPlan.NtoVM.CurrentNto);
                         }
-                        SelectedPlan.CachedPlan.SelectionFrequency++;
+                        SelectedPlan.SelectionFrequency++;
                     }
                         
                 }

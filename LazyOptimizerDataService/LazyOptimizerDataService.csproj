@@ -61,7 +61,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataService.cs" />
     <Compile Include="DBModel\IPlansContext.cs" />
     <Compile Include="DBModel\CachedNto.cs" />
     <Compile Include="DBModel\CachedObjective.cs" />
@@ -71,7 +70,6 @@
     <Compile Include="DB\IDbService.cs" />
     <Compile Include="DB\LevenshteinDistanceFunction.cs" />
     <Compile Include="DB\SQLiteService.cs" />
-    <Compile Include="IDataService.cs" />
     <Compile Include="DBModel\PlansFilterArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

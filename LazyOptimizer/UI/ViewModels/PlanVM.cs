@@ -140,7 +140,7 @@ namespace LazyOptimizer.UI.ViewModels
             set
             {
                 SetProperty((v) => { if (CachedPlan != null) CachedPlan.SelectionFrequency = v; }, value);
-                context.PlansContext.UpdatePlan(cachedPlan);
+                context.PlansContext.UpdatePlan(CachedPlan);
             }
         }
         public string SelectionFrequencyBackground
