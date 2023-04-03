@@ -35,9 +35,6 @@ namespace LazyOptimizer.App
                 {
                     settings = new Settings();
                 }
-#if DEBUG
-                settings.PlansCacheAppPath = @"..\..\..\PlansCache\bin\debug\PlansCache.exe";
-#endif
             }
             
             return settings;

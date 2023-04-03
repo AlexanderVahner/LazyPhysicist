@@ -82,6 +82,8 @@ namespace LazyOptimizer.UI.Views
             };
         }
 
+       
+
         private bool isDebugMode = false;
         private MainVM mainVM = null;
     }

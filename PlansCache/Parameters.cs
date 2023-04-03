@@ -36,7 +36,7 @@ namespace PlansCache
                 }
             }
         }
-        public string DbPath { get; set; }
+        public string DbPath { get; set; } = "";
         public bool DebugMode { get; set; } = false;
         public bool VerboseMode { get; set; } = false;
         public bool RecheckAll { get; set; } = false;
