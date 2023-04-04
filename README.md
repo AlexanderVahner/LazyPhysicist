@@ -33,7 +33,7 @@ technique and, most importantly, patient's structures.</p>
 </p>
 <p>First you need to add a script to Eclipse from <i>Tools > Scripts menu</i>. The plugin can be on the local network, as the user settings and database will be stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.
 </p>
-<p>Scripts to be approved in  <i>Tools > Scrpit Approvals...</i>
+<p>Scripts to be approved in  <i>Tools > Script Approvals...</i>
 <ul>
 	<li>LazyOptimizer.esapi</li>
 	<li>PlansCache.exe</li>
@@ -42,7 +42,7 @@ technique and, most importantly, patient's structures.</p>
 </p>
 <p>Create the plan you are going to calculate, add the fields and run this plugin.
 </p>
-<p>At the first start, it is necessary to fill the database with previous plans by clicking the "Check Previous Plans" button. The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients). Only the current user's plans are written to the database (as accurate as possible). On next launches, only new patients will be checked.
+<p>At the first start, it is necessary to fill the database with previous plans by clicking the <b>Check Previous Plans</b> button. The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients). Only the current user's plans are written to the database (as accurate as possible). On next launches, only new patients will be checked.
 </p>
 <p>If plans are found that match the current plan, they will be shown in the list.
 Plan Selection Criteria:
