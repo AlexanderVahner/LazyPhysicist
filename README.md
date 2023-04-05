@@ -71,6 +71,7 @@ You can override the objective priorities for all OARs by clicking the buttons:
 
 <h2>PlansCache —</h2>
 <p>is a standalone console app that fill the SQLite database for LazyOptimizer plugin.</p>
+<img src="/Images/PlansCache_example.png" alt="How PlansCache works"/>
 
 <h2>Tested in ESAPI Versions</h2>
 <ul>
