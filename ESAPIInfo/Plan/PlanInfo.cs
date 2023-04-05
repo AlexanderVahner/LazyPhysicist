@@ -1,11 +1,8 @@
 ﻿using ESAPIInfo.Structures;
-using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -70,7 +67,7 @@ namespace ESAPIInfo.Plan
         public string CourseId => Plan?.Course?.Id ?? "";
         public DateTime CreationDate => creationDate;
         public string CreatorId => creatorId;
-            
+
         public PlanSetupApprovalStatus ApprovalStatus => Plan?.ApprovalStatus ?? PlanSetupApprovalStatus.Unknown;
         public double SingleDose => Plan?.DosePerFraction.Dose ?? .0;
         public int FractionsCount => Plan?.NumberOfFractions ?? 0;

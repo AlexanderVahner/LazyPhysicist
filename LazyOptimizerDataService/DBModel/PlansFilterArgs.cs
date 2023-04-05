@@ -1,10 +1,5 @@
 ﻿using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations.Model;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizerDataService.DBModel
 {
@@ -30,7 +25,7 @@ namespace LazyOptimizerDataService.DBModel
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool MatchMachine { get => matchMachine; set => SetProperty(ref matchMachine, value); }
         public int Limit { get => limit; set => SetProperty(ref limit, value); }
-        
+
         public void Update()
         {
             UpdateRequest?.Invoke(this, this);

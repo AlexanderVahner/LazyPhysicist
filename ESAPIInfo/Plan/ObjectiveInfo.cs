@@ -1,9 +1,5 @@
 ﻿using LazyPhysicist.Common;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -55,7 +51,7 @@ namespace ESAPIInfo.Plan
                     if (objective is OptimizationPointObjective pointObjective)
                     {
                         oi.Type = ObjectiveType.Point;
-                        oi.Dose =  pointObjective.Dose.Dose / (pointObjective.Dose.Unit == DoseValue.DoseUnit.cGy ? 100 : 1);
+                        oi.Dose = pointObjective.Dose.Dose / (pointObjective.Dose.Unit == DoseValue.DoseUnit.cGy ? 100 : 1);
                         oi.Volume = pointObjective.Volume;
                     }
                     else if (objective is OptimizationMeanDoseObjective meanObjective)

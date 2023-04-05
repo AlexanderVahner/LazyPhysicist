@@ -1,18 +1,7 @@
 ﻿using LazyOptimizer;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VMS.TPS;
 using VMS.TPS.Common.Model.API;
 using ESAPI = VMS.TPS.Common.Model.API;
@@ -32,7 +21,8 @@ namespace PluginTester
             try
             {
                 app = ESAPI.Application.CreateApplication();
-                
+
+                // Write your Test Patient Ids here
                 Patient patient = app.OpenPatientById("0220005213");
                 Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
                 ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "CV1");
@@ -51,7 +41,7 @@ namespace PluginTester
                         Window = this
                     });
                 }
-                
+
             }
             catch (Exception e)
             {

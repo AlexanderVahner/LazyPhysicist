@@ -1,15 +1,8 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizerDataService.DB;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Remoting.Contexts;
 using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
 
 namespace LazyOptimizer.UI.ViewModels
 {
@@ -20,7 +13,7 @@ namespace LazyOptimizer.UI.ViewModels
             ObjectiveInfo result = null;
             if (CachedObjective == null)
             {
-                Logger.Write(this, "Objective View Model doesn't have an ObjectiveDBRecord.", LogMessageType.Error);
+                Logger.Write(this, "Objective View Model doesn't have an CachedObjective.", LogMessageType.Error);
             }
             else
             {
@@ -55,14 +48,17 @@ namespace LazyOptimizer.UI.ViewModels
                 ResetPriority();
             }
         }
-        
+
         private double priority;
         public double Priority
         {
             get => priority;
-            set => SetProperty(ref priority, value);
+            set
+            {
+                if (value <= 1000) 
+                    SetProperty(ref priority, value);
+            }
         }
-
         public string Info => $"{CachedObjective.Dose} {CachedObjective.Volume} {CachedObjective.ParameterA}";
         public double? Dose => CachedObjective?.Dose;
         public double? Volume => CachedObjective?.Volume;

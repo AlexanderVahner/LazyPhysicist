@@ -1,10 +1,6 @@
 ﻿using ESAPIInfo.Structures;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.UI.ViewModels
 {
@@ -26,7 +22,7 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         StructureSuggestions.Insert(1, apiStructure); // Insertion into postion 1 because it must be under <none> element
                     }
-                    
+
                     if (value?.Structure != null)
                     {
                         StructureSuggestions.Remove(value);

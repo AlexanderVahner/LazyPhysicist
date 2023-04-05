@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyPhysicist.Common
 {
     public static class FileSystem
     {
-        private static char[] invalidPathChars = { ':', '\\', '/', '*', '?', '<', '>', '|', '\"' };
+        private static readonly char[] invalidPathChars = { ':', '\\', '/', '*', '?', '<', '>', '|', '\"' };
 
         public static string ClearFileNameFromInvalidChars(string input)
         {

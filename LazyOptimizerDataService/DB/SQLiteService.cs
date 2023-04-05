@@ -1,14 +1,12 @@
-﻿using System;
+﻿using LazyPhysicist.Common;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Data.SQLite;
-using System.Reflection;
-using LazyPhysicist.Common;
-using System.IO;
 using System.Data.Common;
+using System.Data.SQLite;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace LazyOptimizerDataService.DB
 {
@@ -29,7 +27,7 @@ namespace LazyOptimizerDataService.DB
                 Connected = true;
                 CreateTables();
 
-                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));                
+                SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));
             }
             catch (Exception e)
             {
@@ -213,7 +211,7 @@ namespace LazyOptimizerDataService.DB
                     connection.Close();
                     connected = false;
                 }
-                
+
             }
         }
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
@@ -22,7 +18,7 @@ namespace ESAPIInfo.Structures
 
         public StructureInfo()
         {
-            
+
         }
         public StructureInfo(Structure structure)
         {

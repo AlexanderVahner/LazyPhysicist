@@ -1,13 +1,5 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizerDataService.DB;
 using LazyOptimizerDataService.DBModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
 
 namespace LazyOptimizer.UI.ViewModels
 {

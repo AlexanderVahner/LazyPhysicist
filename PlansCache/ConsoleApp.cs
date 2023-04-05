@@ -1,5 +1,4 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizerDataService.DB;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using LazyPhysicist.Common.Console;
@@ -7,8 +6,6 @@ using PlansCache.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
 
 namespace PlansCache
@@ -79,6 +76,7 @@ namespace PlansCache
                 {
                     cache.LastCheckDate = ps.CreationDateTime ?? cache.LastCheckDate;
                     currentPatientNumber++;
+
                     ProcessPatient(ps.Id);
 
                     if (currentSkip++ >= SAVE_EVERY_PATIENT_PERIOD)

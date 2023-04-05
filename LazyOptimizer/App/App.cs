@@ -1,26 +1,15 @@
-﻿using Common;
-using ESAPIInfo.Plan;
-using LazyOptimizerDataService;
+﻿using ESAPIInfo.Plan;
 using LazyOptimizer.UI.ViewModels;
 using LazyOptimizer.UI.Views;
+using LazyOptimizerDataService.DB;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime;
-using System.Runtime.Remoting.Contexts;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
-using LazyOptimizerDataService.DBModel;
-using LazyOptimizerDataService.DB;
 
 namespace LazyOptimizer.App
 {
@@ -33,64 +22,63 @@ namespace LazyOptimizer.App
 
             MainVM mainViewModel = InitializeUI(args.Window);
 
-            if (args?.Plan != null && args.Window != null)
+            if (args?.Plan == null)
             {
-                context = new AppContext()
+                Logger.Write(this, "Plan is not opened.", LogMessageType.Error);
+                return;
+            }
+
+            context = new AppContext()
+            {
+                CurrentPlan = new PlanInfo(args.Plan),
+                Settings = Settings.ReadSettings(),
+
+            };
+            if (CheckPlanEditability(context.CurrentPlan))
+            {
+                context.PlansFilterArgs = new PlansFilterArgs()
                 {
-                    CurrentPlan = new PlanInfo(args.Plan),
-                    Settings = Settings.ReadSettings(),
-                    
+                    StructuresString = context.CurrentPlan.StructuresPseudoHash,
+                    FractionsCount = context.CurrentPlan.FractionsCount,
+                    SingleDose = context.CurrentPlan.SingleDose,
+                    MachineId = context.CurrentPlan.MachineId,
+                    Technique = context.CurrentPlan.Technique,
+                    MatchMachine = context.Settings.MatchMachine,
+                    MatchTechnique = context.Settings.MatchTechnique,
+                    Limit = context.Settings.PlansSelectLimit
                 };
-                if (CheckPlanEditability(context.CurrentPlan))
+
+                context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
+                context.PlansContext = new PlansDbContext(context.DbService);
+
+                context.Settings.PropertyChanged += (s, e) =>
                 {
-                    context.PlansFilterArgs = new PlansFilterArgs()
+                    switch (e.PropertyName)
                     {
-                        StructuresString = context.CurrentPlan.StructuresPseudoHash,
-                        FractionsCount = context.CurrentPlan.FractionsCount,
-                        SingleDose = context.CurrentPlan.SingleDose,
-                        MachineId = context.CurrentPlan.MachineId,
-                        Technique = context.CurrentPlan.Technique,
-                        MatchMachine = context.Settings.MatchMachine,
-                        MatchTechnique = context.Settings.MatchTechnique,
-                        Limit = context.Settings.PlansSelectLimit
-                    };
+                        case "MatchMachine":
+                            context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
+                            break;
+                        case "MatchTechnique":
+                            context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
+                            break;
+                        case "PlansSelectLimit":
+                            context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
+                            break;
 
-                    context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
-                    context.PlansContext = new PlansDbContext(context.DbService);
+                    }
+                };
 
-                    context.Settings.PropertyChanged += (s, e) =>
-                    {
-                        switch (e.PropertyName)
-                        {
-                            case "MatchMachine":
-                                context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
-                                break;
-                            case "MatchTechnique":
-                                context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
-                                break;
-                            case "PlansSelectLimit":
-                                context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
-                                break;
-
-                        }
-                    };
-
-                    mainViewModel.Context = context;
-                    mainViewModel.RefreshPlansClick += (s, context) =>
-                    {
-                        PlansCacheAppStart(context);
-                        context.Settings.PlansCacheRecheckAllPatients = false;
-                        context.PlansFilterArgs.Update();
-                    };
-                }
-                else
+                mainViewModel.Context = context;
+                mainViewModel.RefreshPlansClick += (s, context) =>
                 {
-                    Logger.Write(this, "The plan is not ready for Optimization.", LogMessageType.Error);
-                }
+                    PlansCacheAppStart(context);
+                    context.Settings.PlansCacheRecheckAllPatients = false;
+                    context.PlansFilterArgs.Update();
+                };
             }
             else
             {
-                Logger.Write(this, "Plan is not opened.", LogMessageType.Error);
+                Logger.Write(this, "The plan is not ready for Optimization.", LogMessageType.Error);
             }
         }
         public bool CheckPlanEditability(PlanInfo plan)
@@ -161,14 +149,14 @@ namespace LazyOptimizer.App
             }
             else
             {
-                Logger.Write(this, "PlansCache App not found.", LogMessageType.Error);
+                Logger.Write(this, "PlansCache App not found. Check the Settings.", LogMessageType.Error);
             }
-            
+
         }
-        
+
         public void Dispose()
         {
-            context?.DbService?.Dispose();
+            context?.Dispose();
         }
     }
 }

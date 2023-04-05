@@ -1,12 +1,7 @@
 ﻿using ESAPIInfo.Plan;
-using LazyOptimizerDataService;
 using LazyOptimizerDataService.DB;
 using LazyOptimizerDataService.DBModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.App
 {
@@ -23,8 +18,8 @@ namespace LazyOptimizer.App
 
         public void Dispose()
         {
+            DbService?.Dispose();
             Settings?.Save();
-            //DataService?.Dispose();
         }
     }
 }

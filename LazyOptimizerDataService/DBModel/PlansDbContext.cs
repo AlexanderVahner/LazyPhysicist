@@ -2,10 +2,7 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizerDataService.DBModel
 {
@@ -176,7 +173,7 @@ namespace LazyOptimizerDataService.DBModel
                 {
                     nto.RowId = reader.GetInt64(0);
                     nto.PlanRowId = reader.GetInt64(1);
-                    nto.IsAutomatic =reader.GetInt64(2) != 0;
+                    nto.IsAutomatic = reader.GetInt64(2) != 0;
                     nto.DistanceFromTargetBorderInMM = reader.GetDouble(3);
                     nto.StartDosePercentage = reader.GetDouble(4);
                     nto.EndDosePercentage = reader.GetDouble(5);

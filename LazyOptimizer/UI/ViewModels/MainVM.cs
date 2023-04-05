@@ -1,16 +1,7 @@
-﻿using ESAPIInfo.Plan;
-using LazyOptimizer.App;
-using LazyOptimizer.UI.Views;
+﻿using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace LazyOptimizer.UI.ViewModels
 {

@@ -1,12 +1,7 @@
 ﻿using Common;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace LazyOptimizer.App
 {
@@ -19,7 +14,7 @@ namespace LazyOptimizer.App
         public static Settings ReadSettings()
         {
             Settings settings = null;
-            
+
             if (!FileSystem.CheckPathOrCreate(userPath))
             {
                 Logger.Write(null, $"Can't make user path \"{userPath}\".", LogMessageType.Error);
@@ -36,11 +31,11 @@ namespace LazyOptimizer.App
                     settings = new Settings();
                 }
             }
-            
+
             return settings;
         }
 
-        
+
         private string plansCacheAppPath = @"PlansCache.exe";
         private bool plansCacheVerboseMode = true;
         private bool plansCacheRecheckAllPatients = false;

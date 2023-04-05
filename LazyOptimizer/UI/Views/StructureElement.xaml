@@ -56,11 +56,6 @@
                             <TextBlock Grid.Column="3" Text="{Binding ParameterA}"/>
                             <TextBox Grid.Column="4" Width="60" Text="{Binding Priority}"/>
                         </Grid>
-                        <!--<StackPanel Orientation="Horizontal">
-                            <Image Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill" Source="{Binding ArrowImageSource}"/>
-                            <TextBlock Text="{Binding Info}"/>
-                            <TextBox />
-                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

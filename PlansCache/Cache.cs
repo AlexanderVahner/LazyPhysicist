@@ -3,9 +3,6 @@ using LazyOptimizerDataService.DBModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlansCache
 {
@@ -37,7 +34,7 @@ namespace PlansCache
             {
                 plans.Add(cachedPlan);
             }
-            
+
         }
         public void WritePlans()
         {
@@ -107,6 +104,6 @@ namespace PlansCache
             get => vars.LastCheckDate;
             set => vars.LastCheckDate = value;
         }
-            
+
     }
 }

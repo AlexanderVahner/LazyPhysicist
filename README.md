@@ -4,9 +4,11 @@
 </p>
 
 <h2>Hello, ESAPI!</h2>
+<p>This project is designed to make it easier to solve our daily tasks in radiotherapy planning. And also for practice in C# programming.<br>
+There are several ideas for future projects based on my vision of simplifying the planning process.
+There are no comments and unit tests yet, but I hope everything will be.</p>
 
-<p>There are no comments and unit tests yet, but I hope everything will be.
-Stay tuned ;)</p>
+<p>Check out what's already done &darr; and stay tuned ;)</p>
 
 <h2>LazyOptimizer —</h2>
 
@@ -69,7 +71,7 @@ You can override the objective priorities for all OARs by clicking the buttons:
 <h2>PlansCache —</h2>
 <p>is a standalone console app that fill the SQLite database for LazyOptimizer plugin.</p>
 
-<h1>Tested in ESAPI Versions</h1>
+<h2>Tested in ESAPI Versions</h2>
 <ul>
   <li>15.6</li>
   <li>16.1</li>

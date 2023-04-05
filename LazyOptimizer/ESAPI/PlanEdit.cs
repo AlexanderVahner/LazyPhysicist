@@ -2,10 +2,6 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
 namespace LazyOptimizer.ESAPI
@@ -16,61 +12,34 @@ namespace LazyOptimizer.ESAPI
         {
             if (nto != null && plan != null)
             {
-                plan.Plan.Course.Patient.BeginModifications();
-                if (nto.IsAutomatic)
+                try
                 {
-                    plan.Plan.OptimizationSetup.AddAutomaticNormalTissueObjective(nto.Priority);
-                }
-                else
-                {
-                    plan.Plan.OptimizationSetup.AddNormalTissueObjective(nto.Priority, nto.DistanceFromTargetBorderInMM, nto.StartDosePercentage, nto.EndDosePercentage, nto.FallOff);
-                }
-            }
-        }
-
-        private static void LoadObjective(PlanInfo plan, ObjectiveInfo objective)
-        {
-            if (plan.Plan == null)
-            {
-                Logger.Write(plan, "Can't load the objective. The Plan is null", LogMessageType.Error);
-            }
-            else
-            {
-                if (!plan.IsReadyForOptimizerLoad)
-                {
-                    Logger.Write(plan, "Can't load the objective. The Plan is not unapproved, or it doesn't have beams", LogMessageType.Error);
-                }
-                else
-                {
-                    if (objective.Structure == null)
+                    plan.Plan.Course.Patient.BeginModifications();
+                    if (nto.IsAutomatic)
                     {
-                        Logger.Write(plan, "Can't load the objective. Structure is not defined", LogMessageType.Error);
+                        plan.Plan.OptimizationSetup.AddAutomaticNormalTissueObjective(nto.Priority);
                     }
                     else
                     {
-
-                        switch (objective.Type)
-                        {
-                            case ObjectiveType.Point:
-                                plan.Plan.OptimizationSetup.AddPointObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
-                                break;
-                            case ObjectiveType.Mean:
-                                plan.Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
-                                break;
-                            case ObjectiveType.EUD:
-                                plan.Plan.OptimizationSetup.AddEUDObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
-                                break;
-                            case ObjectiveType.Unknown:
-                                Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
-                                break;
-                        }
+                        plan.Plan.OptimizationSetup.AddNormalTissueObjective(nto.Priority, nto.DistanceFromTargetBorderInMM, nto.StartDosePercentage, nto.EndDosePercentage, nto.FallOff);
                     }
+                    Logger.Write(plan, "NTO added.", LogMessageType.Info);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex.Source, ex.Message, LogMessageType.Error);
                 }
             }
         }
         public static void LoadObjectives(PlanInfo plan, IEnumerable<ObjectiveInfo> objectives, bool onlyEmptyStructures = false)
         {
-            if (objectives != null)
+            int loadedObjectivesCount = 0;
+            if (objectives == null)
+            {
+                Logger.Write(plan, "Can't load objectives. Collection is null.", LogMessageType.Error);
+                return;
+            }
+            try
             {
                 plan.Plan.Course.Patient.BeginModifications();
                 foreach (ObjectiveInfo objective in objectives)
@@ -80,12 +49,48 @@ namespace LazyOptimizer.ESAPI
                         continue;
                     }
                     LoadObjective(plan, objective);
+                    loadedObjectivesCount++;
                 }
-                Logger.Write(plan, "Objectives added.", LogMessageType.Info);
+                Logger.Write(plan, String.Format("{0} Objective{1} added.", loadedObjectivesCount, loadedObjectivesCount == 1 ? "" : "s"), LogMessageType.Info);
             }
-            else
+            catch (Exception ex)
             {
-                Logger.Write(plan, "Can't load objectives. Collection is null.", LogMessageType.Error);
+                Logger.Write(ex.Source, ex.Message, LogMessageType.Error);
+            }
+
+        }
+        private static void LoadObjective(PlanInfo plan, ObjectiveInfo objective)
+        {
+            if (plan.Plan == null)
+            {
+                Logger.Write(plan, "Can't load the objective. The Plan is null", LogMessageType.Error);
+                return;
+            }
+            if (!plan.IsReadyForOptimizerLoad)
+            {
+                Logger.Write(plan, "Can't load the objective. The Plan is not unapproved, or it doesn't have beams", LogMessageType.Error);
+                return;
+            }
+            if (objective.Structure == null)
+            {
+                Logger.Write(plan, "Can't load the objective. Structure is not defined", LogMessageType.Error);
+                return;
+            }
+
+            switch (objective.Type)
+            {
+                case ObjectiveType.Point:
+                    plan.Plan.OptimizationSetup.AddPointObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
+                    break;
+                case ObjectiveType.Mean:
+                    plan.Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
+                    break;
+                case ObjectiveType.EUD:
+                    plan.Plan.OptimizationSetup.AddEUDObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
+                    break;
+                case ObjectiveType.Unknown:
+                    Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
+                    break;
             }
         }
     }
