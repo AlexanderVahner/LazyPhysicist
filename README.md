@@ -10,7 +10,7 @@ There are no comments and unit tests yet, but I hope everything will be.</p>
 
 <p>Check out what's already done &darr; and stay tuned ;)</p>
 
-<h2>LazyOptimizer —</h2>
+<h2>LazyOptimizer â€”</h2>
 
 <p>is a plugin that helps to fill the plan optimizer based on the user's previously created plans.
 Plan data is taken from the SQLite database, which is filled in by the PlansCache app.<br>
@@ -31,6 +31,7 @@ technique and, most importantly, patient's structures.</p>
 </ul>
 </p>
 <p>
+	
 <b>More details:</b>
 </p>
 <p>First you need to add a script to Eclipse from <i>Tools > Scripts menu</i>. The plugin can be on the local network, as the user settings and database will be stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.
@@ -58,9 +59,9 @@ Plan Selection Criteria:
 <p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.
 You can override the objective priorities for all OARs by clicking the buttons:
 <ul>
-<li><b>=0</b> — reset</li>
-<li><b>As Is</b> — as in the plan from the database</li>
-<li><b>Set</b> — its value in the field next</li>
+<li><b>=0</b> â€” reset</li>
+<li><b>As Is</b> â€” as in the plan from the database</li>
+<li><b>Set</b> â€” its value in the field next</li>
 </ul>
 </p>
 <p>Check or uncheck the box for adding NTO.
@@ -68,7 +69,7 @@ You can override the objective priorities for all OARs by clicking the buttons:
 <p>Add objectives to the plan by clicking the <b>Load into plan</b> button.
 </p>
 
-<h2>PlansCache —</h2>
+<h2>PlansCache â€”</h2>
 <p>is a standalone console app that fill the SQLite database for LazyOptimizer plugin.</p>
 
 <h2>Tested in ESAPI Versions</h2>
