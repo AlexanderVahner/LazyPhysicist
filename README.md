@@ -18,6 +18,10 @@ Optimizer templates are not lazy enough.<br>
 The selection of a suitable plan is based on the number of fractions, single dose, treatment machine, 
 technique and, most importantly, patient's structures.</p>
 
+<p><i>— Why not objective templates?</i> you may ask.<br>
+Because they need to be monitored and updated. With this plugin, this is not necessary. You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
+</p>
+
 <img src="/LazyOptimizer/Resources/example.png" alt="How LazyOptimizer works"/>
 
 <h2>Using LazyOptimizer</h2>
@@ -34,7 +38,8 @@ technique and, most importantly, patient's structures.</p>
 	
 <b>More details:</b>
 </p>
-<p>First you need to add a script to Eclipse from <i>Tools > Scripts menu</i>. The plugin can be on the local network, as the user settings and database will be stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.
+<p>First you need to add a script to Eclipse from <i>Tools > Scripts menu</i>. The plugin can be on the local network, as the user settings and database will be stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.<br>
+You also need to install the <a href="https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48">.NET Framework 4.8</a> Runtime.
 </p>
 <p>Scripts to be approved in  <i>Tools > Script Approvals...</i>
 <ul>
