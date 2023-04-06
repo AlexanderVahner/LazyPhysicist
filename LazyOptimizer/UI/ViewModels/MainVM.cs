@@ -18,7 +18,7 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 if (context.CurrentPlan.ObjectivesCount > 0)
                 {
-                    Logger.Write(this, $"This plan already have Optimization Objectives. Keep in mind...", LogMessageType.Warning);
+                    Logger.Write(this, $"There are already Optimization Objectives in this plan. Keep in mind...", LogMessageType.Warning);
                 }
 
                 HabitsVM habitsVM = new HabitsVM(context);
