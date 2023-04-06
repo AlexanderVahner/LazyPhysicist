@@ -19,7 +19,7 @@ The selection of a suitable plan is based on the number of fractions, single dos
 technique and, most importantly, patient's structures.</p>
 
 <p><i>— Why not objective templates?</i> you may ask.<br>
-Because they need to be monitored and updated. With this plugin, this is not necessary. You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
+Because they need to be updated quite often, removing irrelevant ones if your planning skills change. With this plugin, this is not necessary. You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
 </p>
 
 <img src="/LazyOptimizer/Resources/example.png" alt="How LazyOptimizer works"/>
@@ -50,7 +50,7 @@ You also need to install the <a href="https://dotnet.microsoft.com/en-us/downloa
 </p>
 <p>Create the plan you are going to calculate, add the fields and run this plugin.
 </p>
-<p>At the first start, it is necessary to fill the database with previous plans by clicking the <b>Check Previous Plans</b> button. The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients). Only the current user's plans are written to the database (as accurate as possible). On next launches, only new patients will be checked.
+<p>At the first start, it is necessary to fill the database with previous plans by clicking the <b>Check Previous Plans</b> button. The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients). Only the current user's plans (as accurate as possible) are written to the database. On next launches, only new patients will be checked.
 </p>
 <p>If plans are found that match the current plan, they will be shown in the list.
 Plan Selection Criteria:
@@ -64,7 +64,7 @@ Plan Selection Criteria:
 <p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.
 You can override the objective priorities for all OARs by clicking the buttons:
 <ul>
-<li><b>=0</b> — reset</li>
+<li><b>=0</b> — set to zero</li>
 <li><b>As Is</b> — as in the plan from the database</li>
 <li><b>Set</b> — its value in the field next</li>
 </ul>
