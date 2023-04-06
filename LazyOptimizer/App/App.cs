@@ -34,74 +34,73 @@ namespace LazyOptimizer.App
                 Settings = Settings.ReadSettings(),
 
             };
-            if (CheckPlanEditability(context.CurrentPlan))
-            {
-                context.PlansFilterArgs = new PlansFilterArgs()
-                {
-                    StructuresString = context.CurrentPlan.StructuresPseudoHash,
-                    FractionsCount = context.CurrentPlan.FractionsCount,
-                    SingleDose = context.CurrentPlan.SingleDose,
-                    MachineId = context.CurrentPlan.MachineId,
-                    Technique = context.CurrentPlan.Technique,
-                    MatchMachine = context.Settings.MatchMachine,
-                    MatchTechnique = context.Settings.MatchTechnique,
-                    Limit = context.Settings.PlansSelectLimit
-                };
 
-                context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
-                context.PlansContext = new PlansDbContext(context.DbService);
-
-                context.Settings.PropertyChanged += (s, e) =>
-                {
-                    switch (e.PropertyName)
-                    {
-                        case "MatchMachine":
-                            context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
-                            break;
-                        case "MatchTechnique":
-                            context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
-                            break;
-                        case "PlansSelectLimit":
-                            context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
-                            break;
-
-                    }
-                };
-
-                mainViewModel.Context = context;
-                mainViewModel.RefreshPlansClick += (s, context) =>
-                {
-                    PlansCacheAppStart(context);
-                    context.Settings.PlansCacheRecheckAllPatients = false;
-                    context.PlansFilterArgs.Update();
-                };
-            }
-            else
+            if (!CheckPlanEditability(context.CurrentPlan))
             {
                 Logger.Write(this, "The plan is not ready for Optimization.", LogMessageType.Error);
+                return;
             }
+            context.PlansFilterArgs = new PlansFilterArgs()
+            {
+                StructuresString = context.CurrentPlan.StructuresPseudoHash,
+                FractionsCount = context.CurrentPlan.FractionsCount,
+                SingleDose = context.CurrentPlan.SingleDose,
+                MachineId = context.CurrentPlan.MachineId,
+                Technique = context.CurrentPlan.Technique,
+                MatchMachine = context.Settings.MatchMachine,
+                MatchTechnique = context.Settings.MatchTechnique,
+                Limit = context.Settings.PlansSelectLimit
+            };
+
+            context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
+            context.PlansContext = new PlansDbContext(context.DbService);
+
+            context.Settings.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case "MatchMachine":
+                        context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
+                        break;
+                    case "MatchTechnique":
+                        context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
+                        break;
+                    case "PlansSelectLimit":
+                        context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
+                        break;
+
+                }
+            };
+
+            mainViewModel.Context = context;
+            mainViewModel.RefreshPlansClick += (s, context) =>
+            {
+                PlansCacheAppStart(context);
+                context.Settings.PlansCacheRecheckAllPatients = false;
+                context.PlansFilterArgs.Update();
+            };
         }
         public bool CheckPlanEditability(PlanInfo plan)
         {
-            bool result = false;
+            bool hasError = false;
 
             if (!PlanInfo.EditablePlanStatuses.Contains(plan.ApprovalStatus))
             {
-                Logger.Write(this, "Unapprove plan for make chages.", LogMessageType.Warning);
+                Logger.Write(this, "Unapprove plan for make changes.", LogMessageType.Warning);
+                hasError = true;
             }
-            else if (plan.MachineId == "")
+            if (plan.MachineId == "")
             {
                 Logger.Write(this, "Plan doesn't have beams.", LogMessageType.Warning);
+                hasError = true;
             }
-            else if (plan.Structures.Count() == 0)
+            if (plan.Structures.Count() == 0)
             {
                 Logger.Write(this, "Plan doesn't have structures.", LogMessageType.Warning);
+                hasError = true;
             }
-            else
-            {
-                result = true;
-            }
-            return result;
+
+            return !hasError;
         }
 
         public MainVM InitializeUI(Window window)
@@ -122,36 +121,34 @@ namespace LazyOptimizer.App
 
         public void PlansCacheAppStart(AppContext context)
         {
-            if (File.Exists(context.Settings.PlansCacheAppPath))
-            {
-                StringBuilder appArgs = new StringBuilder($"-db \"{context.Settings.SqliteDbPath}\"");
-                if (context.Settings.PlansCacheRecheckAllPatients)
-                {
-                    appArgs.Append(" -all");
-                }
-                if (context.Settings.PlansCacheVerboseMode)
-                {
-                    appArgs.Append(" -verbose");
-                }
-                if (context.Settings.DebugMode)
-                {
-                    appArgs.Append(" -debug");
-                }
-                context.PlansContext.Connected = false;
-                using (Process process = new Process())
-                {
-                    process.StartInfo.FileName = context.Settings.PlansCacheAppPath;
-                    process.StartInfo.Arguments = appArgs.ToString();
-                    process.Start();
-                    process.WaitForExit();
-                };
-                context.PlansContext.Connected = true;
-            }
-            else
+            if (!File.Exists(context.Settings.PlansCacheAppPath))
             {
                 Logger.Write(this, "PlansCache App not found. Check the Settings.", LogMessageType.Error);
+                return;
             }
 
+            StringBuilder appArgs = new StringBuilder($"-db \"{context.Settings.SqliteDbPath}\"");
+            if (context.Settings.PlansCacheRecheckAllPatients)
+            {
+                appArgs.Append(" -all");
+            }
+            if (context.Settings.PlansCacheVerboseMode)
+            {
+                appArgs.Append(" -verbose");
+            }
+            if (context.Settings.DebugMode)
+            {
+                appArgs.Append(" -debug");
+            }
+            context.PlansContext.Connected = false;
+            using (Process process = new Process())
+            {
+                process.StartInfo.FileName = context.Settings.PlansCacheAppPath;
+                process.StartInfo.Arguments = appArgs.ToString();
+                process.Start();
+                process.WaitForExit();
+            };
+            context.PlansContext.Connected = true;
         }
 
         public void Dispose()

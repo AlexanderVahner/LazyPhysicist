@@ -25,9 +25,10 @@
             
             
             <DockPanel Width="200" DockPanel.Dock="Right">
-                <StackPanel DockPanel.Dock="Bottom">
-                    <Button Content="Load into plan" Command="{Binding LoadIntoPlan}" Margin="5"/>
-                </StackPanel>
+                <Button DockPanel.Dock="Bottom" Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
+                <!--<StackPanel DockPanel.Dock="Bottom" Height="50">
+                    <Button Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5"/>
+                </StackPanel>-->
                 <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
                 <ListBox ItemsSource="{Binding UnusedStructures}">
                     <ListBox.ItemTemplate>
@@ -55,7 +56,7 @@
                 <StackPanel DockPanel.Dock="Bottom" Margin="5">
                     <StackPanel Orientation="Horizontal">
 
-                        <TextBlock> OAR's Priority:</TextBlock>
+                        <TextBlock Text="OARs Priority:"/>
                         <Button Content="=0" Command="{Binding SetOarsPriority}" CommandParameter="0"  Width="40" Margin="5 0 0 0"/>
                         <Button Content="As Is" Command="{Binding SetOarsPriority}" CommandParameter="-1" Width="40" Margin="5 0 0 0"/>
                         <StackPanel Orientation="Horizontal"  Margin="5 0 0 0">

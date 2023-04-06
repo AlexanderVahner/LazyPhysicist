@@ -17,8 +17,8 @@
             <StackPanel DockPanel.Dock="Top" Margin="5 5 5 5">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="0 0 5 0">
-                        <CheckBox Content="Match technique" IsChecked="{Binding MatchTechnique}"/>
-                        <CheckBox Content="Match Treatment Machine" IsChecked="{Binding MatchMachine}"/>
+                        <CheckBox Content="Same Technique" IsChecked="{Binding MatchTechnique}"/>
+                        <CheckBox Content="Same Treatment Machine" IsChecked="{Binding MatchMachine}"/>
                     </StackPanel>
                     <Button Content="Check Previous Plans" Command="{Binding RefreshPlans}" Margin="0 0 5 0" Padding="5"/>
                     <Button Content="{Binding BtnSettingsContent}" Command="{Binding TogglePages}" Margin="0 0 5 0" Padding="5"/>
