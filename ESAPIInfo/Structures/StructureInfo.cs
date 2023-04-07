@@ -3,13 +3,11 @@ using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
 {
-    public class StructureInfo
+    public class StructureInfo : IStructureInfo
     {
         public static readonly string[] TargetNames = { "PTV", "CTV", "GTV", "BOOST" };
-        //public static readonly string[] SkipStructureDicomTypes = { "EXTERNAL", "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION" };
         public static readonly string[] SupportStructureDicomTypes = { "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION", "UNKNOWN" };
         public static readonly string[] NonOptimizedStructureDicomTypes = { "SUPPORT", "FIXATION", "REGISTRATION", "UNKNOWN" };
-
 
         public static bool IsTarget(string structureId)
         {

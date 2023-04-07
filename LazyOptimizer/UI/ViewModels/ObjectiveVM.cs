@@ -8,30 +8,7 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class ObjectiveVM : ViewModel
     {
-        public ObjectiveInfo GetObjectiveInfo(Structure structure)
-        {
-            ObjectiveInfo result = null;
-            if (CachedObjective == null)
-            {
-                Logger.Write(this, "Objective View Model doesn't have an CachedObjective.", LogMessageType.Error);
-            }
-            else
-            {
-                result = new ObjectiveInfo()
-                {
-                    Type = (ObjectiveType)(CachedObjective.ObjType ?? 99),
-                    Structure = structure,
-                    StructureId = CachedObjective.StructureId,
-                    Priority = Priority,
-                    Operator = (Operator)CachedObjective.Operator,
-                    Dose = CachedObjective.Dose ?? .0,
-                    Volume = CachedObjective.Volume ?? .0,
-                    ParameterA = CachedObjective.ParameterA ?? .0
-                };
-            }
-
-            return result;
-        }
+        
 
         public void ResetPriority()
         {

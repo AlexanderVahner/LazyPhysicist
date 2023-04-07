@@ -10,7 +10,7 @@ namespace LazyOptimizer.App
     /// </summary>
     public class AppContext : IDisposable
     {
-        public PlanInfo CurrentPlan { get; set; }
+        public IPlanInfo CurrentPlan { get; set; }
         public Settings Settings { get; set; }
         public IDbService DbService { get; set; }
         public IPlansContext PlansContext { get; set; }

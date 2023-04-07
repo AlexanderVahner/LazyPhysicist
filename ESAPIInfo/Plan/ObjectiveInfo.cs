@@ -25,9 +25,9 @@ namespace ESAPIInfo.Plan
         //     None.
         None = 99
     }
-    public class ObjectiveInfo
+    public class ObjectiveInfo : IObjectiveInfo
     {
-        public static void GetObjectives(PlanInfo planInfo, IList<ObjectiveInfo> destination)
+        public static void GetObjectives(IPlanInfo planInfo, IList<ObjectiveInfo> destination)
         {
             if (planInfo?.Plan == null)
             {

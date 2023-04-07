@@ -40,7 +40,7 @@ namespace LazyOptimizer.App
         private bool plansCacheVerboseMode = true;
         private bool plansCacheRecheckAllPatients = false;
 
-        private int plansSelectLimit = 10;
+        private int plansSelectLimit = 30;
         private bool matchMachine = true;
         private bool matchTechnique = true;
         private bool loadNto = true;

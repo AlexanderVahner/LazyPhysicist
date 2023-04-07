@@ -1,4 +1,5 @@
-﻿using LazyOptimizer.UI.Views;
+﻿using LazyOptimizer.Model;
+using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
 using System.Windows.Controls;
@@ -21,7 +22,7 @@ namespace LazyOptimizer.UI.ViewModels
                     Logger.Write(this, $"There are already Optimization Objectives in this plan. Keep in mind...", LogMessageType.Warning);
                 }
 
-                HabitsVM habitsVM = new HabitsVM(context);
+                HabitsVM habitsVM = new HabitsVM(new HabitsModel(context), context);
 
                 habitsPage = new HabitsPage()
                 {

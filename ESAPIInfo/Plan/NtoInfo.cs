@@ -2,7 +2,7 @@
 
 namespace ESAPIInfo.Plan
 {
-    public class NtoInfo
+    public class NtoInfo : INtoInfo
     {
         public NtoInfo() { }
         public NtoInfo(OptimizationNormalTissueParameter nto)

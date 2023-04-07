@@ -63,9 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ESAPIInfo.cs" />
+    <Compile Include="Plan\INtoInfo.cs" />
     <Compile Include="Plan\NtoInfo.cs" />
+    <Compile Include="Plan\IObjectiveInfo.cs" />
     <Compile Include="Plan\ObjectiveInfo.cs" />
+    <Compile Include="Plan\IPlanInfo.cs" />
     <Compile Include="Plan\PlanInfo.cs" />
+    <Compile Include="Structures\IStructureInfo.cs" />
     <Compile Include="Structures\StructureInfo.cs" />
   </ItemGroup>
   <ItemGroup>

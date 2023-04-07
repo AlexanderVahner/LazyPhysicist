@@ -1,4 +1,6 @@
 ﻿using ESAPIInfo.Structures;
+using LazyOptimizer.Model;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,9 +13,38 @@ namespace LazyOptimizer.UI.ViewModels
     /// </summary>
     public partial class HabitsVM : ViewModel
     {
-        public HabitsVM(App.AppContext context)
+        private readonly HabitsModel habitsModel;
+        private readonly App.AppContext context;
+        private PlanVM selectedPlanVM;
+        public HabitsVM(HabitsModel habitsModel, App.AppContext context)
         {
-            InitializeModel(context);
+            this.habitsModel = habitsModel;
+            this.context = context;
+
+            UpdatePlans(context.PlansFilterArgs);
+            context.PlansFilterArgs.UpdateRequest += (s, args) =>
+            {
+                UpdatePlans(args);
+            };
+            NotifyPropertyChanged(nameof(LoadNto));
+            NotifyPropertyChanged(nameof(PrioritySetter));
+        }
+        private void UpdatePlans(PlansFilterArgs args)
+        {
+            Plans.Clear();
+            var plans = habitsModel.GetCachedPlans(args);
+            if ((plans?.Count() ?? 0) == 0)
+            {
+                Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
+                return;
+            }
+            foreach (var plan in plans)
+            {
+                PlanVM planVM = new PlanVM(context, plan.CachedPlan);
+                Plans.Add(planVM);
+            }
+
+            Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
         }
         public PlanVM SelectedPlan
         {
@@ -46,6 +77,6 @@ namespace LazyOptimizer.UI.ViewModels
         );
         public ObservableCollection<PlanVM> Plans { get; set; } = new ObservableCollection<PlanVM>();
         public ObservableCollection<StructureVM> Structures { get; } = new ObservableCollection<StructureVM>();
-        public ObservableCollection<StructureInfo> UnusedStructures { get; } = new ObservableCollection<StructureInfo>();
+        public ObservableCollection<IStructureInfo> UnusedStructures { get; } = new ObservableCollection<IStructureInfo>();
     }
 }

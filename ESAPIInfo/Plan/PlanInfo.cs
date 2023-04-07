@@ -8,7 +8,7 @@ using VMS.TPS.Common.Model.Types;
 
 namespace ESAPIInfo.Plan
 {
-    public class PlanInfo
+    public class PlanInfo : IPlanInfo
     {
         public static int MaxLengthOfStructureId = 3;
         public static readonly PlanSetupApprovalStatus[] EditablePlanStatuses = { PlanSetupApprovalStatus.UnApproved, PlanSetupApprovalStatus.Rejected };

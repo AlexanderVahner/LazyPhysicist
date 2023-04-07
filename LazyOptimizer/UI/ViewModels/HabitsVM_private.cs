@@ -7,47 +7,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
     // This class have a part in "HabitsVM" file
     public partial class HabitsVM : ViewModel
     {
-        private App.AppContext context;
-        private PlanVM selectedPlanVM;
-        private void InitializeModel(App.AppContext appContext)
-        {
-            if (appContext == null)
-            {
-                return;
-            }
-
-            this.context = appContext;
-            UpdatePlans(context.PlansFilterArgs);
-            context.PlansFilterArgs.UpdateRequest += (s, args) =>
-            {
-                UpdatePlans(args);
-            };
-            NotifyPropertyChanged(nameof(LoadNto));
-            NotifyPropertyChanged(nameof(PrioritySetter));
-        }
-        private void UpdatePlans(PlansFilterArgs args)
-        {
-            Plans.Clear();
-            var plans = context.PlansContext.GetPlans(args);
-            if ((plans?.Count() ?? 0) == 0)
-            {
-                Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
-                return;
-            }
-            foreach (var plan in plans)
-            {
-                PlanVM planVM = new PlanVM(context, plan);
-                Plans.Add(planVM);
-            }
-
-            Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
-        }
+        
+        
+        
 
         private void SetSelectedPlan(PlanVM planVM)
         {
@@ -122,7 +91,7 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         if (obj.CachedObjective != null)
                         {
-                            yield return obj.GetObjectiveInfo(s.APIStructure.Structure);
+                            yield return GetObjectiveInfo(obj.CachedObjective, s.APIStructure.Structure);
                         }
                     }
                 }
@@ -191,6 +160,30 @@ namespace LazyOptimizer.UI.ViewModels
                     }
                 }
             }
+        }
+        public ObjectiveInfo GetObjectiveInfo(CachedObjective objective, Structure structure)
+        {
+            ObjectiveInfo result = null;
+            if (objective == null)
+            {
+                Logger.Write(this, "Objective View Model doesn't have an CachedObjective.", LogMessageType.Error);
+            }
+            else
+            {
+                result = new ObjectiveInfo()
+                {
+                    Type = (ObjectiveType)(objective.ObjType ?? 99),
+                    Structure = structure,
+                    StructureId = objective.StructureId,
+                    Priority = objective.Priority ?? .0,
+                    Operator = (Operator)objective.Operator,
+                    Dose = objective.Dose ?? .0,
+                    Volume = objective.Volume ?? .0,
+                    ParameterA = objective.ParameterA ?? .0
+                };
+            }
+
+            return result;
         }
     }
 }
