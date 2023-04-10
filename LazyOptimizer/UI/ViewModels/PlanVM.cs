@@ -1,30 +1,41 @@
 ﻿using ESAPIInfo.Structures;
+using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
+using LazyPhysicist.Common;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    /// <summary>
-    /// ViewModel for PlanElement.xaml
-    /// This class has a part in "PlanVM_private" file
-    /// </summary>
     public partial class PlanVM : ViewModel
     {
-        public PlanVM(App.AppContext context, CachedPlan cachedPlan)
+        private readonly App.AppContext context;
+        private readonly IPlanBaseModel planBaseModel;
+        private readonly IPlanCachedModel planCachedModel;
+        private readonly IPlanMergedModel mergedPlanModel;
+        private ObservableCollection<StructureVM> structures;
+        private ObservableCollection<StructureInfo> structureSuggestions;
+        private NtoVM ntoVM;
+        public PlanVM(IPlanBaseModel planModel, App.AppContext context)
         {
+            if (planModel == null || context?.CurrentPlan == null)
+            {
+                Logger.Write(this, "Can't create a PlanVM - Plan Model or Context is NULL", LogMessageType.Error);
+                return;
+            }
             this.context = context;
-            this.cachedPlan = cachedPlan;
+            planBaseModel = planModel;
+            if (planModel is IPlanCachedModel pm)
+            {
+                planCachedModel = pm;
+            }
+            else
+            {
+                mergedPlanModel = planModel as IPlanMergedModel;
+            }
         }
-        public CachedPlan CachedPlan
-        {
-            get => cachedPlan;
-            set => SetProperty(ref cachedPlan, value);
-        }
-        public string PlanName => $"({CachedPlan?.PatientId}).[{CachedPlan?.CourseId}].{CachedPlan?.PlanId}";
-        public string CreationDate => CachedPlan?.CreationDate.ToString("g") ?? "";
-        public string StructuresString => CachedPlan?.StructuresString;
-        public List<CachedObjective> ObjectivesCache => GetCachedObjectives();
+        public string PlanName => planBaseModel.PlanTitle;
+        public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
         public ObservableCollection<StructureVM> Structures => GetStructureVMs();
         public ObservableCollection<StructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<StructureInfo>());
         public NtoVM NtoVM => GetNtoVM();

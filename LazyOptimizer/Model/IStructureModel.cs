@@ -15,7 +15,7 @@ namespace LazyOptimizer.Model
     {
         double GetObjectivesMaxDose();
         string CachedStructureId { get; }
-        ObservableCollection<IObjectiveModel> Objectives { get; }
+        List<IObjectiveModel> Objectives { get; }
         bool IsTarget { get; }
         IStructureInfo CurrentPlanStructure { get; set; }
         double OrderByDoseDescProperty { get; }

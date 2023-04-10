@@ -1,4 +1,5 @@
 ﻿using ESAPIInfo.Structures;
+using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
@@ -11,13 +12,6 @@ namespace LazyOptimizer.UI.ViewModels
     // This class have a part in "PlanVM" file
     public partial class PlanVM : ViewModel
     {
-        private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
-        private readonly App.AppContext context;
-        private CachedPlan cachedPlan;
-        private List<CachedObjective> objectivesCache;
-        private ObservableCollection<StructureVM> structures;
-        private ObservableCollection<StructureInfo> structureSuggestions;
-        private NtoVM ntoVM;
 
         private void LoadStructures()
         {

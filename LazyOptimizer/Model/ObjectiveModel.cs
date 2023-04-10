@@ -17,13 +17,13 @@ namespace LazyOptimizer.Model
         public ObjectiveModel(CachedObjective cachedObjective)
         {
             this.cachedObjective = cachedObjective;
+            ResetPriority();
         }
         public void ResetPriority()
         {
             Priority = cachedObjective?.Priority ?? 0;
         }
         public CachedObjective CachedObjective => cachedObjective;
-        public string Info => $"{CachedObjective.Dose} {CachedObjective.Volume} {CachedObjective.ParameterA}";
         public double? Dose => CachedObjective?.Dose;
         public double? Volume => CachedObjective?.Volume;
         public double? ParameterA => CachedObjective?.ParameterA;

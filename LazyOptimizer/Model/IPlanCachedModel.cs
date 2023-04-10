@@ -12,8 +12,10 @@ using System.Threading.Tasks;
 
 namespace LazyOptimizer.Model
 {
-    public interface IPlanModel : INotifyPropertyChanged
+    public interface IPlanCachedModel : IPlanBaseModel
     {
-        PlanModelType Type { get; }
+        DateTime CreationDate { get; }
+        string Description { get; set; }
+        long? SelectionFrequency { get; set; }
     }
 }

@@ -16,7 +16,6 @@ namespace LazyOptimizer.Model
         void ResetPriority();
         CachedObjective CachedObjective { get; }
         double Priority { get; set; }
-        string Info { get; }
         double? Dose { get; }
         double? Volume { get; }
         double? ParameterA { get; }

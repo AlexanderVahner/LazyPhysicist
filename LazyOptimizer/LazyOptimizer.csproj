@@ -85,16 +85,18 @@
     <Compile Include="App\Settings.cs" />
     <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
-    <Compile Include="Model\IPlanModel.cs" />
+    <Compile Include="Model\IMergedPlanModel.cs" />
+    <Compile Include="Model\IPlanBaseModel.cs" />
+    <Compile Include="Model\IPlanCachedModel.cs" />
     <Compile Include="Model\IObjectiveModel.cs" />
     <Compile Include="Model\IStructureModel.cs" />
     <Compile Include="Model\INtoModel.cs" />
     <Compile Include="Model\HabitsModel.cs" />
     <Compile Include="Model\NtoModel.cs" />
+    <Compile Include="Model\PlanBaseModel.cs" />
     <Compile Include="Model\StructureModel.cs" />
     <Compile Include="Model\ObjectiveModel.cs" />
-    <Compile Include="Model\PlanModelType.cs" />
-    <Compile Include="Model\PlanModel.cs" />
+    <Compile Include="Model\PlanCachedModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

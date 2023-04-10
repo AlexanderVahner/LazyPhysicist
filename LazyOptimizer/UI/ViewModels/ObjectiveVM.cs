@@ -8,8 +8,6 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class ObjectiveVM : ViewModel
     {
-        
-
         public void ResetPriority()
         {
             Priority = cachedObjective?.Priority ?? 0;

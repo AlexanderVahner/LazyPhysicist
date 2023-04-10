@@ -16,7 +16,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
-    public sealed class HabitsModel : Notifier
+    public sealed class HabitsModel
     {
         private readonly App.AppContext context;
         public HabitsModel(App.AppContext context)
@@ -24,7 +24,7 @@ namespace LazyOptimizer.Model
             this.context = context;
         }
 
-        public IEnumerable<PlanModel> GetCachedPlans(PlansFilterArgs args)
+        public IEnumerable<PlanCachedModel> GetCachedPlans(PlansFilterArgs args)
         {
             var plans = context.PlansContext.GetPlans(args);
             if ((plans?.Count() ?? 0) == 0)
@@ -33,10 +33,10 @@ namespace LazyOptimizer.Model
             }
             foreach (var plan in plans)
             {
-                yield return new PlanModel(plan, context);
+                yield return new PlanCachedModel(plan, context);
             }
         }
-        public void LoadObjectivesIntoCurrentPlan(PlanInfo currentPlan, IPlanModel cachedPlan, bool fillOnlyEmptyStructures)
+        public void LoadObjectivesIntoCurrentPlan(PlanInfo currentPlan, IPlanCachedModel cachedPlan, bool fillOnlyEmptyStructures)
         {
             if (cachedPlan == null)
             {
@@ -56,7 +56,7 @@ namespace LazyOptimizer.Model
         {
             PlanEdit.LoadNtoIntoPlan(currentPlan, ntoModel.NtoInfo);
         }
-        private IEnumerable<ObjectiveInfo> GetObjectivesForCurrentPlan(IPlanModel plan)
+        private IEnumerable<ObjectiveInfo> GetObjectivesForCurrentPlan(IPlanCachedModel plan)
         {
             if ((plan?.Structures.Count ?? 0) == 0)
             {
@@ -76,7 +76,7 @@ namespace LazyOptimizer.Model
                 }
             }
         }
-        public ObjectiveInfo GetObjectiveInfo(CachedObjective objective, Structure structure)
+        private ObjectiveInfo GetObjectiveInfo(CachedObjective objective, Structure structure)
         {
             ObjectiveInfo result = null;
             if (objective == null)

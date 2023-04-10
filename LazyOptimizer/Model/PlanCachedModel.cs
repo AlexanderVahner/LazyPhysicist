@@ -12,58 +12,61 @@ using System.Threading.Tasks;
 
 namespace LazyOptimizer.Model
 {
-    public sealed class PlanModel : Notifier, IPlanModel
+    public sealed class PlanCachedModel : PlanBaseModel, IPlanCachedModel
     {
+        private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
+
         private readonly App.AppContext context;
         private readonly CachedPlan cachedPlan;
         private List<CachedObjective> cachedObjectives;
-        private ObservableCollection<IStructureModel> structures;
-        private ObservableCollection<IStructureInfo> structureSuggestions;
+        private List<IStructureModel> structures;
         private INtoModel ntoModel;
-        public PlanModel(CachedPlan cachedPlan, App.AppContext context)
+        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context) : base(context)
         {
+            if (cachedPlan == null)
+            {
+                Logger.Write(this, "Can't create a PlanModel - Cached plan or Context is NULL", LogMessageType.Error);
+                return;
+            }
             this.cachedPlan = cachedPlan;
             this.context = context;
         }
-        public PlanModelType Type => PlanModelType.CachedPlan;
-        public CachedPlan CachedPlan => cachedPlan;
-        public string PlanName => $"({CachedPlan?.PatientId}).[{CachedPlan?.CourseId}].{CachedPlan?.PlanId}";
-        public string CreationDate => CachedPlan?.CreationDate.ToString("g") ?? "";
+        public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
+        public DateTime CreationDate => cachedPlan.CreationDate;
         public List<CachedObjective> CachedObjectives => GetCachedObjectives();
-        public ObservableCollection<IStructureModel> Structures => GetStructureModels();
-        public ObservableCollection<IStructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<IStructureInfo>());
+        public List<IStructureModel> Structures => GetStructureModels();
         public INtoModel NtoModel => GetNtoModel();
         public string Description
         {
-            get => CachedPlan?.Description;
+            get => cachedPlan.Description;
             set
             {
-                SetProperty((v) => { if (CachedPlan != null) CachedPlan.Description = v; }, value);
+                cachedPlan.Description = value;
                 context.PlansContext.UpdatePlan(cachedPlan);
             }
         }
         public long? SelectionFrequency
         {
-            get => CachedPlan?.SelectionFrequency;
+            get => cachedPlan?.SelectionFrequency;
             set
             {
-                SetProperty((v) => { if (CachedPlan != null) CachedPlan.SelectionFrequency = v; }, value);
-                context.PlansContext.UpdatePlan(CachedPlan);
+                cachedPlan.SelectionFrequency = value;
+                context.PlansContext.UpdatePlan(cachedPlan);
             }
         }
         private List<CachedObjective> GetCachedObjectives()
         {
             if (cachedObjectives == null && cachedPlan != null)
             {
-                cachedObjectives = context.PlansContext.GetObjectives(CachedPlan.RowId);
+                cachedObjectives = context.PlansContext.GetObjectives(cachedPlan.RowId);
             }
             return cachedObjectives;
         }
-        private ObservableCollection<IStructureModel> GetStructureModels()
+        private List<IStructureModel> GetStructureModels()
         {
             if (structures == null)
             {
-                structures = new ObservableCollection<IStructureModel>();
+                structures = new List<IStructureModel>();
                 LoadStructures();
             }
             return structures;
@@ -72,29 +75,18 @@ namespace LazyOptimizer.Model
         {
             if (ntoModel == null && cachedPlan != null)
             {
-                ntoModel = new NtoModel(context.PlansContext.GetNto(CachedPlan.RowId));
+                ntoModel = new NtoModel(context.PlansContext.GetNto(cachedPlan.RowId));
             }
             return ntoModel;
         }
-        private const double ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF = 0.7;
+        
 
         private void LoadStructures()
         {
             if ((structures?.Count ?? 0) == 0 && context.CurrentPlan != null && CachedObjectives != null)
             {
-                LoadCurrentPlanStructuresToSuggestions(context.CurrentPlan.Structures.OrderBy(s => s.Id));
                 LoadCachedObjectivesIntoStructures();
-                MatchStructures();
-            }
-        }
-        private void LoadCurrentPlanStructuresToSuggestions(IEnumerable<StructureInfo> structuresList)
-        {
-            foreach (StructureInfo structure in structuresList)
-            {
-                if (structure.CanOptimize)
-                {
-                    StructureSuggestions.Add(structure);
-                }
+                MatchStructures(context.CurrentPlan.Structures.OrderBy(s => s.Id));
             }
         }
         private void LoadCachedObjectivesIntoStructures()
@@ -118,24 +110,34 @@ namespace LazyOptimizer.Model
                 Structures.Add(s);
             }
         }
-        private void MatchStructures()
+        private void MatchStructures(IEnumerable<IStructureInfo> structureSuggestions)
         {
-            if (Structures.Count == 0 || StructureSuggestions.Count == 0)
+            List<IStructureInfo> suggestions = new List<IStructureInfo>();
+            foreach (IStructureInfo structure in structureSuggestions)
+            {
+                if (structure.CanOptimize)
+                {
+                    suggestions.Add(structure);
+                }
+            }
+
+            if (Structures.Count == 0 || suggestions.Count == 0)
             {
                 return;
             }
 
-            List<StructuresComparsion> comparsion = GetComparsionTable();
+            List<StructuresComparsion> comparsion = GetComparsionTable(suggestions);
 
             foreach (StructuresComparsion sc in comparsion.OrderBy(c => c.Distance))
             {
                 if (sc.StructureModel?.CurrentPlanStructure?.Structure == null
                     && sc.CurrentPlanStructure?.Structure != null
-                    && StructureSuggestions.Contains(sc.CurrentPlanStructure)
+                    && suggestions.Contains(sc.CurrentPlanStructure)
                     && (sc.Distance < (sc.CurrentPlanStructure.Id.Length * ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF)))
                 {
-                    sc.StructureModel.CurrentPlanStructure = sc.CurrentPlanStructure; // StructureModel removes structure from StructureSuggestions in APIStructure property, when it assigned
-                    if (StructureSuggestions.Count == 0 || Structures.Count(s => s.CurrentPlanStructure?.Structure == null) == 0)
+                    sc.StructureModel.CurrentPlanStructure = sc.CurrentPlanStructure;
+                    suggestions.Remove(sc.CurrentPlanStructure);
+                    if (suggestions.Count == 0 || Structures.Count(s => s.CurrentPlanStructure?.Structure == null) == 0)
                     {
                         break;
                     }
@@ -143,12 +145,12 @@ namespace LazyOptimizer.Model
             }
             comparsion.Clear();
         }
-        private List<StructuresComparsion> GetComparsionTable()
+        private List<StructuresComparsion> GetComparsionTable(List<IStructureInfo> suggestions)
         {
-            List<StructuresComparsion> comparsion = new List<StructuresComparsion>(Structures.Count * StructureSuggestions.Count);
+            List<StructuresComparsion> comparsion = new List<StructuresComparsion>(Structures.Count * suggestions.Count);
             foreach (IStructureModel s in Structures)
             {
-                foreach (IStructureInfo s_api in StructureSuggestions)
+                foreach (IStructureInfo s_api in suggestions)
                 {
                     string s1, s2;
                     s1 = s.CachedStructureId.Replace(" ", "").Replace("_", "");
