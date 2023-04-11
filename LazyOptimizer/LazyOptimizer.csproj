@@ -108,7 +108,6 @@
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="UI\ViewModels\NtoVM.cs" />
     <Compile Include="UI\ViewModels\ObjectiveVM.cs" />
-    <Compile Include="UI\ViewModels\PlanVM_private.cs" />
     <Compile Include="UI\ViewModels\PlanVM.cs" />
     <Compile Include="UI\ViewModels\SettingsVM.cs" />
     <Compile Include="UI\ViewModels\StructureVM.cs" />

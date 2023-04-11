@@ -128,7 +128,7 @@ namespace LazyOptimizer.UI.ViewModels
 
             if (context.Settings.LoadNto)
             {
-                PlanEdit.LoadNtoIntoPlan(context.CurrentPlan, SelectedPlan.NtoVM.CurrentNto);
+                PlanEdit.LoadNtoIntoPlan(context.CurrentPlan, SelectedPlan.NtoVM.Nto);
             }
         }
         private void SetPriorityForOars(string priorityString)

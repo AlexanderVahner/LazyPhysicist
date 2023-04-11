@@ -1,5 +1,6 @@
 ﻿using ESAPIInfo.Structures;
 using LazyOptimizer.UI.ViewModels;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,15 @@ namespace LazyOptimizer.Model
 {
     public sealed class StructureModel : Notifier, IStructureModel
     {
-        private List<IObjectiveModel> objectives;
+        private List<CachedObjective> objectives;
         private IStructureInfo currentPlanStructure;
         public StructureModel(string cachedStructureId)
         {
             CachedStructureId = cachedStructureId;
         }
-        public double GetObjectivesMaxDose() => objectives?.Max(o => o?.CachedObjective?.Dose ?? .0) ?? .0;
+        public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
         public string CachedStructureId { get; }
-        public List<IObjectiveModel> Objectives => objectives ?? (objectives = new List<IObjectiveModel>());
+        public List<CachedObjective> Objectives => objectives ?? (objectives = new List<CachedObjective>());
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
         public double OrderByDoseDescProperty => GetObjectivesMaxDose() + (IsTarget ? 1000 : 0);
         public IStructureInfo CurrentPlanStructure

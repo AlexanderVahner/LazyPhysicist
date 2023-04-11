@@ -5,38 +5,21 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class NtoVM : ViewModel
     {
-        private CachedNto cachedNto;
-        public CachedNto CachedNto
-        {
-            get => cachedNto;
-            set
-            {
-                SetProperty(ref cachedNto, value);
-                NotifyPropertyChanged("NtoInfo");
-            }
-        }
-        private NtoInfo currentNto;
-        public NtoInfo CurrentNto
+        private INtoInfo nto;
+        public INtoInfo Nto
         {
             get
             {
-                if (currentNto == null && cachedNto != null)
+                if (nto == null)
                 {
-                    currentNto = new NtoInfo()
-                    {
-                        IsAutomatic = cachedNto.IsAutomatic,
-                        DistanceFromTargetBorderInMM = cachedNto.DistanceFromTargetBorderInMM ?? 0,
-                        StartDosePercentage = cachedNto.StartDosePercentage ?? 0,
-                        EndDosePercentage = cachedNto.EndDosePercentage ?? 0,
-                        FallOff = cachedNto.FallOff ?? 0,
-                        Priority = cachedNto.Priority ?? 0
-                    };
+                    nto = new NtoInfo();
                 }
-                return currentNto;
+                return nto;
             }
+            set => SetProperty(ref nto, value);
         }
-        public string NtoString => CurrentNto == null ? "Not set" :
-            "NTO: " + (CurrentNto.IsAutomatic ? $"Automatic, Priority: {CurrentNto.Priority}" : $"Manual, Priority: {CurrentNto.Priority}, {CurrentNto.DistanceFromTargetBorderInMM}mm, {CurrentNto.StartDosePercentage}%=>{CurrentNto.EndDosePercentage}%, f={CurrentNto.FallOff}");
+        public string NtoString => Nto == null ? "Not set" :
+            "NTO: " + (Nto.IsAutomatic ? $"Automatic, Priority: {Nto.Priority}" : $"Manual, Priority: {Nto.Priority}, {Nto.DistanceFromTargetBorderInMM}mm, {Nto.StartDosePercentage}%=>{Nto.EndDosePercentage}%, f={Nto.FallOff}");
         public override string ToString()
         {
             return NtoString;

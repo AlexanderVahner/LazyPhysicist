@@ -1,4 +1,5 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizer.UI.ViewModels;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
@@ -18,12 +19,13 @@ namespace LazyOptimizer.Model
 
         private readonly App.AppContext context;
         private readonly CachedPlan cachedPlan;
+        private ObservableCollection<IStructureModel> structures;
         private List<CachedObjective> cachedObjectives;
-        private List<IStructureModel> structures;
-        private INtoModel ntoModel;
-        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context) : base(context)
+        private CachedNto cachedNto;
+        private NtoInfo ntoInfo;
+        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context)
         {
-            if (cachedPlan == null)
+            if (cachedPlan == null || context?.CurrentPlan == null)
             {
                 Logger.Write(this, "Can't create a PlanModel - Cached plan or Context is NULL", LogMessageType.Error);
                 return;
@@ -31,11 +33,41 @@ namespace LazyOptimizer.Model
             this.cachedPlan = cachedPlan;
             this.context = context;
         }
+        protected override ObservableCollection<IStructureModel> GetStructures()
+        {
+            if (structures == null)
+            {
+                structures = new ObservableCollection<IStructureModel>();
+                LoadCachedObjectivesIntoStructures();
+                MatchStructures(context.CurrentPlan.Structures.OrderBy(s => s.Id));
+            }
+            return structures;
+        }
+        protected override ObservableCollection<IStructureInfo> GetStructureSuggestions()
+        {
+            throw new NotImplementedException();
+        }
+        protected override INtoInfo GetNto()
+        {
+            if (ntoInfo == null)
+            {
+                cachedNto = context.PlansContext.GetNto(cachedPlan.RowId);
+                ntoInfo = new NtoInfo();
+                if (cachedPlan != null)
+                {
+                    ntoInfo.IsAutomatic = cachedNto.IsAutomatic;
+                    ntoInfo.DistanceFromTargetBorderInMM = cachedNto.DistanceFromTargetBorderInMM ?? 0;
+                    ntoInfo.StartDosePercentage = cachedNto.StartDosePercentage ?? 0;
+                    ntoInfo.EndDosePercentage = cachedNto.EndDosePercentage ?? 0;
+                    ntoInfo.FallOff = cachedNto.FallOff ?? 0;
+                    ntoInfo.Priority = cachedNto.Priority ?? 0;
+                };
+            }
+            return ntoInfo;
+        }
         public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
         public DateTime CreationDate => cachedPlan.CreationDate;
         public List<CachedObjective> CachedObjectives => GetCachedObjectives();
-        public List<IStructureModel> Structures => GetStructureModels();
-        public INtoModel NtoModel => GetNtoModel();
         public string Description
         {
             get => cachedPlan.Description;
@@ -62,33 +94,6 @@ namespace LazyOptimizer.Model
             }
             return cachedObjectives;
         }
-        private List<IStructureModel> GetStructureModels()
-        {
-            if (structures == null)
-            {
-                structures = new List<IStructureModel>();
-                LoadStructures();
-            }
-            return structures;
-        }
-        private INtoModel GetNtoModel()
-        {
-            if (ntoModel == null && cachedPlan != null)
-            {
-                ntoModel = new NtoModel(context.PlansContext.GetNto(cachedPlan.RowId));
-            }
-            return ntoModel;
-        }
-        
-
-        private void LoadStructures()
-        {
-            if ((structures?.Count ?? 0) == 0 && context.CurrentPlan != null && CachedObjectives != null)
-            {
-                LoadCachedObjectivesIntoStructures();
-                MatchStructures(context.CurrentPlan.Structures.OrderBy(s => s.Id));
-            }
-        }
         private void LoadCachedObjectivesIntoStructures()
         {
             string structureId = "";
@@ -107,7 +112,7 @@ namespace LazyOptimizer.Model
 
             foreach (IStructureModel s in tempStructures.OrderByDescending(s => s.OrderByDoseDescProperty))
             {
-                Structures.Add(s);
+                structures.Add(s);
             }
         }
         private void MatchStructures(IEnumerable<IStructureInfo> structureSuggestions)
@@ -121,7 +126,7 @@ namespace LazyOptimizer.Model
                 }
             }
 
-            if (Structures.Count == 0 || suggestions.Count == 0)
+            if (structures.Count == 0 || suggestions.Count == 0)
             {
                 return;
             }
@@ -137,7 +142,7 @@ namespace LazyOptimizer.Model
                 {
                     sc.StructureModel.CurrentPlanStructure = sc.CurrentPlanStructure;
                     suggestions.Remove(sc.CurrentPlanStructure);
-                    if (suggestions.Count == 0 || Structures.Count(s => s.CurrentPlanStructure?.Structure == null) == 0)
+                    if (suggestions.Count == 0 || structures.Count(s => s.CurrentPlanStructure?.Structure == null) == 0)
                     {
                         break;
                     }
@@ -147,8 +152,8 @@ namespace LazyOptimizer.Model
         }
         private List<StructuresComparsion> GetComparsionTable(List<IStructureInfo> suggestions)
         {
-            List<StructuresComparsion> comparsion = new List<StructuresComparsion>(Structures.Count * suggestions.Count);
-            foreach (IStructureModel s in Structures)
+            List<StructuresComparsion> comparsion = new List<StructuresComparsion>(structures.Count * suggestions.Count);
+            foreach (IStructureModel s in structures)
             {
                 foreach (IStructureInfo s_api in suggestions)
                 {

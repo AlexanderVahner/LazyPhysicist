@@ -1,4 +1,5 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizer.UI.ViewModels;
 using LazyOptimizerDataService.DBModel;
 using System;
@@ -14,8 +15,9 @@ namespace LazyOptimizer.Model
 {
     public interface IPlanBaseModel
     {
+        ObservableCollection<IStructureModel> Structures { get; }
+        ObservableCollection<IStructureInfo> StructureSuggestions { get; }
+        INtoInfo NtoInfo { get; }
         string PlanTitle { get; }
-        List<IStructureModel> Structures { get; }
-        INtoModel NtoModel { get; }
     }
 }
