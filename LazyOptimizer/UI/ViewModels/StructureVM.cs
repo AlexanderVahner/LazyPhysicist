@@ -1,4 +1,5 @@
 ﻿using ESAPIInfo.Structures;
+using LazyOptimizer.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -6,13 +7,17 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public class StructureVM : ViewModel
     {
+        private readonly IStructureModel structureModel;
         private StructureInfo apiStructure;
         private StructureInfo apiStructureHack;
-
         private ObservableCollection<ObjectiveVM> objectives;
-        public string DBStructureId { get; set; }
-        public StructureInfo APIStructure
+        public StructureVM(IStructureModel structureModel)
         {
+            this.structureModel = structureModel;
+        }
+        public string DBStructureId => structureModel.CachedStructureId;
+        public StructureInfo APIStructure
+        {!
             get => apiStructure;
             set
             {

@@ -13,21 +13,47 @@ namespace LazyOptimizer.Model
 {
     public sealed class StructureModel : Notifier, IStructureModel
     {
-        private List<CachedObjective> objectives;
-        private IStructureInfo currentPlanStructure;
-        public StructureModel(string cachedStructureId)
+        private List<IObjectiveModel> objectives;
+        private IStructureSuggestionModel currentPlanStructure;
+        public StructureModel(string cachedStructureId, ObservableCollection<IStructureSuggestionModel> structureSuggestions)
         {
             CachedStructureId = cachedStructureId;
+            StructureSuggestions = structureSuggestions;
+
         }
+        public void AddObjective(CachedObjective objective)
+        {
+            Objectives.Add(new ObjectiveModel(objective));
+        }
+        public void AddObjective(IObjectiveModel objective)
+        {
+            Objectives.Add(objective);
+        }
+        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
         public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
         public string CachedStructureId { get; }
-        public List<CachedObjective> Objectives => objectives ?? (objectives = new List<CachedObjective>());
+        public List<IObjectiveModel> Objectives => objectives ?? (objectives = new List<IObjectiveModel>());
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
         public double OrderByDoseDescProperty => GetObjectivesMaxDose() + (IsTarget ? 1000 : 0);
-        public IStructureInfo CurrentPlanStructure
+        public IStructureSuggestionModel CurrentPlanStructure
         {
             get => currentPlanStructure;
-            set => SetProperty(ref currentPlanStructure, value);
+            set
+            {
+                if (value != null && !Equals(currentPlanStructure, value))
+                {
+                    if (currentPlanStructure?.StructureInfo != null)
+                    {
+                        StructureSuggestions.Insert(1, currentPlanStructure); // Insertion into postion 1 because it must be under <none> element
+                    }
+
+                    if (value?.StructureInfo != null)
+                    {
+                        StructureSuggestions.Remove(value);
+                    }
+                    SetProperty(ref currentPlanStructure, value);
+                }
+            }
         }
     }
 }

@@ -52,9 +52,9 @@ namespace LazyOptimizer.Model
             PlanEdit.LoadObjectives(currentPlan, objectives, fillOnlyEmptyStructures);
             cachedPlan.SelectionFrequency++;
         }
-        public void LoadNtoIntoCurrentPlan(IPlanInfo currentPlan, INtoModel ntoModel)
+        public void LoadNtoIntoCurrentPlan(IPlanInfo currentPlan, INtoInfo nto)
         {
-            PlanEdit.LoadNtoIntoPlan(currentPlan, ntoModel.NtoInfo);
+            PlanEdit.LoadNtoIntoPlan(currentPlan, nto);
         }
         private IEnumerable<ObjectiveInfo> GetObjectivesForCurrentPlan(IPlanCachedModel plan)
         {
@@ -64,13 +64,13 @@ namespace LazyOptimizer.Model
             }
             foreach (IStructureModel s in plan.Structures)
             {
-                if (s.CurrentPlanStructure != null && s.CurrentPlanStructure.IsAssigned && s.Objectives.Count() > 0)
+                if (s.CurrentPlanStructure != null && s.CurrentPlanStructure.StructureInfo != null && s.Objectives.Count() > 0)
                 {
                     foreach (IObjectiveModel obj in s.Objectives)
                     {
                         if (obj.CachedObjective != null)
                         {
-                            yield return GetObjectiveInfo(obj.CachedObjective, s.CurrentPlanStructure.Structure);
+                            yield return GetObjectiveInfo(obj.CachedObjective, s.CurrentPlanStructure.StructureInfo.Structure);
                         }
                     }
                 }

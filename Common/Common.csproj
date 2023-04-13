@@ -61,6 +61,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="MetaCommand.cs" />
     <Compile Include="Notifier.cs" />
+    <Compile Include="SlaveCollection.cs" />
     <Compile Include="Xml.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,7 +8,6 @@ namespace ESAPIInfo.Structures
         bool IsTarget();
         Structure Structure { get; set; }
         string Id { get; }
-        bool IsAssigned { get; }
         string DicomType { get; }
         bool IsSupport { get; }
         bool CanOptimize { get; }

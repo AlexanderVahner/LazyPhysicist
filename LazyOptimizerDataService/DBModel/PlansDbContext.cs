@@ -133,7 +133,7 @@ namespace LazyOptimizerDataService.DBModel
             {
                 objectives = new List<CachedObjective>();
 
-                string sqlRequest = "SELECT RowId, PlanRowId, StructureId, ObjType, Priority, Operator, Dose, Volume, ParameterA FROM Objectives WHERE (PlanRowId = ?);";
+                string sqlRequest = "SELECT RowId, PlanRowId, StructureId, ObjType, Priority, Operator, Dose, Volume, ParameterA FROM Objectives WHERE (PlanRowId = ?) ORDER BY StructureId;";
 
                 var reader = db.Select(sqlRequest, new object[] { planRowId });
                 while (reader.Read())

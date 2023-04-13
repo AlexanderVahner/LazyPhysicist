@@ -40,7 +40,7 @@ namespace LazyOptimizer.UI.ViewModels
             }
             foreach (var plan in plans)
             {
-                PlanVM planVM = new PlanVM(context, plan.CachedPlan);
+                PlanVM planVM = new PlanVM(new PlanCachedModel(plan.CachedPlan) context, plan.CachedPlan);
                 Plans.Add(planVM);
             }
 
@@ -77,6 +77,6 @@ namespace LazyOptimizer.UI.ViewModels
         );
         public ObservableCollection<PlanVM> Plans { get; set; } = new ObservableCollection<PlanVM>();
         public ObservableCollection<StructureVM> Structures { get; } = new ObservableCollection<StructureVM>();
-        public ObservableCollection<IStructureInfo> UnusedStructures { get; } = new ObservableCollection<IStructureInfo>();
+        public ObservableCollection<IStructureSuggestionModel> UnusedStructures { get; } = new ObservableCollection<IStructureSuggestionModel>();
     }
 }

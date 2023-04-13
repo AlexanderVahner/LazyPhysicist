@@ -16,7 +16,7 @@ namespace LazyOptimizer.Model
     public interface IPlanBaseModel
     {
         ObservableCollection<IStructureModel> Structures { get; }
-        ObservableCollection<IStructureInfo> StructureSuggestions { get; }
+        ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
         INtoInfo NtoInfo { get; }
         string PlanTitle { get; }
     }

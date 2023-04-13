@@ -16,11 +16,11 @@ namespace LazyOptimizer.Model
     public abstract class PlanBaseModel : IPlanBaseModel
     {
         public ObservableCollection<IStructureModel> Structures => GetStructures();
-        public ObservableCollection<IStructureInfo> StructureSuggestions { get; }
+        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
         public INtoInfo NtoInfo => GetNto();
         public abstract string PlanTitle { get; }
         protected abstract ObservableCollection<IStructureModel> GetStructures();
-        protected abstract ObservableCollection<IStructureInfo> GetStructureSuggestions();
+        protected abstract ObservableCollection<IStructureSuggestionModel> GetStructureSuggestions();
         protected abstract INtoInfo GetNto();
     }
 }

@@ -14,10 +14,6 @@ namespace ESAPIInfo.Structures
             return StructureInfo.TargetNames.FirstOrDefault(tn => structureId.StartsWith(tn)) != null;
         }
 
-        public StructureInfo()
-        {
-
-        }
         public StructureInfo(Structure structure)
         {
             Structure = structure;
@@ -27,15 +23,7 @@ namespace ESAPIInfo.Structures
             return Structure != null && StructureInfo.IsTarget(Structure.Id);
         }
         public Structure Structure { get; set; }
-        public string Id
-        {
-            get => Structure?.Id ?? "<none>";
-            set
-            {
-
-            }
-        }
-        public bool IsAssigned => Structure != null;
+        public string Id => Structure?.Id ?? "<none>";
         public string DicomType => Structure?.DicomType ?? "UNKNOWN";
         public bool IsSupport => SupportStructureDicomTypes.Contains(DicomType);
         public bool CanOptimize => !NonOptimizedStructureDicomTypes.Contains(DicomType);
