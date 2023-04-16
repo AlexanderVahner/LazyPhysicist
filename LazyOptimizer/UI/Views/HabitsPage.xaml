@@ -64,8 +64,7 @@
                             <TextBox Text="{Binding Path=PrioritySetter, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
                         </StackPanel>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedPlan.NtoVM}" Margin="0 5
-                              0 0"/>
+                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedNtoString}" Margin="0 5 0 0"/>
                 </StackPanel>
 
                 <ListBox ItemsSource="{Binding Structures}">

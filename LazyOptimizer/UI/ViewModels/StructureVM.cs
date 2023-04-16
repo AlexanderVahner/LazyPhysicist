@@ -1,63 +1,66 @@
 ﻿using ESAPIInfo.Structures;
 using LazyOptimizer.Model;
+using LazyPhysicist.Common;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class StructureVM : ViewModel
+    public class StructureVM : ViewModel<IStructureModel>
     {
         private readonly IStructureModel structureModel;
-        private StructureInfo apiStructure;
-        private StructureInfo apiStructureHack;
-        private ObservableCollection<ObjectiveVM> objectives;
-        public StructureVM(IStructureModel structureModel)
+        private IStructureSuggestionModel planStructure;
+        private IStructureSuggestionModel planStructureHack;
+        private SlaveCollection<IObjectiveModel, ObjectiveVM> objectives;
+        public StructureVM(IStructureModel structureModel) : base(structureModel)
         {
             this.structureModel = structureModel;
+            StructureSuggestions = structureModel.StructureSuggestions;
+            Objectives = new SlaveCollection<IObjectiveModel, ObjectiveVM>(structureModel.Objectives, m => new ObjectiveVM(m), vm => vm.SourceModel);
         }
-        public string DBStructureId => structureModel.CachedStructureId;
-        public StructureInfo APIStructure
-        {!
-            get => apiStructure;
+        public string CachedStructureId => structureModel.CachedStructureId;
+        public IStructureSuggestionModel PlanStructure
+        {
+            get => planStructure;
             set
             {
-                if (value != null && !Equals(apiStructure, value))
+                if (value != null && !Equals(planStructure, value))
                 {
-                    if (apiStructure?.Structure != null)
+                    if (planStructure?.StructureInfo != null)
                     {
-                        StructureSuggestions.Insert(1, apiStructure); // Insertion into postion 1 because it must be under <none> element
+                        StructureSuggestions.Insert(1, planStructure); // Insertion into postion 1 because it must be under <none> element
                     }
 
-                    if (value?.Structure != null)
+                    if (value?.StructureInfo != null)
                     {
                         StructureSuggestions.Remove(value);
                     }
-                    SetProperty(ref apiStructure, value);
+                    SetProperty(ref planStructure, value);
                 }
             }
 
         }
 
-        // Buffer for combobox
-        public StructureInfo APIStructureHack
+        // Buffer for WPF combobox. Because a problem in changing ItemsSource (Removing a selected element)
+        public IStructureSuggestionModel PlanStructureHack
         {
-            get => apiStructureHack;
+            get => planStructureHack;
             set
             {
-                if (!Equals(apiStructureHack, value))
+                if (!Equals(planStructureHack, value))
                 {
-                    SetProperty(ref apiStructureHack, value);
+                    SetProperty(ref planStructureHack, value);
                     if (value != null)
                     {
-                        APIStructure = value;
+                        PlanStructure = value;
                     }
                 }
             }
         }
-        public ObservableCollection<StructureInfo> StructureSuggestions { get; set; }
-        public ObservableCollection<ObjectiveVM> Objectives => objectives ?? (objectives = new ObservableCollection<ObjectiveVM>());
-        public bool IsTarget => StructureInfo.IsTarget(DBStructureId);
-        public double MaxObjectiveDose => objectives?.Max(o => o?.CachedObjective?.Dose ?? .0) ?? .0;
+        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
+        public SlaveCollection<IObjectiveModel, ObjectiveVM> Objectives { get; }
+        public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
+        public double MaxObjectiveDose => objectives?.Max(o => o?.Dose ?? .0) ?? .0;
         public double OrderByDoseDescProperty => MaxObjectiveDose + (IsTarget ? 1000 : 0);
     }
 }

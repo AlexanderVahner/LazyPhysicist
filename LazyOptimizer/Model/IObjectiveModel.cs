@@ -1,4 +1,5 @@
 ﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
@@ -13,13 +14,14 @@ namespace LazyOptimizer.Model
 {
     public interface IObjectiveModel : INotifyPropertyChanged
     {
+        ObjectiveInfo GetObjectiveInfo(IStructureInfo structure);
         void ResetPriority();
         CachedObjective CachedObjective { get; }
         double Priority { get; set; }
         double? Dose { get; }
         double? Volume { get; }
         double? ParameterA { get; }
-        ObjectiveType ObjectiveDBType { get; }
-        Operator ObjectiveDBOperator { get; }
+        ObjectiveType ObjType { get; }
+        Operator Operator { get; }
     }
 }

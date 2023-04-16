@@ -6,9 +6,6 @@
              xmlns:local="clr-namespace:LazyOptimizer.UI.Views" xmlns:viewmodels="clr-namespace:LazyOptimizer.UI.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <!--<UserControl.DataContext>
-        <viewmodels:StructureVM/>
-    </UserControl.DataContext>-->
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -28,12 +25,12 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding DBStructureId}" FontSize="14" FontWeight="Bold"/>
+                <TextBlock Grid.Column="0" Text="{Binding CachedStructureId}" FontSize="14" FontWeight="Bold"/>
                 <ComboBox Grid.Column="1" x:Name="APIStructureComboBox" 
                                     ItemsSource="{Binding StructureSuggestions}" 
-                                    SelectedItem="{Binding APIStructureHack}" 
+                                    SelectedItem="{Binding PlanStructureHack}" 
                                     IsEditable="True" 
-                                    Text="{Binding Path=APIStructure.Id}"
+                                    Text="{Binding Path=PlanStructure.Id}"
                                     IsReadOnly="True"
                                     Width="150"
                                     HorizontalAlignment="Right"

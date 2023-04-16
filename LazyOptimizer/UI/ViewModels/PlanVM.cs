@@ -1,4 +1,5 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
@@ -8,24 +9,17 @@ using System.Linq;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public sealed class PlanVM : ViewModel
+    public sealed class PlanVM : ViewModel<IPlanBaseModel>
     {
-        private readonly App.AppContext context;
-        private readonly IPlanBaseModel planBaseModel;
         private readonly IPlanCachedModel planCachedModel;
         private readonly IPlanMergedModel mergedPlanModel;
-        private ObservableCollection<StructureVM> structures;
-        private ObservableCollection<StructureInfo> structureSuggestions;
-        private NtoVM ntoVM;
-        public PlanVM(IPlanBaseModel planModel, App.AppContext context)
+        public PlanVM(IPlanBaseModel planModel) : base(planModel) 
         {
-            if (planModel == null || context?.CurrentPlan == null)
+            if (planModel == null)
             {
-                Logger.Write(this, "Can't create a PlanVM - Plan Model or Context is NUL L", LogMessageType.Error);
+                Logger.Write(this, "Can't create a PlanVM - Plan Model is NULL", LogMessageType.Error);
                 return;
             }
-            this.context = context;
-            planBaseModel = planModel;
 
             // Plan Model Type recognition
             if (planModel is IPlanCachedModel pm)
@@ -37,49 +31,9 @@ namespace LazyOptimizer.UI.ViewModels
                 mergedPlanModel = planModel as IPlanMergedModel;
             }
         }
-        private ObservableCollection<StructureVM> GetStructureVMs()
-        {
-            if (structures == null)
-            {
-                structures = new ObservableCollection<StructureVM>();
-                UpdateStructures();
-            }
-            return structures;
-        }
-        private void UpdateStructures()
-        {
-            structures.Clear();
-            foreach (IStructureModel s in planBaseModel.Structures)
-            {
-                structures.Add(new StructureVM(s));
-            }
-        }
-        private void UpdateStructureSuggestions()
-        {
-            foreach (IStructureInfo structure in context.CurrentPlan.Structures.Where(s =>  planBaseModel.Structures.Select(s => { s.CurrentPlanStructure }))
-        }
-        private NtoVM GetNtoVM()
-        {
-            if (ntoVM == null)
-            {
-                UpdateNto();
-            }
-            return ntoVM;
-        }
-        private void UpdateNto()
-        {
-            ntoVM = new NtoVM()
-            {
-                Nto = planBaseModel.NtoInfo
-            };
-
-            NotifyPropertyChanged(nameof(ntoVM));
-        }
-        public string PlanName => planBaseModel.PlanTitle;
+        public string PlanName => SourceModel.PlanTitle;
         public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
-        public ObservableCollection<StructureVM> Structures => GetStructureVMs();
-        public ObservableCollection<StructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<StructureInfo>());
-        public NtoVM NtoVM => GetNtoVM();
+        public INtoInfo Nto => SourceModel.NtoInfo;
         public string Description
         {
             get => planCachedModel?.Description ?? "";

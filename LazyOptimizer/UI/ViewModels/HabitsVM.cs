@@ -1,56 +1,138 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
+using LazyOptimizer.App;
+using LazyOptimizer.ESAPI;
 using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    /// <summary>
-    /// ViewModel for HabitsPage.xaml
-    /// This class has a part in "HabitsVM_private" file
-    /// </summary>
-    public partial class HabitsVM : ViewModel
+    public sealed class HabitsVM : ViewModel<HabitsModel>
     {
-        private readonly HabitsModel habitsModel;
-        private readonly App.AppContext context;
+        private readonly AppContext context;
         private PlanVM selectedPlanVM;
-        public HabitsVM(HabitsModel habitsModel, App.AppContext context)
+        private string selectedNtoString;
+        public HabitsVM(HabitsModel habitsModel, AppContext context) : base(habitsModel)
         {
-            this.habitsModel = habitsModel;
             this.context = context;
+            Plans = new SlaveCollection<IPlanBaseModel, PlanVM>(habitsModel.PlanModels, m => new PlanVM(m), vm => vm.SourceModel);
 
-            UpdatePlans(context.PlansFilterArgs);
-            context.PlansFilterArgs.UpdateRequest += (s, args) =>
-            {
-                UpdatePlans(args);
-            };
             NotifyPropertyChanged(nameof(LoadNto));
             NotifyPropertyChanged(nameof(PrioritySetter));
         }
-        private void UpdatePlans(PlansFilterArgs args)
+        private void BindCollections(PlanVM plan)
         {
-            Plans.Clear();
-            var plans = habitsModel.GetCachedPlans(args);
-            if ((plans?.Count() ?? 0) == 0)
+            if (plan?.SourceModel == null)
             {
-                Logger.Write(this, "Seems like you don't have matched plans. Maybe you need to recheck them?", LogMessageType.Warning);
+                Structures.BreakFree();
+                UnusedStructures.BreakFree();
+            }
+            else
+            {
+                Structures.ObeyTheMaster(plan.SourceModel.Structures, m => CreateStructureVM(m), vm => vm.SourceModel);
+                UnusedStructures.ObeyTheMaster(plan.SourceModel.StructureSuggestions, m => m, vm => vm);
+            }
+        }
+        private StructureVM CreateStructureVM(IStructureModel model)
+        {
+            StructureVM result = new StructureVM(model);
+            return result;
+        }
+        private void FillCurrentPlan()
+        {
+            if (SelectedPlan == null)
+            {
                 return;
             }
-            foreach (var plan in plans)
+
+            bool fillOnlyEmptyStructures = false;
+            MessageBoxResult answer;
+            if (context.CurrentPlan.ObjectivesCount > 0)
             {
-                PlanVM planVM = new PlanVM(new PlanCachedModel(plan.CachedPlan) context, plan.CachedPlan);
-                Plans.Add(planVM);
+                answer = MessageBox.Show("The plan already has Optimization Objectives.\nDo you want to add all of it?\nClick No if you want to fill only empty structures", "Do you?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                if (answer == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                fillOnlyEmptyStructures = answer == MessageBoxResult.No;
             }
 
-            Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
+            SourceModel.LoadObjectivesIntoCurrentPlan(SelectedPlan.SourceModel, fillOnlyEmptyStructures);
+
+            if (context.Settings.LoadNto && SelectedPlan.Nto != null)
+            {
+                SourceModel.LoadNtoIntoCurrentPlan(SelectedPlan.Nto);
+            }
         }
+        private void SetPriorityForOars(string priorityString)
+        {
+            if (SelectedPlan == null)
+            {
+                return;
+            }
+            if (!double.TryParse(priorityString, out double priority))
+            {
+                Logger.Write(this, "Enter priority.", LogMessageType.Warning);
+                return;
+            }
+
+            foreach (var structure in Structures)
+            {
+                if (structure.IsTarget)
+                {
+                    continue;
+                }
+                foreach (var objective in structure.Objectives)
+                {
+                    if (priority == -1)
+                    {
+                        objective.ResetPriority();
+                    }
+                    else
+                    {
+                        objective.Priority = priority;
+                    }
+                }
+            }
+        }
+        public void UpdateNto(INtoInfo nto)
+        {
+            if (nto == null)
+            {
+                SelectedNtoString = "Load NTO";
+                return;
+            }
+
+            if (nto.IsAutomatic)
+            {
+                SelectedNtoString = $"NTO: Automatic, Priority: {nto.Priority}";
+            }
+            else
+            {
+                SelectedNtoString = $"NTO: Manual, Priority: {nto.Priority}, {nto.DistanceFromTargetBorderInMM}mm, {nto.StartDosePercentage}%=>{nto.EndDosePercentage}%, f={nto.FallOff}";
+            }
+        }
+        public SlaveCollection<IPlanBaseModel, PlanVM> Plans { get; }
+        public SlaveCollection<IStructureModel, StructureVM> Structures { get; } = new SlaveCollection<IStructureModel, StructureVM> { };
+        public SlaveCollection<IStructureSuggestionModel, IStructureSuggestionModel> UnusedStructures { get; } = new SlaveCollection<IStructureSuggestionModel, IStructureSuggestionModel> { };
         public PlanVM SelectedPlan
         {
             get => selectedPlanVM;
-            set => SetProperty((v) => SetSelectedPlan(v), value);
+            set
+            {
+                BindCollections(value);
+                SetProperty(ref selectedPlanVM, value);
+                UpdateNto(value?.SourceModel.NtoInfo);
+            }
         }
+        public string SelectedNtoString { get => selectedNtoString; private set => SetProperty(ref selectedNtoString, value); }
         public bool LoadNto
         {
             get => context?.Settings?.LoadNto ?? false;
@@ -69,14 +151,13 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public MetaCommand LoadIntoPlan => new MetaCommand(
             o => FillCurrentPlan(),
-            o => SelectedPlan != null && SelectedPlan.Structures.FirstOrDefault(s => s.APIStructure?.Structure != null) != null
+            o => Structures.Count > 0
         );
         public MetaCommand SetOarsPriority => new MetaCommand(
             priorityString => SetPriorityForOars(priorityString as string),
-            o => SelectedPlan != null && SelectedPlan.Structures.Count > 0
+            o => Structures.Count > 0
         );
-        public ObservableCollection<PlanVM> Plans { get; set; } = new ObservableCollection<PlanVM>();
-        public ObservableCollection<StructureVM> Structures { get; } = new ObservableCollection<StructureVM>();
-        public ObservableCollection<IStructureSuggestionModel> UnusedStructures { get; } = new ObservableCollection<IStructureSuggestionModel>();
+
+        
     }
 }

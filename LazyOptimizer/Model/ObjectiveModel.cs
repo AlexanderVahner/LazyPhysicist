@@ -1,4 +1,5 @@
 ﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
@@ -19,6 +20,25 @@ namespace LazyOptimizer.Model
             this.cachedObjective = cachedObjective;
             ResetPriority();
         }
+        public ObjectiveInfo GetObjectiveInfo(IStructureInfo structure)
+        {
+            ObjectiveInfo result = null;
+            if (cachedObjective != null && structure?.Structure != null)
+            {
+                result = new ObjectiveInfo()
+                {
+                    Type = ObjType,
+                    Structure = structure.Structure,
+                    StructureId = structure.Id,
+                    Priority = Priority,
+                    Operator = Operator,
+                    Dose = Dose ?? .0,
+                    Volume = Volume ?? .0,
+                    ParameterA = ParameterA ?? .0
+                };
+            }
+            return result;
+        }
         public void ResetPriority()
         {
             Priority = cachedObjective?.Priority ?? 0;
@@ -27,8 +47,8 @@ namespace LazyOptimizer.Model
         public double? Dose => CachedObjective?.Dose;
         public double? Volume => CachedObjective?.Volume;
         public double? ParameterA => CachedObjective?.ParameterA;
-        public ObjectiveType ObjectiveDBType => (ObjectiveType)(cachedObjective?.ObjType ?? 99);
-        public Operator ObjectiveDBOperator => (Operator)(cachedObjective?.Operator ?? 99);
+        public ObjectiveType ObjType => (ObjectiveType)(cachedObjective?.ObjType ?? 99);
+        public Operator Operator => (Operator)(cachedObjective?.Operator ?? 99);
         public double Priority
         {
             get => priority;

@@ -15,8 +15,18 @@ namespace LazyOptimizer.Model
 {
     public abstract class PlanBaseModel : IPlanBaseModel
     {
+        public IEnumerable<IObjectiveInfo> GetObjectiveInfos()
+        {
+            foreach (var structure in Structures)
+            {
+                foreach (var objective in structure.GetObjectiveInfos())
+                {
+                    yield return objective;
+                }
+            }
+        }
         public ObservableCollection<IStructureModel> Structures => GetStructures();
-        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
+        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions => GetStructureSuggestions();
         public INtoInfo NtoInfo => GetNto();
         public abstract string PlanTitle { get; }
         protected abstract ObservableCollection<IStructureModel> GetStructures();

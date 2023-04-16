@@ -90,10 +90,8 @@
     <Compile Include="Model\IPlanCachedModel.cs" />
     <Compile Include="Model\IObjectiveModel.cs" />
     <Compile Include="Model\IStructureModel.cs" />
-    <Compile Include="Model\INtoModel.cs" />
     <Compile Include="Model\HabitsModel.cs" />
     <Compile Include="Model\IStructureSuggestionModel.cs" />
-    <Compile Include="Model\NtoModel.cs" />
     <Compile Include="Model\PlanBaseModel.cs" />
     <Compile Include="Model\StructureModel.cs" />
     <Compile Include="Model\ObjectiveModel.cs" />
@@ -105,10 +103,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ScriptArgs.cs" />
-    <Compile Include="UI\ViewModels\HabitsVM_private.cs" />
     <Compile Include="UI\ViewModels\HabitsVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
-    <Compile Include="UI\ViewModels\NtoVM.cs" />
     <Compile Include="UI\ViewModels\ObjectiveVM.cs" />
     <Compile Include="UI\ViewModels\PlanVM.cs" />
     <Compile Include="UI\ViewModels\SettingsVM.cs" />

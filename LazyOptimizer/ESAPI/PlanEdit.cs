@@ -31,7 +31,7 @@ namespace LazyOptimizer.ESAPI
                 }
             }
         }
-        public static void LoadObjectives(IPlanInfo plan, IEnumerable<IObjectiveInfo> objectives, bool onlyEmptyStructures = false)
+        public static void LoadObjectivesIntoPlan(IPlanInfo plan, IEnumerable<IObjectiveInfo> objectives, bool onlyEmptyStructures = false)
         {
             int loadedObjectivesCount = 0;
             if (objectives == null)
@@ -92,6 +92,28 @@ namespace LazyOptimizer.ESAPI
                     Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
                     break;
             }
+        }
+        public static void ClearObjectives(IPlanInfo plan)
+        {
+            if (plan?.Plan == null)
+            {
+                Logger.Write(plan, "Plan is null", LogMessageType.Error);
+                return;
+            }
+
+            try
+            {
+                plan.Plan.Course.Patient.BeginModifications();
+                foreach (var objective in plan.Plan.OptimizationSetup.Objectives)
+                {
+                    plan.Plan.OptimizationSetup.RemoveObjective(objective);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex.Source, ex.Message, LogMessageType.Error);
+            }
+            
         }
     }
 }
