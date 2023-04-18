@@ -15,7 +15,12 @@ namespace LazyOptimizer.Model
             StructureInfo = structureInfo;
         }
         public IStructureInfo StructureInfo { get; }
-        public string Id => StructureInfo?.Id ?? "<none>";
+        public string Id
+        {
+            get => StructureInfo?.Id ?? "<none>";
+            set { } // Needs for wpf ComboBox.Text binding
+        }
+            
         public override string ToString()
         {
             return Id;

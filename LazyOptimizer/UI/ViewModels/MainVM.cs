@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class MainVM : Notifier
+    public sealed class MainVM : Notifier
     {
         private App.AppContext context;
         private string btnSettingsContent = "Settings";

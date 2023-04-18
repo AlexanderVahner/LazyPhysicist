@@ -3,7 +3,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
 {
-    public class StructureInfo : IStructureInfo
+    public sealed class StructureInfo : IStructureInfo
     {
         public static readonly string[] TargetNames = { "PTV", "CTV", "GTV", "BOOST" };
         public static readonly string[] SupportStructureDicomTypes = { "SUPPORT", "FIXATION", "ARTIFACT", "CONTRAST", "REGISTRATION", "UNKNOWN" };

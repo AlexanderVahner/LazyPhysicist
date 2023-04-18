@@ -19,6 +19,8 @@ namespace LazyOptimizer.UI.ViewModels
         private readonly AppContext context;
         private PlanVM selectedPlanVM;
         private string selectedNtoString;
+        private ObservableCollection<IStructureSuggestionModel> unusedStructures;
+
         public HabitsVM(HabitsModel habitsModel, AppContext context) : base(habitsModel)
         {
             this.context = context;
@@ -32,12 +34,12 @@ namespace LazyOptimizer.UI.ViewModels
             if (plan?.SourceModel == null)
             {
                 Structures.BreakFree();
-                UnusedStructures.BreakFree();
+                UnusedStructures = null;
             }
             else
             {
                 Structures.ObeyTheMaster(plan.SourceModel.Structures, m => CreateStructureVM(m), vm => vm.SourceModel);
-                UnusedStructures.ObeyTheMaster(plan.SourceModel.StructureSuggestions, m => m, vm => vm);
+                UnusedStructures = plan.SourceModel.UndefinedStructures;
             }
         }
         private StructureVM CreateStructureVM(IStructureModel model)
@@ -121,7 +123,7 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public SlaveCollection<IPlanBaseModel, PlanVM> Plans { get; }
         public SlaveCollection<IStructureModel, StructureVM> Structures { get; } = new SlaveCollection<IStructureModel, StructureVM> { };
-        public SlaveCollection<IStructureSuggestionModel, IStructureSuggestionModel> UnusedStructures { get; } = new SlaveCollection<IStructureSuggestionModel, IStructureSuggestionModel> { };
+        public ObservableCollection<IStructureSuggestionModel> UnusedStructures { get => unusedStructures; set => SetProperty(ref unusedStructures, value); }
         public PlanVM SelectedPlan
         {
             get => selectedPlanVM;
@@ -129,6 +131,7 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 BindCollections(value);
                 SetProperty(ref selectedPlanVM, value);
+                
                 UpdateNto(value?.SourceModel.NtoInfo);
             }
         }
@@ -158,6 +161,6 @@ namespace LazyOptimizer.UI.ViewModels
             o => Structures.Count > 0
         );
 
-        
+
     }
 }

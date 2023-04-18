@@ -20,11 +20,10 @@ namespace LazyOptimizer.Model
         private readonly App.AppContext context;
         private readonly CachedPlan cachedPlan;
         private ObservableCollection<IStructureModel> structures;
-        private ObservableCollection<IStructureSuggestionModel> structureSuggestions;
         private List<CachedObjective> cachedObjectives;
         private CachedNto cachedNto;
         private NtoInfo ntoInfo;
-        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context)
+        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context) : base(context.CurrentPlan)
         {
             if (cachedPlan == null || context?.CurrentPlan == null)
             {
@@ -43,19 +42,6 @@ namespace LazyOptimizer.Model
                 MatchStructures();
             }
             return structures;
-        }
-        protected override ObservableCollection<IStructureSuggestionModel> GetStructureSuggestions()
-        {
-            if (structureSuggestions == null)
-            {
-                structureSuggestions = new ObservableCollection<IStructureSuggestionModel>();
-                foreach (var structure in context.CurrentPlan.Structures.Where(s => s.CanOptimize).OrderBy(s => s.Id))
-                {
-                    structureSuggestions.Add(new StructureSuggestionModel(structure));
-                }
-                structureSuggestions.Insert(0, new StructureSuggestionModel(null)); // Insert <none> suggestion
-            }
-            return structureSuggestions;
         }
         protected override INtoInfo GetNto()
         {
@@ -113,7 +99,7 @@ namespace LazyOptimizer.Model
             {
                 if (!Equals(cachedObjective.StructureId, structureId) && (cachedObjective.StructureId ?? "") != "")
                 {
-                    structureModel = new StructureModel(cachedObjective.StructureId, StructureSuggestions);
+                    structureModel = new StructureModel(cachedObjective.StructureId, StructuresBroker);
                     tempStructures.Add(structureModel);
                 }
                 structureModel.AddObjective(cachedObjective);
@@ -127,22 +113,22 @@ namespace LazyOptimizer.Model
         }
         private void MatchStructures()
         {
-            if (structures.Count == 0 || StructureSuggestions.Count == 0)
+            if (structures.Count == 0 || UndefinedStructures.Count == 0)
             {
                 return;
             }
 
-            List<StructuresComparsion> comparsion = GetComparsionTable(StructureSuggestions);
+            List<StructuresComparsion> comparsion = GetComparsionTable(UndefinedStructures);
 
             foreach (StructuresComparsion sc in comparsion.OrderBy(c => c.Distance))
             {
                 if (sc.StructureModel?.CurrentPlanStructure?.StructureInfo == null
                     && sc.CurrentPlanStructure?.StructureInfo != null
-                    && StructureSuggestions.Contains(sc.CurrentPlanStructure)
+                    && UndefinedStructures.Contains(sc.CurrentPlanStructure)
                     && (sc.Distance < (sc.CurrentPlanStructure.Id.Length * ACCEPTABLE_LEVENSTEIN_PER_STRUCUTREID_COEFF)))
                 {
                     sc.StructureModel.CurrentPlanStructure = sc.CurrentPlanStructure; // StructureModel.CurrentPlanStructure removes assigned value from StructureSuggestions in setter
-                    if (StructureSuggestions.Count == 0 || structures.Count(s => s.CurrentPlanStructure?.StructureInfo == null) == 0)
+                    if (UndefinedStructures.Count == 0 || structures.Count(s => s.CurrentPlanStructure?.StructureInfo == null) == 0)
                     {
                         break;
                     }
@@ -177,7 +163,5 @@ namespace LazyOptimizer.Model
             public IStructureSuggestionModel CurrentPlanStructure;
             public int Distance;
         }
-
-        
     }
 }

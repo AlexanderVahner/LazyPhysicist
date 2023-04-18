@@ -96,6 +96,7 @@
     <Compile Include="Model\StructureModel.cs" />
     <Compile Include="Model\ObjectiveModel.cs" />
     <Compile Include="Model\PlanCachedModel.cs" />
+    <Compile Include="Model\StructuresBroker.cs" />
     <Compile Include="Model\StructureSuggestionModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

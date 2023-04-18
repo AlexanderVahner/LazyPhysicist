@@ -26,15 +26,15 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{Binding CachedStructureId}" FontSize="14" FontWeight="Bold"/>
-                <ComboBox Grid.Column="1" x:Name="APIStructureComboBox" 
-                                    ItemsSource="{Binding StructureSuggestions}" 
-                                    SelectedItem="{Binding PlanStructureHack}" 
-                                    IsEditable="True" 
-                                    Text="{Binding Path=PlanStructure.Id}"
-                                    IsReadOnly="True"
-                                    Width="150"
-                                    HorizontalAlignment="Right"
-                                    FontWeight="Bold"/>
+                <ComboBox Grid.Column="1" 
+                    ItemsSource="{Binding StructureSuggestions}" 
+                    SelectedItem="{Binding PlanStructureHack}" 
+                    IsEditable="True" 
+                    Text="{Binding Path=PlanStructure.Id}"
+                    IsReadOnly="True"
+                    Width="150"
+                    HorizontalAlignment="Right"
+                    FontWeight="Bold"/>
             </Grid>
             <ListBox ItemsSource="{Binding Objectives}">
                 <ListBox.ItemTemplate>

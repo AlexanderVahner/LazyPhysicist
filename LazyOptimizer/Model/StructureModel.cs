@@ -18,11 +18,12 @@ namespace LazyOptimizer.Model
     {
         private ObservableCollection<IObjectiveModel> objectives;
         private IStructureSuggestionModel currentPlanStructure;
-        public StructureModel(string cachedStructureId, ObservableCollection<IStructureSuggestionModel> structureSuggestions)
+        private readonly StructuresBroker structuresBroker;
+
+        public StructureModel(string cachedStructureId, StructuresBroker structuresBroker)
         {
             CachedStructureId = cachedStructureId;
-            StructureSuggestions = structureSuggestions;
-
+            this.structuresBroker = structuresBroker;
         }
         public void AddObjective(CachedObjective objective)
         {
@@ -48,7 +49,7 @@ namespace LazyOptimizer.Model
                 yield return info; 
             }
         }
-        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
+        public ObservableCollection<IStructureSuggestionModel> StructureSuggestions => structuresBroker.StructureSuggestions;
         public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
         public string CachedStructureId { get; }
         public ObservableCollection<IObjectiveModel> Objectives => objectives ?? (objectives = new ObservableCollection<IObjectiveModel>());
@@ -63,14 +64,8 @@ namespace LazyOptimizer.Model
                 {
                     return;
                 }
-                if (currentPlanStructure?.StructureInfo != null)
-                {
-                    StructureSuggestions.Insert(1, currentPlanStructure); // Insertion into postion 1 because it must be under <none> element
-                }
-                if (value?.StructureInfo != null)
-                {
-                    StructureSuggestions.Remove(value);
-                }
+                structuresBroker.Give(currentPlanStructure);
+                structuresBroker.Take(value);
                 SetProperty(ref currentPlanStructure, value);
             }
         }

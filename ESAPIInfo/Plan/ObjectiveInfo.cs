@@ -25,7 +25,7 @@ namespace ESAPIInfo.Plan
         //     None.
         None = 99
     }
-    public class ObjectiveInfo : IObjectiveInfo
+    public sealed class ObjectiveInfo : IObjectiveInfo
     {
         public static void GetObjectives(IPlanInfo planInfo, IList<ObjectiveInfo> destination)
         {

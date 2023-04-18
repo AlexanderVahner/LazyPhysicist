@@ -4,7 +4,7 @@ namespace LazyOptimizer.Model
 {
     public interface IStructureSuggestionModel
     {
-        string Id { get; }
+        string Id { get; set; }
         IStructureInfo StructureInfo { get; }
     }
 }

@@ -106,13 +106,8 @@ namespace LazyPhysicist.Common
                         Remove(this.FirstOrDefault(slave => Equals(master, whoIsTheMaster(slave))));
                     }
                     break;
-
                 case NotifyCollectionChangedAction.Reset:
                     Clear();
-                    foreach (var master in e.NewItems.OfType<TMaster>())
-                    {
-                        Add(addSlave(master));
-                    }
                     break;
             }
         }

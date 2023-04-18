@@ -6,12 +6,10 @@ using System.Linq;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class StructureVM : ViewModel<IStructureModel>
+    public sealed class StructureVM : ViewModel<IStructureModel>
     {
         private readonly IStructureModel structureModel;
-        private IStructureSuggestionModel planStructure;
         private IStructureSuggestionModel planStructureHack;
-        private SlaveCollection<IObjectiveModel, ObjectiveVM> objectives;
         public StructureVM(IStructureModel structureModel) : base(structureModel)
         {
             this.structureModel = structureModel;
@@ -21,10 +19,12 @@ namespace LazyOptimizer.UI.ViewModels
         public string CachedStructureId => structureModel.CachedStructureId;
         public IStructureSuggestionModel PlanStructure
         {
-            get => planStructure;
+            get => structureModel.CurrentPlanStructure;
             set
             {
-                if (value != null && !Equals(planStructure, value))
+                structureModel.CurrentPlanStructure = value;
+                NotifyPropertyChanged(nameof(PlanStructure));
+                /*if (value != null && !Equals(planStructure, value))
                 {
                     if (planStructure?.StructureInfo != null)
                     {
@@ -36,7 +36,7 @@ namespace LazyOptimizer.UI.ViewModels
                         StructureSuggestions.Remove(value);
                     }
                     SetProperty(ref planStructure, value);
-                }
+                }*/
             }
 
         }
@@ -60,7 +60,5 @@ namespace LazyOptimizer.UI.ViewModels
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
         public SlaveCollection<IObjectiveModel, ObjectiveVM> Objectives { get; }
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
-        public double MaxObjectiveDose => objectives?.Max(o => o?.Dose ?? .0) ?? .0;
-        public double OrderByDoseDescProperty => MaxObjectiveDose + (IsTarget ? 1000 : 0);
     }
 }

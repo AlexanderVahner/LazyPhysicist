@@ -7,7 +7,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class ObjectiveVM : ViewModel<IObjectiveModel>
+    public sealed class ObjectiveVM : ViewModel<IObjectiveModel>
     {
         public ObjectiveVM(IObjectiveModel objectiveModel) : base(objectiveModel)
         {
