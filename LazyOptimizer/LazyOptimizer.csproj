@@ -85,7 +85,7 @@
     <Compile Include="App\Settings.cs" />
     <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
-    <Compile Include="Model\IMergedPlanModel.cs" />
+    <Compile Include="Model\IPlanMergedModel.cs" />
     <Compile Include="Model\IPlanBaseModel.cs" />
     <Compile Include="Model\IPlanCachedModel.cs" />
     <Compile Include="Model\IObjectiveModel.cs" />
@@ -93,6 +93,8 @@
     <Compile Include="Model\HabitsModel.cs" />
     <Compile Include="Model\IStructureSuggestionModel.cs" />
     <Compile Include="Model\PlanBaseModel.cs" />
+    <Compile Include="Model\PlanInteractions.cs" />
+    <Compile Include="Model\PlanMergedModel.cs" />
     <Compile Include="Model\StructureModel.cs" />
     <Compile Include="Model\ObjectiveModel.cs" />
     <Compile Include="Model\PlanCachedModel.cs" />

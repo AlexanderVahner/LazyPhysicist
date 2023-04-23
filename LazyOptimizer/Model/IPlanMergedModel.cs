@@ -14,5 +14,7 @@ namespace LazyOptimizer.Model
 {
     public interface IPlanMergedModel : IPlanBaseModel
     {
+        void Merge(IPlanBaseModel plan);
+        int MergedPlansCount { get; }
     }
 }

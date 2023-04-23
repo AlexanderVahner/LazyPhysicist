@@ -2,28 +2,61 @@
 using ESAPIInfo.Structures;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
     public sealed class ObjectiveModel : Notifier, IObjectiveModel
     {
-        private readonly CachedObjective cachedObjective;
         private double priority;
+        private double initPriority;
+        public ObjectiveModel()
+        {
+        
+        }
         public ObjectiveModel(CachedObjective cachedObjective)
         {
-            this.cachedObjective = cachedObjective;
-            ResetPriority();
+            CopyFrom(cachedObjective);
+        }
+        public ObjectiveModel(ObjectiveModel objective)
+        {
+            CopyFrom(objective);
+        }
+        public void CopyFrom(CachedObjective cachedObjective)
+        {
+            if (cachedObjective == null)
+            {
+                return;
+            }
+
+            Dose = cachedObjective.Dose;
+            Volume = cachedObjective.Volume;
+            ParameterA = cachedObjective.ParameterA;
+            ObjType = (ObjectiveType)(cachedObjective.ObjType ?? 99);
+            Operator = (Operator)(cachedObjective.Operator ?? 99);
+            Priority = cachedObjective.Priority ?? 0;
+
+            initPriority = Priority;
+        }
+        public void CopyFrom(ObjectiveModel objective)
+        {
+            if (objective == null)
+            {
+                return;
+            }
+
+            Dose = objective.Dose;
+            Volume = objective.Volume;
+            ParameterA = objective.ParameterA;
+            ObjType = objective.ObjType;
+            Operator = objective.Operator;
+            Priority = objective.Priority;
+
+            initPriority = Priority;
         }
         public ObjectiveInfo GetObjectiveInfo(IStructureInfo structure)
         {
             ObjectiveInfo result = null;
-            if (cachedObjective != null && structure?.Structure != null)
+            if (structure?.Structure != null)
             {
                 result = new ObjectiveInfo()
                 {
@@ -41,14 +74,13 @@ namespace LazyOptimizer.Model
         }
         public void ResetPriority()
         {
-            Priority = cachedObjective?.Priority ?? 0;
+            Priority = initPriority;
         }
-        public CachedObjective CachedObjective => cachedObjective;
-        public double? Dose => CachedObjective?.Dose;
-        public double? Volume => CachedObjective?.Volume;
-        public double? ParameterA => CachedObjective?.ParameterA;
-        public ObjectiveType ObjType => (ObjectiveType)(cachedObjective?.ObjType ?? 99);
-        public Operator Operator => (Operator)(cachedObjective?.Operator ?? 99);
+        public double? Dose { get; set; }
+        public double? Volume { get; set; }
+        public double? ParameterA { get; set; }
+        public ObjectiveType ObjType { get; set; }
+        public Operator Operator { get; set; }
         public double Priority
         {
             get => priority;

@@ -19,12 +19,17 @@ namespace LazyOptimizer.Model
     public sealed class HabitsModel : Notifier
     {
         private readonly App.AppContext context;
+        private readonly PlanInteractions planInteractions = new PlanInteractions();
+        private IPlanMergedModel planMergedModel;
 
         public HabitsModel(App.AppContext context)
         {
             this.context = context;
+            planMergedModel = new PlanMergedModel(context.CurrentPlan);
+            planInteractions.PlanMergedModel = planMergedModel;
             UpdatePlans(context.PlansFilterArgs);
             context.PlansFilterArgs.UpdateRequest += (s, args) => UpdatePlans(args);
+            //planInteractions.CreateMergedPlan += () => new PlanMergedModel(context.CurrentPlan);
         }
         public void UpdatePlans(PlansFilterArgs args)
         {
@@ -36,13 +41,13 @@ namespace LazyOptimizer.Model
                 return;
             }
 
+            PlanModels.Add(planMergedModel);
             foreach (var plan in plans)
             {
-                PlanModels.Add(new PlanCachedModel(plan, context));
+                PlanModels.Add(new PlanCachedModel(plan, planInteractions, context));
             }
             Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
         }
-        public ObservableCollection<IPlanBaseModel> PlanModels { get; } = new ObservableCollection<IPlanBaseModel> { };
         public void LoadObjectivesIntoCurrentPlan(IPlanBaseModel planModel, bool fillOnlyEmptyStructures)
         {
             if (planModel == null)
@@ -67,5 +72,6 @@ namespace LazyOptimizer.Model
         {
             PlanEdit.LoadNtoIntoPlan(context.CurrentPlan, nto);
         }
+        public ObservableCollection<IPlanBaseModel> PlanModels { get; } = new ObservableCollection<IPlanBaseModel> { };
     }
 }

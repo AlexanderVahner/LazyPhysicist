@@ -96,7 +96,8 @@ namespace LazyPhysicist.Common
                 case NotifyCollectionChangedAction.Add:
                     foreach (var master in e.NewItems.OfType<TMaster>())
                     {
-                        Add(addSlave(master));
+                        //Add(addSlave(master));
+                        Insert(e.NewStartingIndex, addSlave(master));
                     }
                     break;
 

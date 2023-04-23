@@ -22,5 +22,7 @@ namespace LazyOptimizer.Model
         ObservableCollection<IStructureModel> Structures { get; }
         ObservableCollection<IStructureSuggestionModel> UndefinedStructures { get; }
         INtoInfo NtoInfo { get; }
+        string Description { get; set; }
+        long SelectionFrequency { get; set; }
     }
 }

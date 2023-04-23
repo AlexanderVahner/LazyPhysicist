@@ -3,16 +3,18 @@ using ESAPIInfo.Structures;
 using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 
 namespace LazyOptimizer.UI.ViewModels
 {
     public sealed class PlanVM : ViewModel<IPlanBaseModel>
     {
         private readonly IPlanCachedModel planCachedModel;
-        private readonly IPlanMergedModel mergedPlanModel;
+        private readonly IPlanMergedModel planMergedModel;
         public PlanVM(IPlanBaseModel planModel) : base(planModel) 
         {
             if (planModel == null)
@@ -28,41 +30,43 @@ namespace LazyOptimizer.UI.ViewModels
             }
             else
             {
-                mergedPlanModel = planModel as IPlanMergedModel;
+                planMergedModel = planModel as IPlanMergedModel;
             }
         }
-        public string PlanName => SourceModel.PlanTitle;
+        
+        public string PlanTitle => SourceModel.PlanTitle;
         public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
         public INtoInfo Nto => SourceModel.NtoInfo;
+        public Action<IPlanCachedModel> AddToMergedPlan { get; set; }
+        public MetaCommand Merge => new MetaCommand(
+            o => {
+                AddToMergedPlan?.Invoke(planCachedModel);
+                NotifyPropertyChanged(nameof(ElementVisibility));
+                NotifyPropertyChanged(nameof(SelectionFrequency));
+            },
+            o => planCachedModel != null
+        );
         public string Description
         {
-            get => planCachedModel?.Description ?? "";
-            set
-            {
-                if (planCachedModel != null)
-                {
-                    SetProperty(v => { planCachedModel.Description = v; }, value);
-                }
-                
-            }
+            get => SourceModel.Description;
+            set => SetProperty((v) => { SourceModel.Description = v; }, value);
         }
-        public long? SelectionFrequency
+        public bool IsDescriptionReadOnly => planCachedModel == null;
+        public Visibility MergeLinkVisibility => planCachedModel != null ? Visibility.Visible : Visibility.Collapsed;
+        public long SelectionFrequency
         {
-            get => planCachedModel?.SelectionFrequency ?? 0;
-            set
-            {
-                if (planCachedModel != null)
-                {
-                    SetProperty((v) => { planCachedModel.SelectionFrequency = v; }, value);
-                }
-            }
+            get => SourceModel.SelectionFrequency;
+            set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value);
         }
-        public bool DescriptionVisible => planCachedModel != null;
-        public bool SelectionFrequencyVisible => planCachedModel != null;
         public string SelectionFrequencyBackground
         {
             get
             {
+                if (planMergedModel != null)
+                {
+                    return "#FF333333";
+                }
+
                 string color = "#FF4646FF";
                 if (SelectionFrequency > 5)
                     color = "#FFE83C03";
@@ -75,6 +79,6 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-        
+        public Visibility ElementVisibility => (planMergedModel == null || (planMergedModel?.MergedPlansCount ?? 0) > 0) ? Visibility.Visible : Visibility.Collapsed;
     }
 }

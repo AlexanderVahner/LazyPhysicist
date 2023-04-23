@@ -24,7 +24,10 @@ namespace LazyOptimizer.UI.ViewModels
         public HabitsVM(HabitsModel habitsModel, AppContext context) : base(habitsModel)
         {
             this.context = context;
-            Plans = new SlaveCollection<IPlanBaseModel, PlanVM>(habitsModel.PlanModels, m => new PlanVM(m), vm => vm.SourceModel);
+            Plans = new SlaveCollection<IPlanBaseModel, PlanVM>(
+                habitsModel.PlanModels, 
+                m => new PlanVM(m), 
+                vm => vm.SourceModel);
 
             NotifyPropertyChanged(nameof(LoadNto));
             NotifyPropertyChanged(nameof(PrioritySetter));
@@ -129,10 +132,9 @@ namespace LazyOptimizer.UI.ViewModels
             get => selectedPlanVM;
             set
             {
-                BindCollections(value);
                 SetProperty(ref selectedPlanVM, value);
-                
-                UpdateNto(value?.SourceModel.NtoInfo);
+                BindCollections(selectedPlanVM);
+                UpdateNto(selectedPlanVM?.SourceModel.NtoInfo);
             }
         }
         public string SelectedNtoString { get => selectedNtoString; private set => SetProperty(ref selectedNtoString, value); }

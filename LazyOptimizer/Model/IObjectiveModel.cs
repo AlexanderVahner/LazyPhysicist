@@ -16,7 +16,6 @@ namespace LazyOptimizer.Model
     {
         ObjectiveInfo GetObjectiveInfo(IStructureInfo structure);
         void ResetPriority();
-        CachedObjective CachedObjective { get; }
         double Priority { get; set; }
         double? Dose { get; }
         double? Volume { get; }

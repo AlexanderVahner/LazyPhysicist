@@ -1,15 +1,10 @@
 ﻿using ESAPIInfo.Plan;
-using ESAPIInfo.Structures;
-using LazyOptimizer.UI.ViewModels;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.Model
 {
@@ -19,11 +14,12 @@ namespace LazyOptimizer.Model
 
         private readonly App.AppContext context;
         private readonly CachedPlan cachedPlan;
+        private readonly PlanInteractions planInteractions;
         private ObservableCollection<IStructureModel> structures;
         private List<CachedObjective> cachedObjectives;
         private CachedNto cachedNto;
         private NtoInfo ntoInfo;
-        public PlanCachedModel(CachedPlan cachedPlan, App.AppContext context) : base(context.CurrentPlan)
+        public PlanCachedModel(CachedPlan cachedPlan, PlanInteractions planInteractions, App.AppContext context) : base(context.CurrentPlan)
         {
             if (cachedPlan == null || context?.CurrentPlan == null)
             {
@@ -31,7 +27,12 @@ namespace LazyOptimizer.Model
                 return;
             }
             this.cachedPlan = cachedPlan;
+            this.planInteractions = planInteractions;
             this.context = context;
+        }
+        public void AddToMerged()
+        {
+            planInteractions.AddToMerged(this);
         }
         protected override ObservableCollection<IStructureModel> GetStructures()
         {
@@ -42,45 +43,6 @@ namespace LazyOptimizer.Model
                 MatchStructures();
             }
             return structures;
-        }
-        protected override INtoInfo GetNto()
-        {
-            if (ntoInfo == null)
-            {
-                cachedNto = context.PlansContext.GetNto(cachedPlan.RowId);
-                ntoInfo = new NtoInfo();
-                if (cachedPlan != null)
-                {
-                    ntoInfo.IsAutomatic = cachedNto.IsAutomatic;
-                    ntoInfo.DistanceFromTargetBorderInMM = cachedNto.DistanceFromTargetBorderInMM ?? 0;
-                    ntoInfo.StartDosePercentage = cachedNto.StartDosePercentage ?? 0;
-                    ntoInfo.EndDosePercentage = cachedNto.EndDosePercentage ?? 0;
-                    ntoInfo.FallOff = cachedNto.FallOff ?? 0;
-                    ntoInfo.Priority = cachedNto.Priority ?? 0;
-                };
-            }
-            return ntoInfo;
-        }
-        public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
-        public DateTime CreationDate => cachedPlan.CreationDate;
-        public List<CachedObjective> CachedObjectives => GetCachedObjectives();
-        public string Description
-        {
-            get => cachedPlan.Description;
-            set
-            {
-                cachedPlan.Description = value;
-                context.PlansContext.UpdatePlan(cachedPlan);
-            }
-        }
-        public long? SelectionFrequency
-        {
-            get => cachedPlan?.SelectionFrequency;
-            set
-            {
-                cachedPlan.SelectionFrequency = value;
-                context.PlansContext.UpdatePlan(cachedPlan);
-            }
         }
         private List<CachedObjective> GetCachedObjectives()
         {
@@ -163,5 +125,42 @@ namespace LazyOptimizer.Model
             public IStructureSuggestionModel CurrentPlanStructure;
             public int Distance;
         }
+        protected override INtoInfo GetNto()
+        {
+            if (ntoInfo == null)
+            {
+                cachedNto = context.PlansContext.GetNto(cachedPlan.RowId);
+                ntoInfo = new NtoInfo();
+                if (cachedPlan != null)
+                {
+                    ntoInfo.IsAutomatic = cachedNto.IsAutomatic;
+                    ntoInfo.DistanceFromTargetBorderInMM = cachedNto.DistanceFromTargetBorderInMM ?? 0;
+                    ntoInfo.StartDosePercentage = cachedNto.StartDosePercentage ?? 0;
+                    ntoInfo.EndDosePercentage = cachedNto.EndDosePercentage ?? 0;
+                    ntoInfo.FallOff = cachedNto.FallOff ?? 0;
+                    ntoInfo.Priority = cachedNto.Priority ?? 0;
+                };
+            }
+            return ntoInfo;
+        }
+        protected override string GetDescription() => cachedPlan.Description;
+        protected override void SetDescription(string text)
+        {
+            cachedPlan.Description = text;
+            context.PlansContext.UpdatePlan(cachedPlan);
+            base.SetDescription(text);
+        }
+        protected override long GetSelectionFrequency() => cachedPlan?.SelectionFrequency ?? 0;
+        protected override void SetSelectionFrequency(long value)
+        {
+            cachedPlan.SelectionFrequency = value;
+            context.PlansContext.UpdatePlan(cachedPlan);
+            base.SetSelectionFrequency(value);
+        }
+
+        public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
+        public DateTime CreationDate => cachedPlan.CreationDate;
+        public List<CachedObjective> CachedObjectives => GetCachedObjectives();
+        
     }
 }

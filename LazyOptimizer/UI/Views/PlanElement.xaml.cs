@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using LazyOptimizer.UI.ViewModels;
+using System.Windows.Controls;
 
 namespace LazyOptimizer.UI.Views
 {
@@ -7,9 +8,22 @@ namespace LazyOptimizer.UI.Views
     /// </summary>
     public partial class PlanElement : UserControl
     {
+        private PlanVM viewModel;
+
         public PlanElement()
         {
             InitializeComponent();
+        }
+        public PlanVM ViewModel 
+        {
+            get
+            {
+                if (DataContext is PlanVM vm)
+                {
+                    viewModel = vm;
+                }
+                return viewModel;
+            }
         }
     }
 }
