@@ -13,6 +13,10 @@ namespace LazyOptimizer.Model
 
         public void AddToMerged(IPlanBaseModel plan)
         {
+            if (PlanMergedModel == null)
+            {
+                return;
+            }
             PlanMergedModel?.Merge(plan);
         }
         public Func<IPlanMergedModel> CreateMergedPlan { get; set; }

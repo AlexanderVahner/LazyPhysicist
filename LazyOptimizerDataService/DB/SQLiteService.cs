@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace LazyOptimizerDataService.DB
@@ -66,6 +67,7 @@ namespace LazyOptimizerDataService.DB
             }
         }
 
+        // Bad function - SQLiteCommand command will not be disposed. Use Select<TRowResult>(...) below
         public DbDataReader Select(string sqlRequest, IEnumerable<object> parameters = null)
         {
             DbDataReader reader;
@@ -82,6 +84,28 @@ namespace LazyOptimizerDataService.DB
 
             return reader;
         }
+
+        public void Select(string sqlRequest, Action<DbDataReader> rowAction, IEnumerable<object> parameters = null)
+        {
+            Logger.Write(this, sqlRequest, LogMessageType.Debug);
+
+            using (SQLiteCommand command = new SQLiteCommand(sqlRequest, connection))
+            {
+                if ((parameters?.Count() ?? 0) > 0)
+                {
+                    AddParametersToCommand(command, parameters);
+                }
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        rowAction(reader);
+                    }
+                }
+            }
+        }
+
         public void Select<T>(IList<T> destination, string sqlRequest, IEnumerable<object> parameters = null)
         {
             if (destination != null)
@@ -186,11 +210,23 @@ namespace LazyOptimizerDataService.DB
         }
         public void CommitTransaction()
         {
+            if (transaction == null)
+            {
+                Logger.Write(this, "Can't commit transaction. Begin transaction first.", LogMessageType.Error);
+                return;
+            }
             transaction.Commit();
+            transaction.Dispose();
         }
         public void RollbackTransaction()
         {
+            if (transaction == null)
+            {
+                Logger.Write(this, "Can't rollback transaction. Begin transaction first.", LogMessageType.Error);
+                return;
+            }
             transaction.Rollback();
+            transaction.Dispose();
         }
         public void Dispose()
         {

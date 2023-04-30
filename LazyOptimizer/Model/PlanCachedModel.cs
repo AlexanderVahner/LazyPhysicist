@@ -14,12 +14,11 @@ namespace LazyOptimizer.Model
 
         private readonly App.AppContext context;
         private readonly CachedPlan cachedPlan;
-        private readonly PlanInteractions planInteractions;
         private ObservableCollection<IStructureModel> structures;
         private List<CachedObjective> cachedObjectives;
         private CachedNto cachedNto;
         private NtoInfo ntoInfo;
-        public PlanCachedModel(CachedPlan cachedPlan, PlanInteractions planInteractions, App.AppContext context) : base(context.CurrentPlan)
+        public PlanCachedModel(CachedPlan cachedPlan, PlanInteractions planInteractions, App.AppContext context) : base(context.CurrentPlan, planInteractions)
         {
             if (cachedPlan == null || context?.CurrentPlan == null)
             {
@@ -27,12 +26,7 @@ namespace LazyOptimizer.Model
                 return;
             }
             this.cachedPlan = cachedPlan;
-            this.planInteractions = planInteractions;
             this.context = context;
-        }
-        public void AddToMerged()
-        {
-            planInteractions.AddToMerged(this);
         }
         protected override ObservableCollection<IStructureModel> GetStructures()
         {

@@ -24,21 +24,7 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 structureModel.CurrentPlanStructure = value;
                 NotifyPropertyChanged(nameof(PlanStructure));
-                /*if (value != null && !Equals(planStructure, value))
-                {
-                    if (planStructure?.StructureInfo != null)
-                    {
-                        StructureSuggestions.Insert(1, planStructure); // Insertion into postion 1 because it must be under <none> element
-                    }
-
-                    if (value?.StructureInfo != null)
-                    {
-                        StructureSuggestions.Remove(value);
-                    }
-                    SetProperty(ref planStructure, value);
-                }*/
             }
-
         }
 
         // Buffer for WPF combobox. Because a problem in changing ItemsSource (Removing a selected element)

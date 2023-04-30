@@ -40,7 +40,7 @@ namespace LazyOptimizer.UI.ViewModels
         public Action<IPlanCachedModel> AddToMergedPlan { get; set; }
         public MetaCommand Merge => new MetaCommand(
             o => {
-                AddToMergedPlan?.Invoke(planCachedModel);
+                SourceModel.AddToMerged();
                 NotifyPropertyChanged(nameof(ElementVisibility));
                 NotifyPropertyChanged(nameof(SelectionFrequency));
             },
@@ -79,6 +79,7 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-        public Visibility ElementVisibility => (planMergedModel == null || (planMergedModel?.MergedPlansCount ?? 0) > 0) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ElementVisibility => 
+            planMergedModel == null || planMergedModel.MergedPlans.Count() > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }

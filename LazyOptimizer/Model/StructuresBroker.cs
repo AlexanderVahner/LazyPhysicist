@@ -14,9 +14,9 @@ namespace LazyOptimizer.Model
     public sealed class StructuresBroker
     {
         private readonly List<IStructureSuggestionModel> structuresCollection;
-        public StructuresBroker(IEnumerable<IStructureSuggestionModel> structuresCollection)
+        public StructuresBroker(List<IStructureSuggestionModel> structuresCollection)
         {
-            this.structuresCollection = structuresCollection.ToList();
+            this.structuresCollection = structuresCollection;
             UndefinedStructures = new ObservableCollection<IStructureSuggestionModel>();
             StructureSuggestions = new ObservableCollection<IStructureSuggestionModel>();
             Reset();
@@ -51,8 +51,8 @@ namespace LazyOptimizer.Model
         {
             if (takeStructure?.StructureInfo != null)
             {
-                UndefinedStructures.Remove(takeStructure);
-                StructureSuggestions.Remove(takeStructure);
+                UndefinedStructures.Remove(UndefinedStructures.FirstOrDefault(us => us.Id == takeStructure.Id));
+                StructureSuggestions.Remove(StructureSuggestions.FirstOrDefault(us => us.Id == takeStructure.Id));
             }
         }
         public ObservableCollection<IStructureSuggestionModel> UndefinedStructures { get; }

@@ -1,10 +1,13 @@
 ﻿using ESAPIInfo.Plan;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
@@ -12,8 +15,9 @@ namespace LazyOptimizer.Model
     {
         private readonly List<IPlanBaseModel> mergedPlans = new List<IPlanBaseModel>();
         private readonly ObservableCollection<IStructureModel> mergedStructures = new ObservableCollection<IStructureModel>();
-        private readonly NtoInfo mergedNtoInfo = new NtoInfo();
-        public PlanMergedModel(IPlanInfo currentPlan) : base(currentPlan)
+        private INtoInfo mergedNtoInfo = new NtoInfo();
+
+        public PlanMergedModel(IPlanInfo currentPlan, PlanInteractions planInteractions) : base(currentPlan, planInteractions)
         {
             Description = "The average objectives and NTO of the added plans.";
         }
@@ -24,12 +28,21 @@ namespace LazyOptimizer.Model
             {
                 return;
             }
+
+            if (mergedPlans.FirstOrDefault(mp => mp == plan) != null)
+            {
+                Logger.Write(this, "This plan has already been merged.", LogMessageType.Warning);
+                return;
+            }
+
             mergedPlans.Add(plan);
             SelectionFrequency = mergedPlans.Count;
-            RecalcMerged();
+            RecalcMerged(mergedPlans);
+            
+            Logger.Write(this, $"Merged Plan now contains {mergedPlans.Count} plan" + (mergedPlans.Count == 1 ? "." : "s."));
         }
 
-        private void RecalcMerged()
+        private void RecalcMerged(List<IPlanBaseModel> mergedPlans)
         {
             if (mergedPlans.Count == 0)
             {
@@ -41,28 +54,27 @@ namespace LazyOptimizer.Model
                 return;
             }
 
-            MergeStructures();
+            MergeStructures(mergedPlans);
+            MergeNto(mergedPlans);
         }
 
-        private void MergeStructures()
+        private void MergeStructures(List<IPlanBaseModel> mergedPlans)
         {
             mergedStructures.Clear();
-            StructuresBroker.Reset();
+            
 
             foreach (var plan in mergedPlans)
             {
                 foreach (var structure in plan.Structures)
                 {
-                    var findedStructure = mergedStructures.FirstOrDefault(s => s.CurrentPlanStructure == structure.CurrentPlanStructure);
-                    if (findedStructure == null)
+                    if (structure.CurrentPlanStructure == null)
                     {
-                        findedStructure = new StructureModel(structure.CurrentPlanStructure.Id, StructuresBroker)
-                        {
-                            CurrentPlanStructure = structure.CurrentPlanStructure
-                        };
-                        mergedStructures.Add(findedStructure);
+                        continue;
                     }
 
+                    var findedStructure = DefineStructure(structure.CurrentPlanStructure); 
+
+                    // Put all objectives from all merged plans in the same structure. Then we'll average them
                     foreach (var objective in structure.Objectives)
                     {
                         findedStructure.Objectives.Add(objective);
@@ -74,11 +86,27 @@ namespace LazyOptimizer.Model
             {
                 AverageObjectives(structure);
             }
+
+            StructuresBroker.Reset(Structures);
+        }
+
+        private IStructureModel DefineStructure(IStructureSuggestionModel structure)
+        {
+            var findedStructure = mergedStructures.FirstOrDefault(s => s.CurrentPlanStructure.Id == structure.Id);
+            if (findedStructure == null)
+            {
+                findedStructure = new StructureModel(structure.Id, StructuresBroker)
+                {
+                    CurrentPlanStructure = structure
+                };
+                mergedStructures.Add(findedStructure);
+            }
+            return findedStructure;
         }
 
         private void AverageObjectives(IStructureModel structure)
         {
-            if (structure == null || structure.Objectives.Count <= 1)
+            if (structure == null || structure.Objectives.Count < 2)
             {
                 return;
             }
@@ -98,19 +126,56 @@ namespace LazyOptimizer.Model
                    ObjType = obj.Key.ObjType, 
                    Operator = obj.Key.Operator,
                    Volume = obj.Key.Volume,
-                   Dose = obj.Average(o => o.Dose),
-                   ParameterA = obj.Average(o => o.ParameterA),
-                   Priority = obj.Average(o => o.Priority)
+                   Dose = Math.Round(obj.Average(o => o.Dose) ?? 0, 2),
+                   ParameterA = Math.Round(obj.Average(o => o.ParameterA) ?? 0, 1),
+                   Priority = Math.Round(obj.Average(o => o.Priority), 0)
                };
 
-            foreach (var objective in query)
+            if (query.Count() != initialCount)
             {
-                structure.AddObjective(objective);
+                foreach (var objective in query)
+                {
+                    structure.AddObjective(objective);
+                }
+                while (initialCount-- > 0)
+                {
+                    structure.Objectives.RemoveAt(0);
+                }
             }
-            while (initialCount-- > 0)
+            
+        }
+
+        private void MergeNto(List<IPlanBaseModel> mergedPlans)
+        {
+            List<INtoInfo> ntoList = new List<INtoInfo>();
+            foreach(var plan in mergedPlans)
             {
-                structure.Objectives.RemoveAt(0);
+                ntoList.Add(plan.NtoInfo);
             }
+            
+            var manuals = ntoList.Where(n => !n.IsAutomatic);
+            var averageList = manuals.Any() ? manuals : ntoList;
+
+            if (averageList.Count() == 1)
+            {
+                mergedNtoInfo = averageList.First();
+                return;
+            }
+
+            var query = averageList
+                .GroupBy(n => n.IsAutomatic)
+                .Select(g => new NtoInfo()
+                    {
+                        IsAutomatic = g.Key,
+                        DistanceFromTargetBorderInMM = Math.Round(g.Average(x => x.DistanceFromTargetBorderInMM), 0),
+                        StartDosePercentage = Math.Round(g.Average(x => x.StartDosePercentage), 0),
+                        EndDosePercentage = Math.Round(g.Average(x => x.EndDosePercentage), 0),
+                        FallOff = Math.Round(g.Average(x => x.FallOff), 2),
+                        Priority = Math.Round(g.Average(x => x.Priority), 0)
+                    }
+                )/* TODO: Simplify code with .OrderBy(s => s.IsAutomatic)*/;
+
+            mergedNtoInfo = query.First();
         }
 
         protected override ObservableCollection<IStructureModel> GetStructures()
@@ -124,6 +189,6 @@ namespace LazyOptimizer.Model
         }
 
         public override string PlanTitle => "Merged plan";
-        public int MergedPlansCount => mergedPlans.Count;
+        public IEnumerable<IPlanBaseModel> MergedPlans => mergedPlans;
     }
 }

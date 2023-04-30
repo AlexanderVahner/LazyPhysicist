@@ -2,6 +2,7 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace LazyOptimizerDataService.DBModel
@@ -23,7 +24,7 @@ namespace LazyOptimizerDataService.DBModel
                 plans = new List<CachedPlan>();
 
                 StringBuilder sqlRequest = new StringBuilder("SELECT RowId, PatientId, CourseId, PlanId, CreationDate, Technique, MachineId, SelectionFrequency, StructuresString, Description,");
-                sqlRequest.AppendLine($@"Levenshtein(StructuresString, ?) AS LDistance");
+                sqlRequest.AppendLine("Levenshtein(StructuresString, ?) AS LDistance");
                 sqlRequest.AppendLine("FROM Plans");
 
                 if (args != null)
@@ -53,27 +54,29 @@ namespace LazyOptimizerDataService.DBModel
                     sqlRequest.Append(args.Limit > 0 ? $" LIMIT {args.Limit};" : ";");
                 }
 
-                var reader = db.Select(sqlRequest.ToString(), new object[] { args.StructuresString });
-                while (reader.Read())
-                {
-                    CachedPlan plan = new CachedPlan
+                db.Select(sqlRequest.ToString(),
+                    (reader) =>
                     {
-                        RowId = reader.GetInt64(0),
-                        PatientId = reader.GetString(1),
-                        CourseId = reader.GetString(2),
-                        PlanId = reader.GetString(3),
-                        CreationDate = DateTime.Parse(reader.GetString(4)),
-                        Technique = reader.GetString(5),
-                        MachineId = reader.GetString(6),
-                        SelectionFrequency = reader.GetInt64(7),
-                        StructuresString = reader.GetString(8),
-                        Description = reader.GetString(9),
-                        LDistance = reader.GetInt64(10)
-                    };
+                        CachedPlan plan = new CachedPlan
+                        {
+                            RowId = reader.GetInt64(0),
+                            PatientId = reader.GetString(1),
+                            CourseId = reader.GetString(2),
+                            PlanId = reader.GetString(3),
+                            CreationDate = DateTime.Parse(reader.GetString(4)),
+                            Technique = reader.GetString(5),
+                            MachineId = reader.GetString(6),
+                            SelectionFrequency = reader.GetInt64(7),
+                            StructuresString = reader.GetString(8),
+                            Description = reader.GetString(9),
+                            LDistance = reader.GetInt64(10)
+                        };
 
-                    plans.Add(plan);
-                }
-                reader?.Dispose();
+                        plans.Add(plan);
+                    },
+                    new object[] { args.StructuresString }
+                );
+                
             }
 
             return plans;
@@ -135,8 +138,74 @@ namespace LazyOptimizerDataService.DBModel
 
                 string sqlRequest = "SELECT RowId, PlanRowId, StructureId, ObjType, Priority, Operator, Dose, Volume, ParameterA FROM Objectives WHERE (PlanRowId = ?) ORDER BY StructureId;";
 
-                var reader = db.Select(sqlRequest, new object[] { planRowId });
-                while (reader.Read())
+                db.Select(sqlRequest,
+                    (reader) =>
+                    {
+                        CachedObjective objective = new CachedObjective
+                        {
+                            RowId = reader.GetInt64(0),
+                            PlanRowId = reader.GetInt64(1),
+                            StructureId = reader.GetString(2),
+                            ObjType = reader.GetInt64(3),
+                            Priority = reader.GetDouble(4),
+                            Operator = reader.GetInt64(5),
+                            Dose = reader.GetDouble(6),
+                            Volume = reader.GetDouble(7),
+                            ParameterA = reader.GetDouble(8)
+                        };
+
+                        objectives.Add(objective);
+                    },                    
+                    new object[] { planRowId }
+                );
+            }
+
+            return objectives;
+        }
+
+        public List<CachedObjective> GetObjectivesByStructrureId(string strcutrureId, PlansFilterArgs args)
+        {
+            List<CachedObjective> objectives = null;
+
+            if (!Connected)
+            {
+                return objectives;
+            }
+            
+            objectives = new List<CachedObjective>();
+
+            StringBuilder sqlRequest = new StringBuilder("SELECT o.RowId, o.PlanRowId, o.StructureId, o.ObjType, o.Priority, o.Operator, o.Dose, o.Volume, o.ParameterA ")
+                .AppendLine("FROM Objectives o ")
+                .AppendLine("INNER JOIN (")
+                .AppendLine("   SELECT o.PlanRowId, o.StructureId, Levenshtein(o.StructureId, ?) as LDistance ")
+                .AppendLine("   FROM Objectives o ")
+                .AppendLine("   INNER JOIN Plans p ON o.PlanRowId = p.ROWID ");
+
+            if (args != null)
+            {
+                sqlRequest.AppendLine("WHERE (1=1)");
+                if (args.SingleDose != 0)
+                {
+                    sqlRequest.Append($@" AND (p.SingleDose={args.SingleDose})");
+                }
+                if (args.FractionsCount != 0)
+                {
+                    sqlRequest.Append($@" AND (p.FractionsCount={args.FractionsCount})");
+                }
+                if (args.MatchTechnique)
+                {
+                    sqlRequest.Append($@" AND (p.Technique='{args.Technique}')");
+                }
+                if (args.MatchMachine)
+                {
+                    sqlRequest.Append($@" AND (p.MachineId='{args.MachineId}')");
+                }
+            }
+
+            sqlRequest.AppendLine(" ORDER BY LDistance LIMIT 1 ) as t ON o.PlanRowId = t.PlanRowId AND o.StructureId = t.StructureId");
+
+            db.Select(sqlRequest.ToString(),
+                (reader) =>
                 {
                     CachedObjective objective = new CachedObjective
                     {
@@ -150,14 +219,14 @@ namespace LazyOptimizerDataService.DBModel
                         Volume = reader.GetDouble(7),
                         ParameterA = reader.GetDouble(8)
                     };
-
                     objectives.Add(objective);
-                }
-                reader?.Dispose();
-            }
+                },
+                new object[] { strcutrureId }
+            );
 
             return objectives;
         }
+
         public CachedNto GetNto(long planRowId)
         {
             CachedNto nto = null;
@@ -168,23 +237,20 @@ namespace LazyOptimizerDataService.DBModel
 
                 string sqlRequest = "SELECT RowId, PlanRowId, IsAutomatic, DistanceFromTargetBorderInMM, StartDosePercentage, EndDosePercentage, FallOff, Priority FROM Ntos WHERE (PlanRowId = ?) LIMIT 1;";
 
-                var reader = db.Select(sqlRequest, new object[] { planRowId });
-                if (reader.Read())
-                {
-                    nto.RowId = reader.GetInt64(0);
-                    nto.PlanRowId = reader.GetInt64(1);
-                    nto.IsAutomatic = reader.GetInt64(2) != 0;
-                    nto.DistanceFromTargetBorderInMM = reader.GetDouble(3);
-                    nto.StartDosePercentage = reader.GetDouble(4);
-                    nto.EndDosePercentage = reader.GetDouble(5);
-                    nto.FallOff = reader.GetDouble(6);
-                    nto.Priority = reader.GetDouble(7);
-                }
-                else
-                {
-                    nto = new CachedNto();
-                }
-                reader?.Dispose();
+                db.Select(sqlRequest,
+                    (reader) =>
+                    {
+                        nto.RowId = reader.GetInt64(0);
+                        nto.PlanRowId = reader.GetInt64(1);
+                        nto.IsAutomatic = reader.GetInt64(2) != 0;
+                        nto.DistanceFromTargetBorderInMM = reader.GetDouble(3);
+                        nto.StartDosePercentage = reader.GetDouble(4);
+                        nto.EndDosePercentage = reader.GetDouble(5);
+                        nto.FallOff = reader.GetDouble(6);
+                        nto.Priority = reader.GetDouble(7);
+                    },
+                    new object[] { planRowId }
+                );
             }
 
             return nto;
@@ -203,15 +269,15 @@ namespace LazyOptimizerDataService.DBModel
 
                 string sqlRequest = "SELECT LastCheckDate FROM Vars LIMIT 1;";
 
-                var reader = db.Select(sqlRequest);
-                if (reader.Read())
-                {
-                    if (DateTime.TryParse(reader.GetString(0), out DateTime tempDateTime))
+                db.Select(sqlRequest, 
+                    (reader) => 
                     {
-                        vars.LastCheckDate = tempDateTime;
+                        if (DateTime.TryParse(reader.GetString(0), out DateTime tempDateTime))
+                        {
+                            vars.LastCheckDate = tempDateTime;
+                        }
                     }
-                }
-                reader?.Dispose();
+                );
             }
 
             return vars;

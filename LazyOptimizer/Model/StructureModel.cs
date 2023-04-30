@@ -49,6 +49,10 @@ namespace LazyOptimizer.Model
                 yield return info; 
             }
         }
+        public override string ToString()
+        {
+            return $"{CachedStructureId}->{CurrentPlanStructure}";
+        }
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions => structuresBroker.StructureSuggestions;
         public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
         public string CachedStructureId { get; }

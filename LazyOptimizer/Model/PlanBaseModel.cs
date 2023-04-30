@@ -20,11 +20,15 @@ namespace LazyOptimizer.Model
         private string description;
         private long selectionFrequency;
         private readonly List<IStructureSuggestionModel> currentPlanStructures = new List<IStructureSuggestionModel>();
-        public PlanBaseModel(IPlanInfo currentPlan)
+        private readonly PlanInteractions planInteractions;
+
+        public PlanBaseModel(IPlanInfo currentPlan, PlanInteractions planInteractions)
         {
             CurrentPlan = currentPlan;
+            this.planInteractions = planInteractions;
             LoadCurrentPlanStructures(currentPlan);
         }
+
         private void LoadCurrentPlanStructures(IPlanInfo currentPlan)
         {
             if (currentPlan == null)
@@ -36,6 +40,7 @@ namespace LazyOptimizer.Model
                 currentPlanStructures.Add(new StructureSuggestionModel(structure));
             }
         }
+
         public IEnumerable<IObjectiveInfo> GetObjectiveInfos()
         {
             if ((Structures?.Count ?? 0) == 0)
@@ -49,6 +54,23 @@ namespace LazyOptimizer.Model
                     yield return objective;
                 }
             }
+        }
+
+        public void AddToMerged()
+        {
+            planInteractions.AddToMerged(this);
+        }
+
+        public IStructureModel AddStructure(string id, IStructureSuggestionModel currentPlanStructure = null)
+        {
+            IStructureModel structure = Structures.FirstOrDefault(s => s.CachedStructureId == id);
+            if (structure == null)
+            {
+                structure = new StructureModel(id, StructuresBroker);
+                Structures.Add(structure);
+            }
+            structure.CurrentPlanStructure = currentPlanStructure;
+            return structure;
         }
 
         protected abstract ObservableCollection<IStructureModel> GetStructures();

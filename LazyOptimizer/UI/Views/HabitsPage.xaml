@@ -30,13 +30,24 @@
                     <Button Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5"/>
                 </StackPanel>-->
                 <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
-                <ListBox ItemsSource="{Binding UnusedStructures}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Id}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Bottom" TextWrapping="Wrap" Padding="3">
+                        Try double-clicking an undefined structure to look for it in other similar plans.
+                    </TextBlock>
+                    <ListBox ItemsSource="{Binding UnusedStructures}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Id}"></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                <EventSetter Event="MouseDoubleClick" Handler="UndefinedStrucutres_MouseDoubleClick"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </DockPanel>
+                
             </DockPanel>
             
             <DockPanel>

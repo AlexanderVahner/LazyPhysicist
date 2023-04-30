@@ -32,6 +32,7 @@ namespace LazyOptimizer.UI.ViewModels
             NotifyPropertyChanged(nameof(LoadNto));
             NotifyPropertyChanged(nameof(PrioritySetter));
         }
+
         private void BindCollections(PlanVM plan)
         {
             if (plan?.SourceModel == null)
@@ -45,11 +46,13 @@ namespace LazyOptimizer.UI.ViewModels
                 UnusedStructures = plan.SourceModel.UndefinedStructures;
             }
         }
+
         private StructureVM CreateStructureVM(IStructureModel model)
         {
             StructureVM result = new StructureVM(model);
             return result;
         }
+
         private void FillCurrentPlan()
         {
             if (SelectedPlan == null)
@@ -76,6 +79,7 @@ namespace LazyOptimizer.UI.ViewModels
                 SourceModel.LoadNtoIntoCurrentPlan(SelectedPlan.Nto);
             }
         }
+
         private void SetPriorityForOars(string priorityString)
         {
             if (SelectedPlan == null)
@@ -107,6 +111,7 @@ namespace LazyOptimizer.UI.ViewModels
                 }
             }
         }
+
         public void UpdateNto(INtoInfo nto)
         {
             if (nto == null)
@@ -124,6 +129,12 @@ namespace LazyOptimizer.UI.ViewModels
                 SelectedNtoString = $"NTO: Manual, Priority: {nto.Priority}, {nto.DistanceFromTargetBorderInMM}mm, {nto.StartDosePercentage}%=>{nto.EndDosePercentage}%, f={nto.FallOff}";
             }
         }
+
+        public void FindStructureInOtherPlans(IStructureSuggestionModel structure)
+        {
+            SourceModel.FindStructureInOtherPlans(SelectedPlan?.SourceModel, structure);
+        }
+
         public SlaveCollection<IPlanBaseModel, PlanVM> Plans { get; }
         public SlaveCollection<IStructureModel, StructureVM> Structures { get; } = new SlaveCollection<IStructureModel, StructureVM> { };
         public ObservableCollection<IStructureSuggestionModel> UnusedStructures { get => unusedStructures; set => SetProperty(ref unusedStructures, value); }

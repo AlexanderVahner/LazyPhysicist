@@ -19,6 +19,8 @@ namespace LazyOptimizer.Model
         IPlanInfo CurrentPlan { get; }
         string PlanTitle { get; }
         IEnumerable<IObjectiveInfo> GetObjectiveInfos();
+        void AddToMerged();
+        IStructureModel AddStructure(string id, IStructureSuggestionModel currentPlanStructure = null);
         ObservableCollection<IStructureModel> Structures { get; }
         ObservableCollection<IStructureSuggestionModel> UndefinedStructures { get; }
         INtoInfo NtoInfo { get; }

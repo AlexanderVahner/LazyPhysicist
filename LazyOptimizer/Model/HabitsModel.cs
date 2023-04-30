@@ -20,17 +20,18 @@ namespace LazyOptimizer.Model
     {
         private readonly App.AppContext context;
         private readonly PlanInteractions planInteractions = new PlanInteractions();
-        private IPlanMergedModel planMergedModel;
+        private readonly IPlanMergedModel planMergedModel;
 
         public HabitsModel(App.AppContext context)
         {
             this.context = context;
-            planMergedModel = new PlanMergedModel(context.CurrentPlan);
+            planMergedModel = new PlanMergedModel(context.CurrentPlan, planInteractions);
             planInteractions.PlanMergedModel = planMergedModel;
             UpdatePlans(context.PlansFilterArgs);
             context.PlansFilterArgs.UpdateRequest += (s, args) => UpdatePlans(args);
             //planInteractions.CreateMergedPlan += () => new PlanMergedModel(context.CurrentPlan);
         }
+
         public void UpdatePlans(PlansFilterArgs args)
         {
             PlanModels.Clear();
@@ -48,6 +49,28 @@ namespace LazyOptimizer.Model
             }
             Logger.Write(this, $"You have {plans.Count()} matched plan" + (plans.Count() == 1 ? "." : "s."));
         }
+
+        public void FindStructureInOtherPlans(IPlanBaseModel plan, IStructureSuggestionModel structure)
+        {
+            if (structure == null || plan == null)
+            {
+                return;
+            }
+
+            var objectives = context.PlansContext.GetObjectivesByStructrureId(structure.Id, context.PlansFilterArgs);
+            if ((objectives?.Count ?? 0) == 0)
+            {
+                Logger.Write(this, $@"Sorry, ""{structure.Id}"" was not found in other similar plans.", LogMessageType.Warning);
+                return;
+            }
+
+            var newStructure = plan.AddStructure(structure.Id, structure);
+            foreach (var objective in objectives)
+            {
+                newStructure.AddObjective(objective);
+            }
+        }
+
         public void LoadObjectivesIntoCurrentPlan(IPlanBaseModel planModel, bool fillOnlyEmptyStructures)
         {
             if (planModel == null)
@@ -68,10 +91,12 @@ namespace LazyOptimizer.Model
                 pcm.SelectionFrequency++;
             }
         }
+
         public void LoadNtoIntoCurrentPlan(INtoInfo nto)
         {
             PlanEdit.LoadNtoIntoPlan(context.CurrentPlan, nto);
         }
+
         public ObservableCollection<IPlanBaseModel> PlanModels { get; } = new ObservableCollection<IPlanBaseModel> { };
     }
 }
