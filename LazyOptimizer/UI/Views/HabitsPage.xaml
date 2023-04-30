@@ -30,13 +30,24 @@
                     <Button Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5"/>
                 </StackPanel>-->
                 <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
-                <ListBox ItemsSource="{Binding UnusedStructures}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Id}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Bottom" TextWrapping="Wrap" Padding="3">
+                        Try double-clicking an undefined structure to look for it in other similar plans.
+                    </TextBlock>
+                    <ListBox ItemsSource="{Binding UnusedStructures}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Id}"></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                <EventSetter Event="MouseDoubleClick" Handler="UndefinedStrucutres_MouseDoubleClick"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </DockPanel>
+                
             </DockPanel>
             
             <DockPanel>
@@ -64,8 +75,7 @@
                             <TextBox Text="{Binding Path=PrioritySetter, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
                         </StackPanel>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedPlan.NtoVM}" Margin="0 5
-                              0 0"/>
+                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedNtoString}" Margin="0 5 0 0"/>
                 </StackPanel>
 
                 <ListBox ItemsSource="{Binding Structures}">

@@ -80,7 +80,7 @@ namespace LazyOptimizer.App
                 context.PlansFilterArgs.Update();
             };
         }
-        public bool CheckPlanEditability(PlanInfo plan)
+        public bool CheckPlanEditability(IPlanInfo plan)
         {
             bool hasError = false;
 

@@ -1,25 +1,154 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
+using LazyOptimizer.App;
+using LazyOptimizer.ESAPI;
+using LazyOptimizer.Model;
+using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    /// <summary>
-    /// ViewModel for HabitsPage.xaml
-    /// This class has a part in "HabitsVM_private" file
-    /// </summary>
-    public partial class HabitsVM : ViewModel
+    public sealed class HabitsVM : ViewModel<HabitsModel>
     {
-        public HabitsVM(App.AppContext context)
+        private readonly AppContext context;
+        private PlanVM selectedPlanVM;
+        private string selectedNtoString;
+        private ObservableCollection<IStructureSuggestionModel> unusedStructures;
+
+        public HabitsVM(HabitsModel habitsModel, AppContext context) : base(habitsModel)
         {
-            InitializeModel(context);
+            this.context = context;
+            Plans = new SlaveCollection<IPlanBaseModel, PlanVM>(
+                habitsModel.PlanModels, 
+                m => new PlanVM(m), 
+                vm => vm.SourceModel);
+
+            NotifyPropertyChanged(nameof(LoadNto));
+            NotifyPropertyChanged(nameof(PrioritySetter));
         }
+
+        private void BindCollections(PlanVM plan)
+        {
+            if (plan?.SourceModel == null)
+            {
+                Structures.BreakFree();
+                UnusedStructures = null;
+            }
+            else
+            {
+                Structures.ObeyTheMaster(plan.SourceModel.Structures, m => CreateStructureVM(m), vm => vm.SourceModel);
+                UnusedStructures = plan.SourceModel.UndefinedStructures;
+            }
+        }
+
+        private StructureVM CreateStructureVM(IStructureModel model)
+        {
+            StructureVM result = new StructureVM(model);
+            return result;
+        }
+
+        private void FillCurrentPlan()
+        {
+            if (SelectedPlan == null)
+            {
+                return;
+            }
+
+            bool fillOnlyEmptyStructures = false;
+            MessageBoxResult answer;
+            if (context.CurrentPlan.ObjectivesCount > 0)
+            {
+                answer = MessageBox.Show("The plan already has Optimization Objectives.\nDo you want to add all of it?\nClick No if you want to fill only empty structures", "Do you?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                if (answer == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                fillOnlyEmptyStructures = answer == MessageBoxResult.No;
+            }
+
+            SourceModel.LoadObjectivesIntoCurrentPlan(SelectedPlan.SourceModel, fillOnlyEmptyStructures);
+
+            if (context.Settings.LoadNto && SelectedPlan.Nto != null)
+            {
+                SourceModel.LoadNtoIntoCurrentPlan(SelectedPlan.Nto);
+            }
+        }
+
+        private void SetPriorityForOars(string priorityString)
+        {
+            if (SelectedPlan == null)
+            {
+                return;
+            }
+            if (!double.TryParse(priorityString, out double priority))
+            {
+                Logger.Write(this, "Enter priority.", LogMessageType.Warning);
+                return;
+            }
+
+            foreach (var structure in Structures)
+            {
+                if (structure.IsTarget)
+                {
+                    continue;
+                }
+                foreach (var objective in structure.Objectives)
+                {
+                    if (priority == -1)
+                    {
+                        objective.ResetPriority();
+                    }
+                    else
+                    {
+                        objective.Priority = priority;
+                    }
+                }
+            }
+        }
+
+        public void UpdateNto(INtoInfo nto)
+        {
+            if (nto == null)
+            {
+                SelectedNtoString = "Load NTO";
+                return;
+            }
+
+            if (nto.IsAutomatic)
+            {
+                SelectedNtoString = $"NTO: Automatic, Priority: {nto.Priority}";
+            }
+            else
+            {
+                SelectedNtoString = $"NTO: Manual, Priority: {nto.Priority}, {nto.DistanceFromTargetBorderInMM}mm, {nto.StartDosePercentage}%=>{nto.EndDosePercentage}%, f={nto.FallOff}";
+            }
+        }
+
+        public void FindStructureInOtherPlans(IStructureSuggestionModel structure)
+        {
+            SourceModel.FindStructureInOtherPlans(SelectedPlan?.SourceModel, structure);
+        }
+
+        public SlaveCollection<IPlanBaseModel, PlanVM> Plans { get; }
+        public SlaveCollection<IStructureModel, StructureVM> Structures { get; } = new SlaveCollection<IStructureModel, StructureVM> { };
+        public ObservableCollection<IStructureSuggestionModel> UnusedStructures { get => unusedStructures; set => SetProperty(ref unusedStructures, value); }
         public PlanVM SelectedPlan
         {
             get => selectedPlanVM;
-            set => SetProperty((v) => SetSelectedPlan(v), value);
+            set
+            {
+                SetProperty(ref selectedPlanVM, value);
+                BindCollections(selectedPlanVM);
+                UpdateNto(selectedPlanVM?.SourceModel.NtoInfo);
+            }
         }
+        public string SelectedNtoString { get => selectedNtoString; private set => SetProperty(ref selectedNtoString, value); }
         public bool LoadNto
         {
             get => context?.Settings?.LoadNto ?? false;
@@ -38,14 +167,13 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public MetaCommand LoadIntoPlan => new MetaCommand(
             o => FillCurrentPlan(),
-            o => SelectedPlan != null && SelectedPlan.Structures.FirstOrDefault(s => s.APIStructure?.Structure != null) != null
+            o => Structures.Count > 0
         );
         public MetaCommand SetOarsPriority => new MetaCommand(
             priorityString => SetPriorityForOars(priorityString as string),
-            o => SelectedPlan != null && SelectedPlan.Structures.Count > 0
+            o => Structures.Count > 0
         );
-        public ObservableCollection<PlanVM> Plans { get; set; } = new ObservableCollection<PlanVM>();
-        public ObservableCollection<StructureVM> Structures { get; } = new ObservableCollection<StructureVM>();
-        public ObservableCollection<StructureInfo> UnusedStructures { get; } = new ObservableCollection<StructureInfo>();
+
+
     }
 }

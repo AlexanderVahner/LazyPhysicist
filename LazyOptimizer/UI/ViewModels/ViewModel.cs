@@ -2,8 +2,12 @@
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class ViewModel : Notifier
+    public class ViewModel<TModel> : Notifier
     {
-        public object Self => this;
+        public ViewModel(TModel sourceModel)
+        {
+            SourceModel = sourceModel;
+        }
+        public TModel SourceModel { get; }
     }
 }

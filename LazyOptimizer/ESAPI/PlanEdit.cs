@@ -8,7 +8,7 @@ namespace LazyOptimizer.ESAPI
 {
     internal class PlanEdit
     {
-        public static void LoadNtoIntoPlan(PlanInfo plan, NtoInfo nto)
+        public static void LoadNtoIntoPlan(IPlanInfo plan, INtoInfo nto)
         {
             if (nto != null && plan != null)
             {
@@ -31,7 +31,7 @@ namespace LazyOptimizer.ESAPI
                 }
             }
         }
-        public static void LoadObjectives(PlanInfo plan, IEnumerable<ObjectiveInfo> objectives, bool onlyEmptyStructures = false)
+        public static void LoadObjectivesIntoPlan(IPlanInfo plan, IEnumerable<IObjectiveInfo> objectives, bool onlyEmptyStructures = false)
         {
             int loadedObjectivesCount = 0;
             if (objectives == null)
@@ -42,7 +42,7 @@ namespace LazyOptimizer.ESAPI
             try
             {
                 plan.Plan.Course.Patient.BeginModifications();
-                foreach (ObjectiveInfo objective in objectives)
+                foreach (IObjectiveInfo objective in objectives)
                 {
                     if (onlyEmptyStructures && plan.StructureHasObjectives(objective.Structure))
                     {
@@ -59,7 +59,7 @@ namespace LazyOptimizer.ESAPI
             }
 
         }
-        private static void LoadObjective(PlanInfo plan, ObjectiveInfo objective)
+        private static void LoadObjective(IPlanInfo plan, IObjectiveInfo objective)
         {
             if (plan.Plan == null)
             {
@@ -92,6 +92,28 @@ namespace LazyOptimizer.ESAPI
                     Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
                     break;
             }
+        }
+        public static void ClearObjectives(IPlanInfo plan)
+        {
+            if (plan?.Plan == null)
+            {
+                Logger.Write(plan, "Plan is null", LogMessageType.Error);
+                return;
+            }
+
+            try
+            {
+                plan.Plan.Course.Patient.BeginModifications();
+                foreach (var objective in plan.Plan.OptimizationSetup.Objectives)
+                {
+                    plan.Plan.OptimizationSetup.RemoveObjective(objective);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex.Source, ex.Message, LogMessageType.Error);
+            }
+            
         }
     }
 }

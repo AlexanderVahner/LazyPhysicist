@@ -1,55 +1,72 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
+using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
+using LazyPhysicist.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    /// <summary>
-    /// ViewModel for PlanElement.xaml
-    /// This class has a part in "PlanVM_private" file
-    /// </summary>
-    public partial class PlanVM : ViewModel
+    public sealed class PlanVM : ViewModel<IPlanBaseModel>
     {
-        public PlanVM(App.AppContext context, CachedPlan cachedPlan)
+        private readonly IPlanCachedModel planCachedModel;
+        private readonly IPlanMergedModel planMergedModel;
+        public PlanVM(IPlanBaseModel planModel) : base(planModel) 
         {
-            this.context = context;
-            this.cachedPlan = cachedPlan;
+            if (planModel == null)
+            {
+                Logger.Write(this, "Can't create a PlanVM - Plan Model is NULL", LogMessageType.Error);
+                return;
+            }
+
+            // Plan Model Type recognition
+            if (planModel is IPlanCachedModel pm)
+            {
+                planCachedModel = pm;
+            }
+            else
+            {
+                planMergedModel = planModel as IPlanMergedModel;
+            }
         }
-        public CachedPlan CachedPlan
-        {
-            get => cachedPlan;
-            set => SetProperty(ref cachedPlan, value);
-        }
-        public string PlanName => $"({CachedPlan?.PatientId}).[{CachedPlan?.CourseId}].{CachedPlan?.PlanId}";
-        public string CreationDate => CachedPlan?.CreationDate.ToString("g") ?? "";
-        public string StructuresString => CachedPlan?.StructuresString;
-        public List<CachedObjective> ObjectivesCache => GetCachedObjectives();
-        public ObservableCollection<StructureVM> Structures => GetStructureVMs();
-        public ObservableCollection<StructureInfo> StructureSuggestions => structureSuggestions ?? (structureSuggestions = new ObservableCollection<StructureInfo>());
-        public NtoVM NtoVM => GetNtoVM();
+        
+        public string PlanTitle => SourceModel.PlanTitle;
+        public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
+        public INtoInfo Nto => SourceModel.NtoInfo;
+        public Action<IPlanCachedModel> AddToMergedPlan { get; set; }
+        public MetaCommand Merge => new MetaCommand(
+            o => {
+                SourceModel.AddToMerged();
+                NotifyPropertyChanged(nameof(ElementVisibility));
+                NotifyPropertyChanged(nameof(SelectionFrequency));
+            },
+            o => planCachedModel != null
+        );
         public string Description
         {
-            get => CachedPlan?.Description;
-            set
-            {
-                SetProperty((v) => { if (CachedPlan != null) CachedPlan.Description = v; }, value);
-                context.PlansContext.UpdatePlan(cachedPlan);
-            }
+            get => SourceModel.Description;
+            set => SetProperty((v) => { SourceModel.Description = v; }, value);
         }
-        public long? SelectionFrequency
+        public bool IsDescriptionReadOnly => planCachedModel == null;
+        public Visibility MergeLinkVisibility => planCachedModel != null ? Visibility.Visible : Visibility.Collapsed;
+        public long SelectionFrequency
         {
-            get => CachedPlan?.SelectionFrequency;
-            set
-            {
-                SetProperty((v) => { if (CachedPlan != null) CachedPlan.SelectionFrequency = v; }, value);
-                context.PlansContext.UpdatePlan(CachedPlan);
-            }
+            get => SourceModel.SelectionFrequency;
+            set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value);
         }
         public string SelectionFrequencyBackground
         {
             get
             {
+                if (planMergedModel != null)
+                {
+                    return "#FF333333";
+                }
+
                 string color = "#FF4646FF";
                 if (SelectionFrequency > 5)
                     color = "#FFE83C03";
@@ -62,6 +79,7 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-
+        public Visibility ElementVisibility => 
+            planMergedModel == null || planMergedModel.MergedPlans.Count() > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }

@@ -6,16 +6,23 @@
              xmlns:local="clr-namespace:LazyOptimizer.UI.Views" xmlns:viewmodels="clr-namespace:LazyOptimizer.UI.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <!--<UserControl.DataContext>
-        <viewmodels:PlanVM/>
-    </UserControl.DataContext>-->
     <Grid>
         <StackPanel>
             <DockPanel>
-                <TextBlock Text="{Binding PlanName}" FontSize="14" FontWeight="Bold" Margin="0 0 5 0"/>
-                <TextBlock DockPanel.Dock="Right" Text="{Binding SelectionFrequency}" Background="{Binding SelectionFrequencyBackground}" Foreground="White" HorizontalAlignment="Right" Padding="3"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <TextBlock Padding="3" Visibility="{Binding MergeLinkVisibility}">
+                        <Hyperlink Command="{Binding Merge}">M+</Hyperlink>
+                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Right" 
+                               Text="{Binding SelectionFrequency}"
+                               Background="{Binding SelectionFrequencyBackground}"
+                               Foreground="White"
+                               HorizontalAlignment="Right" Padding="3"/>
+                </StackPanel>
+                
+                <TextBlock Text="{Binding PlanTitle}" FontSize="14" FontWeight="Bold" Margin="0 0 5 0"/>
             </DockPanel>
-            <TextBox Text="{Binding Description}"/>
+            <TextBox Text="{Binding Description}" IsReadOnly="{Binding IsDescriptionReadOnly}"/>
             <TextBlock Text="{Binding CreationDate}" FontSize="10" Foreground="Gray" FontStyle="Italic" Margin="0 2 0 2"/>
         </StackPanel>
     </Grid>

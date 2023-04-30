@@ -1,4 +1,5 @@
 ﻿using ESAPIInfo.Plan;
+using LazyOptimizer.Model;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System.Runtime.Remoting.Contexts;
@@ -6,103 +7,59 @@ using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public class ObjectiveVM : ViewModel
+    public sealed class ObjectiveVM : ViewModel<IObjectiveModel>
     {
-        public ObjectiveInfo GetObjectiveInfo(Structure structure)
+        public ObjectiveVM(IObjectiveModel objectiveModel) : base(objectiveModel)
         {
-            ObjectiveInfo result = null;
-            if (CachedObjective == null)
-            {
-                Logger.Write(this, "Objective View Model doesn't have an CachedObjective.", LogMessageType.Error);
-            }
-            else
-            {
-                result = new ObjectiveInfo()
-                {
-                    Type = (ObjectiveType)(CachedObjective.ObjType ?? 99),
-                    Structure = structure,
-                    StructureId = CachedObjective.StructureId,
-                    Priority = Priority,
-                    Operator = (Operator)CachedObjective.Operator,
-                    Dose = CachedObjective.Dose ?? .0,
-                    Volume = CachedObjective.Volume ?? .0,
-                    ParameterA = CachedObjective.ParameterA ?? .0
-                };
-            }
-
-            return result;
+            objectiveModel.PropertyChanged += (s, e) => NotifyPropertyChanged(e.PropertyName);
         }
-
-        public void ResetPriority()
-        {
-            Priority = cachedObjective?.Priority ?? 0;
-        }
-
-        private CachedObjective cachedObjective;
-        public CachedObjective CachedObjective
-        {
-            get => cachedObjective;
-            set
-            {
-                SetProperty(ref cachedObjective, value);
-                ResetPriority();
-            }
-        }
-
-        private double priority;
+        public void ResetPriority() => SourceModel.ResetPriority();
         public double Priority
         {
-            get => priority;
-            set
-            {
-                if (value <= 1000) 
-                    SetProperty(ref priority, value);
-            }
+            get => SourceModel.Priority;
+            set => SourceModel.Priority = value;
         }
-        public string Info => $"{CachedObjective.Dose} {CachedObjective.Volume} {CachedObjective.ParameterA}";
-        public double? Dose => CachedObjective?.Dose;
-        public double? Volume => CachedObjective?.Volume;
-        public double? ParameterA => CachedObjective?.ParameterA;
-        public ObjectiveType ObjectiveDBType => (ObjectiveType)(cachedObjective?.ObjType ?? 99);
-        public Operator ObjectiveDBOperator => (Operator)(cachedObjective?.Operator ?? 99);
+        public double? Dose => SourceModel.Dose;
+        public double? Volume => SourceModel.Volume;
+        public double? ParameterA => SourceModel.ParameterA;
+        public ObjectiveType ObjectiveType => SourceModel.ObjType;
+        public Operator ObjectiveOperator => SourceModel.Operator;
         public string ArrowImageSource
         {
             get
             {
                 string result = "/LazyOptimizer.esapi;component/UI/Views/Unknown.png";
-                if (cachedObjective != null)
-                {
-                    if (ObjectiveDBType == ObjectiveType.Mean)
-                    {
-                        result = "/LazyOptimizer.esapi;component/UI/Views/Mean.png";
 
-                    }
-                    else if (ObjectiveDBType == ObjectiveType.EUD)
+                if (ObjectiveType == ObjectiveType.Mean)
+                {
+                    result = "/LazyOptimizer.esapi;component/UI/Views/Mean.png";
+
+                }
+                else if (ObjectiveType == ObjectiveType.EUD)
+                {
+                    switch (ObjectiveOperator)
                     {
-                        switch (ObjectiveDBOperator)
-                        {
-                            case Operator.Upper:
-                                result = "/LazyOptimizer.esapi;component/UI/Views/UpperEUD.png";
-                                break;
-                            case Operator.Lower:
-                                result = "/LazyOptimizer.esapi;component/UI/Views/LowerEUD.png";
-                                break;
-                            case Operator.Exact:
-                                result = "/LazyOptimizer.esapi;component/UI/Views/TargetEUD.png";
-                                break;
-                        }
+                        case Operator.Upper:
+                            result = "/LazyOptimizer.esapi;component/UI/Views/UpperEUD.png";
+                            break;
+                        case Operator.Lower:
+                            result = "/LazyOptimizer.esapi;component/UI/Views/LowerEUD.png";
+                            break;
+                        case Operator.Exact:
+                            result = "/LazyOptimizer.esapi;component/UI/Views/TargetEUD.png";
+                            break;
                     }
-                    else if (ObjectiveDBType == ObjectiveType.Point)
+                }
+                else if (ObjectiveType == ObjectiveType.Point)
+                {
+                    switch (ObjectiveOperator)
                     {
-                        switch (ObjectiveDBOperator)
-                        {
-                            case Operator.Upper:
-                                result = "/LazyOptimizer.esapi;component/UI/Views/Upper.png";
-                                break;
-                            case Operator.Lower:
-                                result = "/LazyOptimizer.esapi;component/UI/Views/Lower.png";
-                                break;
-                        }
+                        case Operator.Upper:
+                            result = "/LazyOptimizer.esapi;component/UI/Views/Upper.png";
+                            break;
+                        case Operator.Lower:
+                            result = "/LazyOptimizer.esapi;component/UI/Views/Lower.png";
+                            break;
                     }
                 }
                 return result;
