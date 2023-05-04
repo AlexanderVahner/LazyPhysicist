@@ -1,6 +1,4 @@
-﻿using VMS.TPS.Common.Model.API;
-
-namespace ESAPIInfo.Plan
+﻿namespace ESAPIInfo.Plan
 {
     public interface INtoInfo
     {

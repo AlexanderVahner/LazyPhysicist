@@ -24,6 +24,7 @@ namespace LazyPhysicist.Common
 
             return input;
         }
+
         public static bool CheckPathOrCreate(string path)
         {
             path = Environment.ExpandEnvironmentVariables(path);

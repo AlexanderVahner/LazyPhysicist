@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyPhysicist.Common
 {
@@ -35,8 +31,8 @@ namespace LazyPhysicist.Common
         /// <param name="addSlave">How to make TSlave for TMaster lambda</param>
         /// <param name="whoIsTheMaster">How to find out a TSlave's TMaster lambda</param>
         public SlaveCollection(
-            ObservableCollection<TMaster> masterCollection, 
-            Func<TMaster, TSlave> addSlave, 
+            ObservableCollection<TMaster> masterCollection,
+            Func<TMaster, TSlave> addSlave,
             Func<TSlave, TMaster> whoIsTheMaster
             ) => ObeyTheMaster(masterCollection, addSlave, whoIsTheMaster);
         /// <summary>

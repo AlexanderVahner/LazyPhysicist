@@ -25,7 +25,7 @@
                     <TextBlock>Selection Count Limit for Cached Plans:</TextBlock>
                     <TextBox Text="{Binding Settings.PlansSelectLimit}" Width="50" Margin="5 0 0 0"/>
                 </StackPanel>
-                
+                <CheckBox IsChecked="{Binding Settings.PlanMergeEnabled}" Content="Enable Plan Merge Mode"  Margin="0 5 0 0"/>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="PlansCache App" Grid.Column="1" Padding="5">

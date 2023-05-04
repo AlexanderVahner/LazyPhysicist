@@ -1,9 +1,5 @@
 ﻿using ESAPIInfo.Plan;
 using LazyOptimizer.Model;
-using LazyOptimizerDataService.DBModel;
-using LazyPhysicist.Common;
-using System.Runtime.Remoting.Contexts;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.UI.ViewModels
 {

@@ -11,16 +11,19 @@ namespace LazyOptimizer.Model
         private double initPriority;
         public ObjectiveModel()
         {
-        
+
         }
+
         public ObjectiveModel(CachedObjective cachedObjective)
         {
             CopyFrom(cachedObjective);
         }
+
         public ObjectiveModel(ObjectiveModel objective)
         {
             CopyFrom(objective);
         }
+
         public void CopyFrom(CachedObjective cachedObjective)
         {
             if (cachedObjective == null)
@@ -37,6 +40,7 @@ namespace LazyOptimizer.Model
 
             initPriority = Priority;
         }
+
         public void CopyFrom(ObjectiveModel objective)
         {
             if (objective == null)
@@ -53,6 +57,7 @@ namespace LazyOptimizer.Model
 
             initPriority = Priority;
         }
+
         public ObjectiveInfo GetObjectiveInfo(IStructureInfo structure)
         {
             ObjectiveInfo result = null;
@@ -72,14 +77,17 @@ namespace LazyOptimizer.Model
             }
             return result;
         }
+
         public void ResetPriority()
         {
             Priority = initPriority;
         }
+
         public override string ToString()
         {
             return $"Type: {ObjType}, Operator: {Operator}, Priority: {Priority}, Dose: {Dose}, Volume: {Volume}, ParameterA: {ParameterA}";
         }
+
         public double? Dose { get; set; }
         public double? Volume { get; set; }
         public double? ParameterA { get; set; }

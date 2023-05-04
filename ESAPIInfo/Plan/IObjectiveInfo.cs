@@ -1,7 +1,4 @@
-﻿using LazyPhysicist.Common;
-using System.Collections.Generic;
-using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
+﻿using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Plan
 {

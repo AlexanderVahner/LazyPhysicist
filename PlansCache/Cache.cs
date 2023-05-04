@@ -6,16 +6,18 @@ using System.Linq;
 
 namespace PlansCache
 {
-    public class Cache
+    public sealed class Cache
     {
         private readonly IPlansContext plansContext;
         private readonly Vars vars;
         private readonly List<CachedPlan> plans = new List<CachedPlan>();
+
         public Cache(IPlansContext plansContext)
         {
             this.plansContext = plansContext;
             vars = plansContext.GetVars();
         }
+
         public void ClearData(bool fromLastCheck)
         {
             if (fromLastCheck)
@@ -27,6 +29,7 @@ namespace PlansCache
                 plansContext.ClearData();
             }
         }
+
         public void AddPlan(PlanInfo plan)
         {
             CachedPlan cachedPlan = PlanToCachedPlan(plan);
@@ -36,6 +39,7 @@ namespace PlansCache
             }
 
         }
+
         public void WritePlans()
         {
             if (plans.Count() > 0)
@@ -45,6 +49,7 @@ namespace PlansCache
                 plans.Clear();
             }
         }
+
         private CachedPlan PlanToCachedPlan(PlanInfo plan)
         {
             CachedPlan cachedPlan = null;
@@ -99,6 +104,7 @@ namespace PlansCache
 
             return cachedPlan;
         }
+
         public DateTime LastCheckDate
         {
             get => vars.LastCheckDate;

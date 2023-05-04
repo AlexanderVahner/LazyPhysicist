@@ -3,7 +3,7 @@ using System;
 
 namespace LazyOptimizerDataService.DBModel
 {
-    public class PlansFilterArgs : Notifier
+    public sealed class PlansFilterArgs : Notifier
     {
         public PlansFilterArgs()
         {

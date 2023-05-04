@@ -1,10 +1,6 @@
-﻿using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.Model
 {
@@ -21,6 +17,7 @@ namespace LazyOptimizer.Model
             StructureSuggestions = new ObservableCollection<IStructureSuggestionModel>();
             Reset();
         }
+
         public void Reset(IEnumerable<IStructureModel> structures = null)
         {
             UndefinedStructures.Clear();
@@ -39,6 +36,7 @@ namespace LazyOptimizer.Model
                 }
             }
         }
+
         public void Give(IStructureSuggestionModel giveStructure)
         {
             if (giveStructure?.StructureInfo != null)
@@ -47,6 +45,7 @@ namespace LazyOptimizer.Model
                 StructureSuggestions.Insert(1, giveStructure); // after <none> item
             }
         }
+
         public void Take(IStructureSuggestionModel takeStructure)
         {
             if (takeStructure?.StructureInfo != null)
@@ -55,6 +54,7 @@ namespace LazyOptimizer.Model
                 StructureSuggestions.Remove(StructureSuggestions.FirstOrDefault(us => us.Id == takeStructure.Id));
             }
         }
+
         public ObservableCollection<IStructureSuggestionModel> UndefinedStructures { get; }
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
     }

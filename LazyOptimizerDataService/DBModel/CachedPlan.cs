@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LazyOptimizerDataService.DBModel
 {
-    public class CachedPlan
+    public sealed class CachedPlan
     {
         public long RowId { get; set; }
         public string PlanId { get; set; }

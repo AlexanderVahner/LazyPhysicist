@@ -2,7 +2,6 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 
 namespace LazyOptimizerDataService.DBModel
@@ -76,11 +75,12 @@ namespace LazyOptimizerDataService.DBModel
                     },
                     new object[] { args.StructuresString }
                 );
-                
+
             }
 
             return plans;
         }
+
         public void InsertPlans(IEnumerable<CachedPlan> plans)
         {
             if (Connected && plans != null)
@@ -120,6 +120,7 @@ namespace LazyOptimizerDataService.DBModel
                 }
             }
         }
+
         public void UpdatePlan(CachedPlan plan)
         {
             if (Connected && plan != null)
@@ -128,6 +129,7 @@ namespace LazyOptimizerDataService.DBModel
                 db.Execute(sql, new object[] { plan.SelectionFrequency, plan.Description, plan.RowId });
             }
         }
+
         public List<CachedObjective> GetObjectives(long planRowId)
         {
             List<CachedObjective> objectives = null;
@@ -155,7 +157,7 @@ namespace LazyOptimizerDataService.DBModel
                         };
 
                         objectives.Add(objective);
-                    },                    
+                    },
                     new object[] { planRowId }
                 );
             }
@@ -171,7 +173,7 @@ namespace LazyOptimizerDataService.DBModel
             {
                 return objectives;
             }
-            
+
             objectives = new List<CachedObjective>();
 
             StringBuilder sqlRequest = new StringBuilder("SELECT o.RowId, o.PlanRowId, o.StructureId, o.ObjType, o.Priority, o.Operator, o.Dose, o.Volume, o.ParameterA ")
@@ -269,8 +271,8 @@ namespace LazyOptimizerDataService.DBModel
 
                 string sqlRequest = "SELECT LastCheckDate FROM Vars LIMIT 1;";
 
-                db.Select(sqlRequest, 
-                    (reader) => 
+                db.Select(sqlRequest,
+                    (reader) =>
                     {
                         if (DateTime.TryParse(reader.GetString(0), out DateTime tempDateTime))
                         {
@@ -282,6 +284,7 @@ namespace LazyOptimizerDataService.DBModel
 
             return vars;
         }
+
         public void UpdateVars(Vars vars)
         {
             if (Connected)
@@ -292,6 +295,7 @@ namespace LazyOptimizerDataService.DBModel
                 }
             }
         }
+
         public void ClearData(DateTime fromDate = default)
         {
             if (Connected)
@@ -322,6 +326,7 @@ namespace LazyOptimizerDataService.DBModel
 
             }
         }
+
         public bool Connected
         {
             get

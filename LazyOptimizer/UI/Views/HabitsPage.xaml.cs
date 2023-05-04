@@ -18,7 +18,7 @@ namespace LazyOptimizer.UI.Views
 
         private HabitsVM DefineVM()
         {
-            if (vm == null &&  DataContext is HabitsVM hvm)
+            if (vm == null && DataContext is HabitsVM hvm)
             {
                 vm = hvm;
             }

@@ -28,6 +28,7 @@ namespace LazyOptimizer.Model
             this.cachedPlan = cachedPlan;
             this.context = context;
         }
+
         protected override ObservableCollection<IStructureModel> GetStructures()
         {
             if (structures == null)
@@ -38,6 +39,7 @@ namespace LazyOptimizer.Model
             }
             return structures;
         }
+
         private List<CachedObjective> GetCachedObjectives()
         {
             if (cachedObjectives == null && cachedPlan != null)
@@ -46,6 +48,7 @@ namespace LazyOptimizer.Model
             }
             return cachedObjectives;
         }
+
         private void LoadCachedObjectivesIntoStructures()
         {
             string structureId = "";
@@ -67,6 +70,7 @@ namespace LazyOptimizer.Model
                 structures.Add(s);
             }
         }
+
         private void MatchStructures()
         {
             if (structures.Count == 0 || UndefinedStructures.Count == 0)
@@ -92,6 +96,7 @@ namespace LazyOptimizer.Model
             }
             comparsion.Clear();
         }
+
         private List<StructuresComparsion> GetComparsionTable(IEnumerable<IStructureSuggestionModel> suggestions)
         {
             List<StructuresComparsion> comparsion = new List<StructuresComparsion>(structures.Count * suggestions.Count());
@@ -107,6 +112,7 @@ namespace LazyOptimizer.Model
             }
             return comparsion;
         }
+
         private struct StructuresComparsion
         {
             public StructuresComparsion(IStructureModel structureModel, IStructureSuggestionModel currentPlanStructure, int distance)
@@ -119,6 +125,7 @@ namespace LazyOptimizer.Model
             public IStructureSuggestionModel CurrentPlanStructure;
             public int Distance;
         }
+
         protected override INtoInfo GetNto()
         {
             if (ntoInfo == null)
@@ -155,6 +162,6 @@ namespace LazyOptimizer.Model
         public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
         public DateTime CreationDate => cachedPlan.CreationDate;
         public List<CachedObjective> CachedObjectives => GetCachedObjectives();
-        
+
     }
 }

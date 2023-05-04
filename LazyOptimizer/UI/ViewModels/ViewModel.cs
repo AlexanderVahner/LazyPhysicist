@@ -8,6 +8,7 @@ namespace LazyOptimizer.UI.ViewModels
         {
             SourceModel = sourceModel;
         }
+
         public TModel SourceModel { get; }
     }
 }

@@ -1,12 +1,6 @@
 ﻿using ESAPIInfo.Plan;
-using ESAPIInfo.Structures;
 using LazyOptimizer.Model;
-using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 
 namespace LazyOptimizer.UI.ViewModels
@@ -15,7 +9,11 @@ namespace LazyOptimizer.UI.ViewModels
     {
         private readonly IPlanCachedModel planCachedModel;
         private readonly IPlanMergedModel planMergedModel;
-        public PlanVM(IPlanBaseModel planModel) : base(planModel) 
+        private bool canMerge;
+        private Visibility mergeLinkVisibility;
+        private Visibility elementVisibility;
+
+        public PlanVM(IPlanBaseModel planModel) : base(planModel)
         {
             if (planModel == null)
             {
@@ -32,31 +30,45 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 planMergedModel = planModel as IPlanMergedModel;
             }
+
+            planModel.PropertyChanged += (s, e) =>
+            {
+                NotifyPropertyChanged(e.PropertyName);
+                if (e.PropertyName == nameof(SelectionFrequency))
+                {
+                    NotifyPropertyChanged(nameof(SelectionFrequencyBackground));
+                }
+            };
+            SetMergeFeatureVisibility();
         }
-        
+
+        private void SetMergeFeatureVisibility()
+        {
+            MergeLinkVisibility = planCachedModel != null && CanMerge ? Visibility.Visible : Visibility.Collapsed;
+            ElementVisibility = planCachedModel != null || (planMergedModel != null && CanMerge) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public MetaCommand Merge => new MetaCommand(
+            o => SourceModel.AddToMerged(),
+            o => planCachedModel != null
+        );
+
         public string PlanTitle => SourceModel.PlanTitle;
         public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
         public INtoInfo Nto => SourceModel.NtoInfo;
-        public Action<IPlanCachedModel> AddToMergedPlan { get; set; }
-        public MetaCommand Merge => new MetaCommand(
-            o => {
-                SourceModel.AddToMerged();
-                NotifyPropertyChanged(nameof(ElementVisibility));
-                NotifyPropertyChanged(nameof(SelectionFrequency));
-            },
-            o => planCachedModel != null
-        );
-        public string Description
-        {
-            get => SourceModel.Description;
-            set => SetProperty((v) => { SourceModel.Description = v; }, value);
-        }
+        public string Description { get => SourceModel.Description; set => SetProperty((v) => { SourceModel.Description = v; }, value); }
         public bool IsDescriptionReadOnly => planCachedModel == null;
-        public Visibility MergeLinkVisibility => planCachedModel != null ? Visibility.Visible : Visibility.Collapsed;
-        public long SelectionFrequency
+        public long SelectionFrequency { get => SourceModel.SelectionFrequency; set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value); }
+        public Visibility MergeLinkVisibility { get => mergeLinkVisibility; set => SetProperty(ref mergeLinkVisibility, value); }
+        public Visibility ElementVisibility { get => elementVisibility; set => SetProperty(ref elementVisibility, value); }
+        public bool CanMerge
         {
-            get => SourceModel.SelectionFrequency;
-            set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value);
+            get => canMerge;
+            set
+            {
+                SetProperty(ref canMerge, value);
+                SetMergeFeatureVisibility();
+            }
         }
         public string SelectionFrequencyBackground
         {
@@ -79,7 +91,5 @@ namespace LazyOptimizer.UI.ViewModels
                 return color;
             }
         }
-        public Visibility ElementVisibility => 
-            planMergedModel == null || planMergedModel.MergedPlans.Count() > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }

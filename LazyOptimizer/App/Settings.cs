@@ -36,7 +36,7 @@ namespace LazyOptimizer.App
         }
 
 
-        private string plansCacheAppPath = @"PlansCache.exe";
+        private string plansCacheAppPath = AppDomain.CurrentDomain.BaseDirectory + "\\PlansCache.exe";
         private bool plansCacheVerboseMode = true;
         private bool plansCacheRecheckAllPatients = false;
 
@@ -46,6 +46,7 @@ namespace LazyOptimizer.App
         private bool loadNto = true;
         private string defaultPrioritySetValue = "30";
         private string lastPriorityValue = "-1";
+        private bool planMergeEnabled;
 
         private bool debugMode = false;
 
@@ -60,13 +61,13 @@ namespace LazyOptimizer.App
         public bool PlansCacheVerboseMode { get => plansCacheVerboseMode; set => SetProperty(ref plansCacheVerboseMode, value); }
         public bool PlansCacheRecheckAllPatients { get => plansCacheRecheckAllPatients; set => SetProperty(ref plansCacheRecheckAllPatients, value); }
 
-
         public int PlansSelectLimit { get => plansSelectLimit; set => SetProperty(ref plansSelectLimit, value); }
         public bool MatchMachine { get => matchMachine; set => SetProperty(ref matchMachine, value); }
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool LoadNto { get => loadNto; set => SetProperty(ref loadNto, value); }
         public string DefaultPrioritySetValue { get => defaultPrioritySetValue; set => SetProperty(ref defaultPrioritySetValue, value); }
         public string LastPriorityValue { get => lastPriorityValue; set => SetProperty(ref lastPriorityValue, value); }
+        public bool PlanMergeEnabled { get => planMergeEnabled; set => SetProperty(ref planMergeEnabled, value); }
 
         public bool DebugMode { get => debugMode; set => SetProperty(ref debugMode, value); }
 

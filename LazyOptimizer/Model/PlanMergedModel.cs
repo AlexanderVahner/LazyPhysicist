@@ -4,10 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
@@ -38,7 +34,7 @@ namespace LazyOptimizer.Model
             mergedPlans.Add(plan);
             SelectionFrequency = mergedPlans.Count;
             RecalcMerged(mergedPlans);
-            
+
             Logger.Write(this, $"Merged Plan now contains {mergedPlans.Count} plan" + (mergedPlans.Count == 1 ? "." : "s."));
         }
 
@@ -61,7 +57,7 @@ namespace LazyOptimizer.Model
         private void MergeStructures(List<IPlanBaseModel> mergedPlans)
         {
             mergedStructures.Clear();
-            
+
 
             foreach (var plan in mergedPlans)
             {
@@ -72,7 +68,7 @@ namespace LazyOptimizer.Model
                         continue;
                     }
 
-                    var findedStructure = DefineStructure(structure.CurrentPlanStructure); 
+                    var findedStructure = DefineStructure(structure.CurrentPlanStructure);
 
                     // Put all objectives from all merged plans in the same structure. Then we'll average them
                     foreach (var objective in structure.Objectives)
@@ -123,7 +119,7 @@ namespace LazyOptimizer.Model
                } into obj
                select new ObjectiveModel()
                {
-                   ObjType = obj.Key.ObjType, 
+                   ObjType = obj.Key.ObjType,
                    Operator = obj.Key.Operator,
                    Volume = obj.Key.Volume,
                    Dose = Math.Round(obj.Average(o => o.Dose) ?? 0, 2),
@@ -142,17 +138,17 @@ namespace LazyOptimizer.Model
                     structure.Objectives.RemoveAt(0);
                 }
             }
-            
+
         }
 
         private void MergeNto(List<IPlanBaseModel> mergedPlans)
         {
             List<INtoInfo> ntoList = new List<INtoInfo>();
-            foreach(var plan in mergedPlans)
+            foreach (var plan in mergedPlans)
             {
                 ntoList.Add(plan.NtoInfo);
             }
-            
+
             var manuals = ntoList.Where(n => !n.IsAutomatic);
             var averageList = manuals.Any() ? manuals : ntoList;
 
@@ -165,14 +161,14 @@ namespace LazyOptimizer.Model
             var query = averageList
                 .GroupBy(n => n.IsAutomatic)
                 .Select(g => new NtoInfo()
-                    {
-                        IsAutomatic = g.Key,
-                        DistanceFromTargetBorderInMM = Math.Round(g.Average(x => x.DistanceFromTargetBorderInMM), 0),
-                        StartDosePercentage = Math.Round(g.Average(x => x.StartDosePercentage), 0),
-                        EndDosePercentage = Math.Round(g.Average(x => x.EndDosePercentage), 0),
-                        FallOff = Math.Round(g.Average(x => x.FallOff), 2),
-                        Priority = Math.Round(g.Average(x => x.Priority), 0)
-                    }
+                {
+                    IsAutomatic = g.Key,
+                    DistanceFromTargetBorderInMM = Math.Round(g.Average(x => x.DistanceFromTargetBorderInMM), 0),
+                    StartDosePercentage = Math.Round(g.Average(x => x.StartDosePercentage), 0),
+                    EndDosePercentage = Math.Round(g.Average(x => x.EndDosePercentage), 0),
+                    FallOff = Math.Round(g.Average(x => x.FallOff), 2),
+                    Priority = Math.Round(g.Average(x => x.Priority), 0)
+                }
                 )/* TODO: Simplify code with .OrderBy(s => s.IsAutomatic)*/;
 
             mergedNtoInfo = query.First();

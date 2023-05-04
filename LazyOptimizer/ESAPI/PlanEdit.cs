@@ -31,6 +31,7 @@ namespace LazyOptimizer.ESAPI
                 }
             }
         }
+
         public static void LoadObjectivesIntoPlan(IPlanInfo plan, IEnumerable<IObjectiveInfo> objectives, bool onlyEmptyStructures = false)
         {
             int loadedObjectivesCount = 0;
@@ -59,6 +60,7 @@ namespace LazyOptimizer.ESAPI
             }
 
         }
+
         private static void LoadObjective(IPlanInfo plan, IObjectiveInfo objective)
         {
             if (plan.Plan == null)
@@ -93,6 +95,7 @@ namespace LazyOptimizer.ESAPI
                     break;
             }
         }
+
         public static void ClearObjectives(IPlanInfo plan)
         {
             if (plan?.Plan == null)
@@ -113,7 +116,7 @@ namespace LazyOptimizer.ESAPI
             {
                 Logger.Write(ex.Source, ex.Message, LogMessageType.Error);
             }
-            
+
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace LazyOptimizerDataService.DBModel
 {
-    public class CachedObjective
+    public sealed class CachedObjective
     {
         public long RowId { get; set; }
         public long PlanRowId { get; set; }

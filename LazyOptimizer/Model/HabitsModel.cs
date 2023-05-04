@@ -1,35 +1,29 @@
 ﻿using ESAPIInfo.Plan;
-using ESAPIInfo.Structures;
 using LazyOptimizer.ESAPI;
-using LazyOptimizer.UI.ViewModels;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
     public sealed class HabitsModel : Notifier
     {
         private readonly App.AppContext context;
-        private readonly PlanInteractions planInteractions = new PlanInteractions();
+        private readonly PlanInteractions planInteractions;
         private readonly IPlanMergedModel planMergedModel;
 
         public HabitsModel(App.AppContext context)
         {
             this.context = context;
+
+            planInteractions = new PlanInteractions();
             planMergedModel = new PlanMergedModel(context.CurrentPlan, planInteractions);
             planInteractions.PlanMergedModel = planMergedModel;
+
             UpdatePlans(context.PlansFilterArgs);
             context.PlansFilterArgs.UpdateRequest += (s, args) => UpdatePlans(args);
-            //planInteractions.CreateMergedPlan += () => new PlanMergedModel(context.CurrentPlan);
         }
 
         public void UpdatePlans(PlansFilterArgs args)
@@ -98,5 +92,6 @@ namespace LazyOptimizer.Model
         }
 
         public ObservableCollection<IPlanBaseModel> PlanModels { get; } = new ObservableCollection<IPlanBaseModel> { };
+        public PlanInteractions PlanInteractions => planInteractions;
     }
 }

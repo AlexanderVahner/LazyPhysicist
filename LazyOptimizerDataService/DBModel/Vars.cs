@@ -2,7 +2,7 @@
 
 namespace LazyOptimizerDataService.DBModel
 {
-    public class Vars
+    public sealed class Vars
     {
         public DateTime LastCheckDate { get; set; }
     }

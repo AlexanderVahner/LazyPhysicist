@@ -14,7 +14,7 @@ namespace LazyOptimizer.UI.Views
         {
             InitializeComponent();
         }
-        public PlanVM ViewModel 
+        public PlanVM ViewModel
         {
             get
             {

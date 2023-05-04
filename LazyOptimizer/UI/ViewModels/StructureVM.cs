@@ -2,7 +2,6 @@
 using LazyOptimizer.Model;
 using LazyPhysicist.Common;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace LazyOptimizer.UI.ViewModels
 {
@@ -16,6 +15,7 @@ namespace LazyOptimizer.UI.ViewModels
             StructureSuggestions = structureModel.StructureSuggestions;
             Objectives = new SlaveCollection<IObjectiveModel, ObjectiveVM>(structureModel.Objectives, m => new ObjectiveVM(m), vm => vm.SourceModel);
         }
+
         public string CachedStructureId => structureModel.CachedStructureId;
         public IStructureSuggestionModel PlanStructure
         {

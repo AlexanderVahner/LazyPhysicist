@@ -1,20 +1,12 @@
 ﻿using ESAPIInfo.Plan;
-using ESAPIInfo.Structures;
-using LazyOptimizer.UI.ViewModels;
-using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.Model
 {
-    public abstract class PlanBaseModel : IPlanBaseModel
+    public abstract class PlanBaseModel : Notifier, IPlanBaseModel
     {
         private StructuresBroker structuresBroker;
         private string description;
@@ -76,9 +68,9 @@ namespace LazyOptimizer.Model
         protected abstract ObservableCollection<IStructureModel> GetStructures();
         protected abstract INtoInfo GetNto();
         protected virtual string GetDescription() => description;
-        protected virtual void SetDescription(string text) { description = text; }
+        protected virtual void SetDescription(string text) { description = text; NotifyPropertyChanged(nameof(Description)); }
         protected virtual long GetSelectionFrequency() => selectionFrequency;
-        protected virtual void SetSelectionFrequency(long value) { selectionFrequency = value; }
+        protected virtual void SetSelectionFrequency(long value) { selectionFrequency = value; NotifyPropertyChanged(nameof(SelectionFrequency)); }
 
         public IPlanInfo CurrentPlan { get; }
         public abstract string PlanTitle { get; }

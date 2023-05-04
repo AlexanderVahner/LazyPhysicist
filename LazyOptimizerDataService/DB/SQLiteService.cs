@@ -6,7 +6,6 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace LazyOptimizerDataService.DB
@@ -65,24 +64,6 @@ namespace LazyOptimizerDataService.DB
             {
                 Logger.Write(this, $"Can't add parameters into command.\nSQL: {command?.CommandText ?? "<EMPTY>"}\nParameters count: {parameters?.Count() ?? 0}", LogMessageType.Error);
             }
-        }
-
-        // Bad function - SQLiteCommand command will not be disposed. Use Select<TRowResult>(...) below
-        public DbDataReader Select(string sqlRequest, IEnumerable<object> parameters = null)
-        {
-            DbDataReader reader;
-
-            Logger.Write(this, sqlRequest, LogMessageType.Debug);
-
-            SQLiteCommand command = new SQLiteCommand(sqlRequest, connection);
-            if ((parameters?.Count() ?? 0) > 0)
-            {
-                AddParametersToCommand(command, parameters);
-            }
-
-            reader = command.ExecuteReader();
-
-            return reader;
         }
 
         public void Select(string sqlRequest, Action<DbDataReader> rowAction, IEnumerable<object> parameters = null)
@@ -151,12 +132,14 @@ namespace LazyOptimizerDataService.DB
                 Logger.Write(this, "SELECT: Destination collection is NULL.", LogMessageType.Error);
             }
         }
+
         public void SelectSingle<T>(out T destination, string sqlRequest, IEnumerable<object> parameters = null)
         {
             List<T> list = new List<T>();
             Select(list, sqlRequest, parameters);
             destination = list.FirstOrDefault();
         }
+
         public int Execute(string sqlRequest, IEnumerable<object> parameters = null)
         {
             int result = 0;
@@ -173,6 +156,7 @@ namespace LazyOptimizerDataService.DB
             }
             return result;
         }
+
         public object GetValue(string sqlRequest, IEnumerable<object> parameters = null)
         {
             object result = null;
@@ -195,19 +179,23 @@ namespace LazyOptimizerDataService.DB
             }
             return result;
         }
+
         public int SetValue(string tableName, long rowId, string fieldName, object value)
         {
             string sql = $"UPDATE {tableName} SET {fieldName} = ? WHERE rowid = ?";
             return Execute(sql, new object[] { value, rowId });
         }
+
         public int LastInsertedRowId()
         {
             return (GetValue("TYPES INT; SELECT last_insert_rowid();") as int?) ?? -1;
         }
+
         public void BeginTransaction()
         {
             transaction = connection.BeginTransaction();
         }
+
         public void CommitTransaction()
         {
             if (transaction == null)
@@ -218,6 +206,7 @@ namespace LazyOptimizerDataService.DB
             transaction.Commit();
             transaction.Dispose();
         }
+
         public void RollbackTransaction()
         {
             if (transaction == null)
@@ -228,10 +217,12 @@ namespace LazyOptimizerDataService.DB
             transaction.Rollback();
             transaction.Dispose();
         }
+
         public void Dispose()
         {
             connection?.Dispose();
         }
+
         public bool Connected
         {
             get => connected;

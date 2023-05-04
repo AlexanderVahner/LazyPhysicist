@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using VMS.TPS.Common.Model.API;
+﻿using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
 {
@@ -11,5 +10,5 @@ namespace ESAPIInfo.Structures
         string DicomType { get; }
         bool IsSupport { get; }
         bool CanOptimize { get; }
-}
+    }
 }

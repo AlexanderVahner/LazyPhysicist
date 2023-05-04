@@ -1,16 +1,10 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
-using LazyOptimizer.UI.ViewModels;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using VMS.TPS.Common.Model.API;
 
 namespace LazyOptimizer.Model
 {
@@ -25,15 +19,18 @@ namespace LazyOptimizer.Model
             CachedStructureId = cachedStructureId;
             this.structuresBroker = structuresBroker;
         }
+
         public void AddObjective(CachedObjective objective)
         {
             Objectives.Add(new ObjectiveModel(objective));
         }
+
         public void AddObjective(IObjectiveModel objective)
         {
             Objectives.Add(objective);
         }
-        public IEnumerable<IObjectiveInfo> GetObjectiveInfos() 
+
+        public IEnumerable<IObjectiveInfo> GetObjectiveInfos()
         {
             if (CurrentPlanStructure?.StructureInfo == null || Objectives.Count == 0)
             {
@@ -46,13 +43,15 @@ namespace LazyOptimizer.Model
                 {
                     continue;
                 }
-                yield return info; 
+                yield return info;
             }
         }
+
         public override string ToString()
         {
             return $"{CachedStructureId}->{CurrentPlanStructure}";
         }
+
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions => structuresBroker.StructureSuggestions;
         public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
         public string CachedStructureId { get; }

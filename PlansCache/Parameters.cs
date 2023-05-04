@@ -2,7 +2,7 @@
 
 namespace PlansCache
 {
-    public class Parameters
+    public sealed class Parameters
     {
         public Parameters(string[] args)
         {
