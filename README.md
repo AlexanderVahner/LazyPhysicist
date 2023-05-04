@@ -58,7 +58,7 @@ Plan Selection Criteria:
 	<li>The number of factions matches</li>
 	<li>Same dose per fraction</li>
 	<li>Similar set of structures</li>
-	<li>Optionally the same Tretment Machine and Technique</li>
+	<li>Optionally the same Treatment Machine and Technique</li>
 </ul>
 </p>
 <p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.<br>
