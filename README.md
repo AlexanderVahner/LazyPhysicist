@@ -61,8 +61,12 @@ Plan Selection Criteria:
 	<li>Optionally the same Tretment Machine and Technique</li>
 </ul>
 </p>
-<p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.
-You can override the objective priorities for all OARs by clicking the buttons:
+<p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same. If no match is found for a structure, then you can double-click on the structure in the list of undefined structures. The best match will be found in other plans and added.
+</p>
+<p>There is one more option - <b>Merging</b> the structures of several plans, and averaging the doses, priorities and EUD A parameters in the structures. Activate this mode in the settings if you want to use it.
+</p>
+
+<p>You can override the objective priorities for all OARs by clicking the buttons:
 <ul>
 <li><b>=0</b> — set to zero</li>
 <li><b>As Is</b> — as in the plan from the database</li>
