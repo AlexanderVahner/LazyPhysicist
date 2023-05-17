@@ -5,9 +5,9 @@ using System;
 using System.Reflection;
 using VMS.TPS.Common.Model.API;
 
-[assembly: AssemblyVersion("1.0.0.7")]
-[assembly: AssemblyFileVersion("1.0.0.7")]
-[assembly: AssemblyInformationalVersion("1.6")]
+[assembly: AssemblyVersion("1.0.0.8")]
+[assembly: AssemblyFileVersion("1.0.0.8")]
+[assembly: AssemblyInformationalVersion("1.7")]
 
 // ATTENTION! There are Run Arguments in Project Properties > Debug > Command line arguments. Write yours for debug
 

@@ -105,8 +105,8 @@ namespace LazyOptimizer.Model
                 foreach (IStructureSuggestionModel s_api in suggestions)
                 {
                     string s1, s2;
-                    s1 = s.CachedStructureId.Replace(" ", "").Replace("_", "");
-                    s2 = s_api.Id.Replace(" ", "").Replace("_", "");
+                    s1 = s.CachedStructureId.Replace(" ", "").Replace("_", "").ToUpper();
+                    s2 = s_api.Id.Replace(" ", "").Replace("_", "").ToUpper();
                     comparsion.Add(new StructuresComparsion(s, s_api, Levenshtein.ComputeDistance(s1, s2)));
                 }
             }
