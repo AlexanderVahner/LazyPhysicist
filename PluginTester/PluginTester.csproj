@@ -125,9 +125,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LazyOptimizer\LazyOptimizer.csproj">
-      <Project>{3bad3fdc-fee9-4e48-a769-7b81d322763d}</Project>
-      <Name>LazyOptimizer</Name>
+    <ProjectReference Include="..\FieldIdAsGantry\FieldIdAsGantry.csproj">
+      <Project>{9a0d630d-27d4-48f4-80de-e167ca165602}</Project>
+      <Name>FieldIdAsGantry</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

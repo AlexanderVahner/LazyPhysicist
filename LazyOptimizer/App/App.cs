@@ -4,6 +4,7 @@ using LazyOptimizer.UI.Views;
 using LazyOptimizerDataService.DB;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
+using ScriptArgsNameSpace;
 using System;
 using System.Diagnostics;
 using System.IO;

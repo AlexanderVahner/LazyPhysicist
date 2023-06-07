@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using VMS.TPS.Common.Model.API;
 
-namespace LazyOptimizer
+namespace ScriptArgsNameSpace
 {
     public class ScriptArgs
     {

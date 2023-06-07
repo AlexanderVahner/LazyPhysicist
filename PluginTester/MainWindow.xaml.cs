@@ -1,4 +1,4 @@
-﻿using LazyOptimizer;
+﻿using ScriptArgsNameSpace;
 using System;
 using System.Linq;
 using System.Windows;
@@ -21,8 +21,10 @@ namespace PluginTester
             try
             {
                 app = ESAPI.Application.CreateApplication();
-
-                // Write your Test Patient Ids here
+                //------------------------------------------------------------------------------------
+                /*
+                // LazyOtimizer test
+                // Write your Test Patient Id here
                 Patient patient = app.OpenPatientById("0220005213");
                 Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
                 ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "CV1");
@@ -41,6 +43,30 @@ namespace PluginTester
                         Window = this
                     });
                 }
+                */
+                //------------------------------------------------------------------------------------
+                
+                // FieldIdAsGantry test
+                // Write your Test Patient Id here
+                Patient patient = app.OpenPatientById("0220005213");
+                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
+                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "FieldTester");
+
+                if (plan == null)
+                {
+                    MessageBox.Show("Can't find plan");
+                }
+                else
+                {
+                    Script script = new Script();
+                    script.Run(new ScriptArgs()
+                    {
+                        Patient = patient,
+                        Plan = plan
+                    });
+                }
+                
+                //------------------------------------------------------------------------------------
 
             }
             catch (Exception e)
