@@ -48,9 +48,9 @@ namespace PluginTester
                 
                 // FieldIdAsGantry test
                 // Write your Test Patient Id here
-                Patient patient = app.OpenPatientById("0220005213");
-                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
-                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "FieldTester");
+                Patient patient = app.OpenPatientById("HN2022_asv1");
+                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "CV");
+                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "Fields");
 
                 if (plan == null)
                 {
