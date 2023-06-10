@@ -85,7 +85,7 @@ If no match is found for a structure, then you can <b>double-click</b> on the st
 
 <h2>FieldIdAsGantry</h2>
 <p>
-	Well, why not write your own plugin for changing field IDs? Here it is.
+	Well, why not write own plugin for changing field IDs? Here it is.
 </p>
 <p>
 	It's simple:<br>
