@@ -93,7 +93,7 @@ If no match is found for a structure, then you can <b>double-click</b> on the st
 	If not, then CW or CCW.
 </p>
 <p>
-	If the angles are repeated, then the postfix ".<number>" wil be added.<br>
+	If the angles are repeated, then the postfix ".number" wil be added.<br>
 	The plugin is independent.
 </p>
 <img src="/Images/FieldIdAsGantry.jpg" alt="How FieldIdAsGantry works"/>
