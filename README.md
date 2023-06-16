@@ -1,6 +1,6 @@
 <h1>LazyPhysicist</h1>
 
-<p>WARNING! THE PROJECT IS UNDER DEVELOPMENT! DO NOT USE IT IN CLINIC!
+<p>WARNING! THE PROJECT IS UNDER DEVELOPMENT! Use in the clinic at your own risk!
 </p>
 
 <h2>Hello, ESAPI!</h2>
@@ -82,6 +82,21 @@ If no match is found for a structure, then you can <b>double-click</b> on the st
 <h2>PlansCache —</h2>
 <p>is a standalone console app that fill the SQLite database for LazyOptimizer plugin.</p>
 <img src="/Images/PlansCache_example.png" alt="How PlansCache works"/>
+
+<h2>FieldIdAsGantry</h2>
+<p>
+	Well, why not write own plugin for changing field IDs? Here it is.
+</p>
+<p>
+	It's simple:<br>
+	If the beam is static, then the gantry angle will be record.<br>
+	If not, then CW or CCW.
+</p>
+<p>
+	If the angles are repeated, then the postfix ".number" wil be added.<br>
+	The plugin is independent.
+</p>
+<img src="/Images/FieldIdAsGantry.jpg" alt="How FieldIdAsGantry works"/>
 
 <h2>Tested in ESAPI Versions</h2>
 <ul>
