@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazyOptimizerDataService", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FieldIdAsGantry", "FieldIdAsGantry\FieldIdAsGantry.csproj", "{9A0D630D-27D4-48F4-80DE-E167CA165602}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageCleaner", "ImageCleaner\ImageCleaner.csproj", "{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,14 +81,6 @@ Global
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|x64.ActiveCfg = Release|Any CPU
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|x64.Build.0 = Release|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Debug|x64.Build.0 = Debug|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Release|x64.ActiveCfg = Release|Any CPU
-		{17F76440-BFC9-4F0E-8AFA-84EED58DE0EE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
