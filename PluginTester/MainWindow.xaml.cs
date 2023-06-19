@@ -1,10 +1,6 @@
-﻿using ScriptArgsNameSpace;
+﻿using PluginTesterNameSpace;
 using System;
-using System.Linq;
 using System.Windows;
-using VMS.TPS;
-using VMS.TPS.Common.Model.API;
-using ESAPI = VMS.TPS.Common.Model.API;
 
 namespace PluginTester
 {
@@ -13,61 +9,16 @@ namespace PluginTester
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ESAPI.Application app;
+        private readonly PluginTesterInitializer tester;
+
         public MainWindow()
         {
             InitializeComponent();
 
             try
             {
-                app = ESAPI.Application.CreateApplication();
-                //------------------------------------------------------------------------------------
-                /*
-                // LazyOtimizer test
-                // Write your Test Patient Id here
-                Patient patient = app.OpenPatientById("0220005213");
-                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
-                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "CV1");
-
-                if (plan == null)
-                {
-                    MessageBox.Show("Can't find plan");
-                }
-                else
-                {
-                    Script script = new Script();
-                    script.Run(new ScriptArgs()
-                    {
-                        CurrentUser = app.CurrentUser,
-                        Plan = plan,
-                        Window = this
-                    });
-                }
-                */
-                //------------------------------------------------------------------------------------
-                
-                // FieldIdAsGantry test
-                // Write your Test Patient Id here
-                Patient patient = app.OpenPatientById("HN2022_asv1");
-                Course course = patient?.Courses.FirstOrDefault(c => c.Id == "CV");
-                ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "Fields");
-
-                if (plan == null)
-                {
-                    MessageBox.Show("Can't find plan");
-                }
-                else
-                {
-                    Script script = new Script();
-                    script.Run(new ScriptArgs()
-                    {
-                        Patient = patient,
-                        Plan = plan
-                    });
-                }
-                
-                //------------------------------------------------------------------------------------
-
+                tester = new PluginTesterInitializer(this);
+                tester.Execute();
             }
             catch (Exception e)
             {
@@ -77,7 +28,7 @@ namespace PluginTester
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            app?.Dispose();
+            tester?.Dispose();
         }
     }
 }

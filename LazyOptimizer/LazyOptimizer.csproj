@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="App\App.cs" />
     <Compile Include="App\AppContext.cs" />
+    <Compile Include="App\PluginTesterInitializer.cs" />
     <Compile Include="App\Settings.cs" />
     <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
@@ -105,7 +106,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ScriptArgs.cs" />
+    <Compile Include="App\ScriptArgs.cs" />
     <Compile Include="UI\ViewModels\HabitsVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="UI\ViewModels\ObjectiveVM.cs" />

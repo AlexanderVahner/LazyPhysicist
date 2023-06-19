@@ -48,9 +48,9 @@ namespace VMS.TPS
                 return;
             }
 
-            if (MessageBox.Show(ChangingBeamsToText(beamsToChange), 
-                "Shall we change Field IDs?", 
-                MessageBoxButton.OKCancel, 
+            if (MessageBox.Show(ChangingBeamsToText(beamsToChange),
+                "Shall we change Field IDs?",
+                MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) == MessageBoxResult.OK)
             {
                 try
