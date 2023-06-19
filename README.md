@@ -98,6 +98,16 @@ If no match is found for a structure, then you can <b>double-click</b> on the st
 </p>
 <img src="/Images/FieldIdAsGantry.jpg" alt="How FieldIdAsGantry works"/>
 
+<h2>PluginTester —</h2>
+<p>
+	is an app that can run and debug plugins. For this, the plugins available here are a little prepared.
+</p>
+<p>
+	They have a class <b>PluginTesterInitializer</b> of the same kind, for example <a href="https://github.com/AlexanderVahner/LazyPhysicist/blob/master/LazyOptimizer/App/PluginTesterInitializer.cs">here</a> and 
+	<a href="https://github.com/AlexanderVahner/LazyPhysicist/blob/master/FieldIdAsGantry/PluginTesterInitializer.cs">here</a>.<br>
+	The PluginTester needs this class to exist and needs the plugin project to be included in the references.
+</p>
+
 <h2>Tested in ESAPI Versions</h2>
 <ul>
   <li>15.6</li>
