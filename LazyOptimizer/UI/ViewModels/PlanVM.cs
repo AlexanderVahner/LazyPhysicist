@@ -39,10 +39,6 @@ namespace LazyOptimizer.UI.ViewModels
                 {
                     NotifyPropertyChanged(nameof(SelectionFrequencyBackground));
                 }
-                if (e.PropertyName == nameof(IsStarred))
-                {
-                    NotifyPropertyChanged(nameof(StarImageSource));
-                }
             };
             SetMergeFeatureVisibility();
             StarVisibility = planCachedModel != null ? Visibility.Visible : Visibility.Collapsed;

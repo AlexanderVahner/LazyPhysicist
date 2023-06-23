@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <GroupBox Header="Plugin" Grid.Column="0" Padding="5">
             <StackPanel>
@@ -39,10 +39,11 @@
         <GroupBox Header="PlansCache App" Grid.Column="1" Padding="5">
             <StackPanel>   
                 <CheckBox IsChecked="{Binding Settings.PlansCacheVerboseMode}" Content="Verbose mode"  Margin="0 5 0 0"/>
-                <CheckBox IsChecked="{Binding Settings.PlansCacheRecheckAllPatients}" Content="Recheck all patients next time"  Margin="0 5 0 0"/>
+                
                 <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                    <TextBox Text="{Binding Settings.YearsLimit, UpdateSourceTrigger=PropertyChanged}"  Width="30"/>
-                    <TextBlock Text="previous years (0 - no limit)" Margin="5 0 0 0"/>
+                    <CheckBox IsChecked="{Binding Settings.PlansCacheRecheckAllPatients}" Content="Recheck all patients next time for "/>
+                    <TextBox Text="{Binding Settings.YearsLimit, UpdateSourceTrigger=PropertyChanged}"  Width="30" Margin="5 0 0 0"/>
+                    <TextBlock Text=" years (0 - no limit)" Margin="5 0 0 0"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

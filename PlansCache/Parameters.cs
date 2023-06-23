@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace PlansCache
 {
@@ -10,12 +11,24 @@ namespace PlansCache
             {
                 if (args[i] == "-db")
                 {
-                    DbPath = args[++i];
+                    DbPath = Environment.ExpandEnvironmentVariables(args[++i]);
                     continue;
                 }
                 if (args[i] == "-all")
                 {
                     RecheckAll = true;
+                    continue;
+                }
+                if (args[i] == "-years")
+                {
+                    if (int.TryParse(args[++i], out int y) && y < 100)
+                    {
+                        Years = y;
+                    }
+                    else
+                    {
+                        --i;
+                    }
                     continue;
                 }
                 if (args[i] == "-verbose")
@@ -32,6 +45,7 @@ namespace PlansCache
             }
         }
         public string DbPath { get; set; } = "";
+        public int Years { get; set; } = 0;
         public bool DebugMode { get; set; } = false;
         public bool VerboseMode { get; set; } = false;
         public bool RecheckAll { get; set; } = false;

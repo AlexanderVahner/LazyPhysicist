@@ -57,16 +57,27 @@ namespace PlansCache
             {
 
                 Logger.Write(app, $"Welcome, {app.CurrentUser.Name}!", LogMessageType.Info);
-                Logger.Write(app, "Check " + (parameters.RecheckAll ? "since the beginning of time" : $"from {cache.LastCheckDate:g}") + " in progress...");
+                
 
                 IEnumerable<PatientSummary> summaries;
-                if (parameters.RecheckAll)
+
+                DateTime fromDate = parameters.Years > 0 ? DateTime.Now.AddYears(-parameters.Years) : default;
+                if (!parameters.RecheckAll)
+                {
+                    fromDate = cache.LastCheckDate > fromDate ? cache.LastCheckDate : fromDate;
+                }
+
+                Logger.Write(app, "Check " + (fromDate == default ? "since the beginning of time" : $"from {fromDate:g}") + " in progress...");
+
+                if (fromDate == default)
                 {
                     summaries = app.PatientSummaries.OrderBy(ps => ps.CreationDateTime);
                 }
                 else
                 {
-                    summaries = app.PatientSummaries.Where(ps => ps.CreationDateTime >= cache.LastCheckDate).OrderBy(ps => ps.CreationDateTime);
+                    summaries = app.PatientSummaries
+                        .Where(ps => ps.CreationDateTime >= fromDate)
+                        .OrderBy(ps => ps.CreationDateTime);
                 }
 
                 patientsCount = summaries.Count();
@@ -97,8 +108,10 @@ namespace PlansCache
 
                 TimeSpan executionTime = DateTime.Now - startTime;
 
+                double speed = patientsCount / ((double)executionTime.Milliseconds / 60000);
+
                 Console.Title = "All is done";
-                Logger.Write(app, $"\nAll is done in {executionTime:g}.", LogMessageType.Info);
+                Logger.Write(app, $"\nAll is done in {executionTime:g} for {patientsCount} patients. Speed: {speed:F0} patients/min", LogMessageType.Info);
 
             }
             if (parameters.VerboseMode)

@@ -2,6 +2,7 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VMS.TPS.Common.Model.Types;
 
 namespace LazyOptimizer.ESAPI
@@ -82,13 +83,26 @@ namespace LazyOptimizer.ESAPI
             switch (objective.Type)
             {
                 case ObjectiveType.Point:
-                    plan.Plan.OptimizationSetup.AddPointObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
+                    plan.Plan.OptimizationSetup.AddPointObjective(
+                        objective.Structure, 
+                        (OptimizationObjectiveOperator)(int)objective.Operator, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.Volume, 
+                        objective.Priority);
                     break;
                 case ObjectiveType.Mean:
-                    plan.Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
+                    plan.Plan.OptimizationSetup.AddMeanDoseObjective(
+                        objective.Structure, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.Priority);
                     break;
                 case ObjectiveType.EUD:
-                    plan.Plan.OptimizationSetup.AddEUDObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
+                    plan.Plan.OptimizationSetup.AddEUDObjective(
+                        objective.Structure, 
+                        (OptimizationObjectiveOperator)(int)objective.Operator, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.ParameterA, 
+                        objective.Priority);
                     break;
                 case ObjectiveType.Unknown:
                     Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
@@ -106,15 +120,13 @@ namespace LazyOptimizer.ESAPI
 
             try
             {
-                int i = 0;
-                plan.Plan.Course.Patient.BeginModifications();
-                foreach (var objective in plan.Plan.OptimizationSetup.Objectives)
-                {
-                    plan.Plan.OptimizationSetup.RemoveObjective(objective);
-                    ++i;
-                }
+                var objectives = plan.Plan.OptimizationSetup.Objectives.ToList();
+                int i = objectives.Count;
 
-                Logger.Write(plan, $"Removed objectives count: {i}", LogMessageType.Error);
+                plan.Plan.Course.Patient.BeginModifications();
+                objectives.ForEach(o => plan.Plan.OptimizationSetup.RemoveObjective(o));
+
+                Logger.Write(plan, $"Objectives removed: {i}", LogMessageType.Error);
             }
             catch (Exception ex)
             {

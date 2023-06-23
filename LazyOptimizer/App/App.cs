@@ -154,6 +154,10 @@ namespace LazyOptimizer.App
             {
                 appArgs.Append(" -debug");
             }
+            if (context.UserSettings.YearsLimit > 0)
+            {
+                appArgs.Append($" -years {context.UserSettings.YearsLimit}");
+            }
             context.PlansContext.Connected = false;
             using (Process process = new Process())
             {
