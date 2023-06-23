@@ -66,7 +66,8 @@ namespace PlansCache
                     SingleDose = plan.SingleDose,
                     Technique = plan.Technique,
                     MachineId = plan.MachineId,
-                    StructuresString = plan.StructuresPseudoHash
+                    StructuresString = plan.StructuresPseudoHash,
+                    ApprovalStatus = (long)plan.ApprovalStatus
                 };
 
                 List<ObjectiveInfo> objectives = new List<ObjectiveInfo>();

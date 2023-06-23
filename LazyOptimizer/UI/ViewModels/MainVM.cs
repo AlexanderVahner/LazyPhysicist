@@ -31,18 +31,20 @@ namespace LazyOptimizer.UI.ViewModels
 
                 SettingsVM settingsVM = new SettingsVM()
                 {
-                    Settings = context.Settings
+                    Settings = context.UserSettings
                 };
                 settingsPage = new SettingsPage()
                 {
                     DataContext = settingsVM,
-                    Settings = context.Settings
+                    Settings = context.UserSettings
                 };
 
                 CurrentPage = habitsPage;
 
                 NotifyPropertyChanged(nameof(MatchMachine));
                 NotifyPropertyChanged(nameof(MatchTechnique));
+                NotifyPropertyChanged(nameof(StarredOnly));
+                NotifyPropertyChanged(nameof(CheckedApprovalStatusesOnly));
             }
         }
 
@@ -65,20 +67,38 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public bool MatchTechnique
         {
-            get => Context?.Settings?.MatchTechnique ?? false;
+            get => Context?.UserSettings?.MatchTechnique ?? false;
             set
             {
-                SetProperty(v => { if (Context?.Settings?.MatchTechnique != null) Context.Settings.MatchTechnique = v; }, value);
+                SetProperty(v => { if (Context?.UserSettings?.MatchTechnique != null) Context.UserSettings.MatchTechnique = v; }, value);
                 NotifyPropertyChanged(nameof(MatchTechnique));
             }
         }
         public bool MatchMachine
         {
-            get => Context?.Settings?.MatchMachine ?? false;
+            get => Context?.UserSettings?.MatchMachine ?? false;
             set
             {
-                SetProperty(v => { if (Context?.Settings?.MatchMachine != null) Context.Settings.MatchMachine = v; }, value);
+                SetProperty(v => { if (Context?.UserSettings?.MatchMachine != null) Context.UserSettings.MatchMachine = v; }, value);
                 NotifyPropertyChanged(nameof(MatchMachine));
+            }
+        }
+        public bool StarredOnly
+        {
+            get => Context?.UserSettings?.ShowStarredOnly ?? false;
+            set
+            {
+                SetProperty(v => { if (Context?.UserSettings?.ShowStarredOnly != null) Context.UserSettings.ShowStarredOnly = v; }, value);
+                NotifyPropertyChanged(nameof(StarredOnly));
+            }
+        }
+        public bool CheckedApprovalStatusesOnly
+        {
+            get => Context?.UserSettings?.ShowCheckedApprovalStatusOnly ?? false;
+            set
+            {
+                SetProperty(v => { if (Context?.UserSettings?.ShowCheckedApprovalStatusOnly != null) Context.UserSettings.ShowCheckedApprovalStatusOnly = v; }, value);
+                NotifyPropertyChanged(nameof(CheckedApprovalStatusesOnly));
             }
         }
         public string BtnSettingsContent
@@ -103,7 +123,7 @@ namespace LazyOptimizer.UI.ViewModels
                     }
                     else
                     {
-                        context.Settings.Save();
+                        context.UserSettings.Save();
                         CurrentPage = habitsPage;
                     }
                 }

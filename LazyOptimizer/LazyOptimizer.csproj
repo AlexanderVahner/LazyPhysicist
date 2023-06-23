@@ -82,8 +82,9 @@
   <ItemGroup>
     <Compile Include="App\App.cs" />
     <Compile Include="App\AppContext.cs" />
+    <Compile Include="App\GeneralSettings.cs" />
     <Compile Include="App\PluginTesterInitializer.cs" />
-    <Compile Include="App\Settings.cs" />
+    <Compile Include="App\UserSettings.cs" />
     <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
     <Compile Include="Model\IPlanMergedModel.cs" />
@@ -194,6 +195,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\example.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\starred.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unstarred.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Views\starred.png" />
+    <Resource Include="UI\Views\unstarred.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

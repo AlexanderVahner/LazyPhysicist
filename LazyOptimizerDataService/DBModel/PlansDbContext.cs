@@ -2,6 +2,7 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 namespace LazyOptimizerDataService.DBModel
@@ -22,9 +23,11 @@ namespace LazyOptimizerDataService.DBModel
             {
                 plans = new List<CachedPlan>();
 
-                StringBuilder sqlRequest = new StringBuilder("SELECT RowId, PatientId, CourseId, PlanId, CreationDate, Technique, MachineId, SelectionFrequency, StructuresString, Description,");
-                sqlRequest.AppendLine("Levenshtein(StructuresString, ?) AS LDistance");
-                sqlRequest.AppendLine("FROM Plans");
+                StringBuilder sqlRequest = new StringBuilder(
+                    "SELECT RowId, PatientId, CourseId, PlanId, CreationDate, Technique, MachineId, SelectionFrequency, StructuresString, Description, ");
+                sqlRequest.AppendLine("ifnull(ApprovalStatus, 999) AS AStatus, ifnull(Starred, 0) AS isStarred, ");
+                sqlRequest.AppendLine("Levenshtein(StructuresString, ?) AS LDistance ");
+                sqlRequest.AppendLine("FROM Plans ");
 
                 if (args != null)
                 {
@@ -44,6 +47,16 @@ namespace LazyOptimizerDataService.DBModel
                     if (args.MatchMachine)
                     {
                         sqlRequest.Append($@" AND (MachineId='{args.MachineId}')");
+                    }
+                    if (args.StarredOnly)
+                    {
+                        sqlRequest.Append(" AND (isStarred = 1)");
+                    }
+                    if (args.CheckedApprovalStatusesOnly)
+                    {
+                        sqlRequest.Append(" AND (AStatus IN (");
+                        args.CheckedApprovalStatuses.ForEach(x => sqlRequest.Append(x.ToString()).Append(","));
+                        sqlRequest.Append("-1))");
                     }
 
                 }
@@ -68,7 +81,9 @@ namespace LazyOptimizerDataService.DBModel
                             SelectionFrequency = reader.GetInt64(7),
                             StructuresString = reader.GetString(8),
                             Description = reader.GetString(9),
-                            LDistance = reader.GetInt64(10)
+                            ApprovalStatus = reader.GetInt64(10),
+                            Starred = reader.GetInt64(11),
+                            LDistance = reader.GetInt64(12)
                         };
 
                         plans.Add(plan);
@@ -90,24 +105,28 @@ namespace LazyOptimizerDataService.DBModel
                     db.BeginTransaction();
                     foreach (var plan in plans)
                     {
-                        string sql = "INSERT INTO Plans (PatientId, CourseId, PlanId, CreationDate, FractionsCount, SingleDose, Technique, MachineId, StructuresString) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); "
+                        string sql = "INSERT INTO Plans "
+                            + "(PatientId, CourseId, PlanId, CreationDate, FractionsCount, SingleDose, Technique, MachineId, StructuresString, ApprovalStatus) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
                             + "SELECT last_insert_rowid();";
 
                         int rowId;
-                        rowId = int.Parse(db.GetValue(sql, new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.CreationDate, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresString }).ToString());
+                        rowId = int.Parse(db.GetValue(sql, new object[] { plan.PatientId, plan.CourseId, plan.PlanId, plan.CreationDate, plan.FractionsCount, plan.SingleDose, plan.Technique, plan.MachineId, plan.StructuresString, plan.ApprovalStatus }).ToString());
 
                         if (plan.Objectives != null)
                         {
                             foreach (CachedObjective objective in plan.Objectives)
                             {
-                                sql = "INSERT INTO Objectives (PlanRowId, StructureId, ObjType, Priority, Operator, Dose, Volume, ParameterA) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+                                sql = "INSERT INTO Objectives (PlanRowId, StructureId, ObjType, Priority, Operator, Dose, Volume, ParameterA) "
+                                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
                                 db.Execute(sql, new object[] { rowId, objective.StructureId, objective.ObjType, objective.Priority, (int)objective.Operator, objective.Dose, objective.Volume, objective.ParameterA });
                             }
                         }
 
                         if (plan.Nto != null)
                         {
-                            sql = "INSERT INTO Ntos (PlanRowId, IsAutomatic, DistanceFromTargetBorderInMM, StartDosePercentage, EndDosePercentage, FallOff, Priority) VALUES (?, ?, ?, ?, ?, ?, ?);";
+                            sql = "INSERT INTO Ntos (PlanRowId, IsAutomatic, DistanceFromTargetBorderInMM, StartDosePercentage, EndDosePercentage, FallOff, Priority) "
+                                + "VALUES (?, ?, ?, ?, ?, ?, ?);";
                             db.Execute(sql, new object[] { rowId, plan.Nto.IsAutomatic, plan.Nto.DistanceFromTargetBorderInMM, plan.Nto.StartDosePercentage, plan.Nto.EndDosePercentage, plan.Nto.FallOff, plan.Nto.Priority });
                         }
                     }
@@ -125,8 +144,8 @@ namespace LazyOptimizerDataService.DBModel
         {
             if (Connected && plan != null)
             {
-                string sql = "UPDATE Plans SET SelectionFrequency = ?, Description = ? WHERE RowId = ?;";
-                db.Execute(sql, new object[] { plan.SelectionFrequency, plan.Description, plan.RowId });
+                string sql = "UPDATE Plans SET SelectionFrequency = ?, Description = ?, Starred = ? WHERE RowId = ?;";
+                db.Execute(sql, new object[] { plan.SelectionFrequency, plan.Description, plan.Starred, plan.RowId });
             }
         }
 
@@ -179,7 +198,7 @@ namespace LazyOptimizerDataService.DBModel
             StringBuilder sqlRequest = new StringBuilder("SELECT o.RowId, o.PlanRowId, o.StructureId, o.ObjType, o.Priority, o.Operator, o.Dose, o.Volume, o.ParameterA ")
                 .AppendLine("FROM Objectives o ")
                 .AppendLine("INNER JOIN (")
-                .AppendLine("   SELECT o.PlanRowId, o.StructureId, Levenshtein(o.StructureId, ?) as LDistance ")
+                .AppendLine("   SELECT o.PlanRowId, o.StructureId, Levenshtein(o.StructureId, ?) as LDistance, ifnull(p.ApprovalStatus, 999) AS AStatus ")
                 .AppendLine("   FROM Objectives o ")
                 .AppendLine("   INNER JOIN Plans p ON o.PlanRowId = p.ROWID ");
 
@@ -201,6 +220,12 @@ namespace LazyOptimizerDataService.DBModel
                 if (args.MatchMachine)
                 {
                     sqlRequest.Append($@" AND (p.MachineId='{args.MachineId}')");
+                }
+                if (args.CheckedApprovalStatusesOnly)
+                {
+                    sqlRequest.Append(" AND (AStatus IN (");
+                    args.CheckedApprovalStatuses.ForEach(x => sqlRequest.Append(x.ToString()).Append(","));
+                    sqlRequest.Append("-1))");
                 }
             }
 

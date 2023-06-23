@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
 
 namespace ESAPIInfo.Plan
 {

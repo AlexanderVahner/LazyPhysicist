@@ -24,9 +24,9 @@ namespace LazyOptimizer.UI.ViewModels
                 m => CreatePlanVM(m),
                 vm => vm.SourceModel);
 
-            loadNto = context.Settings.LoadNto;
-            prioritySetter = context.Settings.DefaultPrioritySetValue;
-            SetCanMergeFeature(context.Settings.PlanMergeEnabled);
+            loadNto = context.UserSettings.LoadNto;
+            prioritySetter = context.UserSettings.DefaultPrioritySetValue;
+            SetCanMergeFeature(context.UserSettings.PlanMergeEnabled);
 
             PropertyChanged += (s, e) =>
             {
@@ -38,23 +38,23 @@ namespace LazyOptimizer.UI.ViewModels
                         UpdateNto(selectedPlanVM?.SourceModel.NtoInfo);
                         break;
                     case nameof(LoadNto):
-                        context.Settings.LoadNto = LoadNto;
+                        context.UserSettings.LoadNto = LoadNto;
                         break;
                     case nameof(PrioritySetter):
-                        context.Settings.DefaultPrioritySetValue = PrioritySetter;
+                        context.UserSettings.DefaultPrioritySetValue = PrioritySetter;
                         break;
                 }
             };
 
-            context.Settings.PropertyChanged += (s, e) =>
+            context.UserSettings.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
                 {
-                    case nameof(context.Settings.PlanMergeEnabled):
-                        SetCanMergeFeature(context.Settings.PlanMergeEnabled);
+                    case nameof(context.UserSettings.PlanMergeEnabled):
+                        SetCanMergeFeature(context.UserSettings.PlanMergeEnabled);
                         break;
-                    case nameof(context.Settings.LoadNto):
-                        LoadNto = context.Settings.LoadNto;
+                    case nameof(context.UserSettings.LoadNto):
+                        LoadNto = context.UserSettings.LoadNto;
                         break;
                 }
             };
@@ -86,7 +86,7 @@ namespace LazyOptimizer.UI.ViewModels
         {
             var planVM = new PlanVM(plan)
             {
-                CanMerge = context.Settings.PlanMergeEnabled
+                CanMerge = context.UserSettings.PlanMergeEnabled
             };
             return planVM;
         }
@@ -118,7 +118,7 @@ namespace LazyOptimizer.UI.ViewModels
 
             SourceModel.LoadObjectivesIntoCurrentPlan(SelectedPlan.SourceModel, fillOnlyEmptyStructures);
 
-            if (context.Settings.LoadNto && SelectedPlan.Nto != null)
+            if (context.UserSettings.LoadNto && SelectedPlan.Nto != null)
             {
                 SourceModel.LoadNtoIntoCurrentPlan(SelectedPlan.Nto);
             }
@@ -142,13 +142,17 @@ namespace LazyOptimizer.UI.ViewModels
                 {
                     continue;
                 }
+
                 foreach (var objective in structure.Objectives)
                 {
+                    objective.ResetPriority();
+
                     if (priority == -1)
                     {
-                        objective.ResetPriority();
+                        continue;
                     }
-                    else
+                    
+                    if (objective.Priority != 0) // Don't touch objectives with zero priority initially
                     {
                         objective.Priority = priority;
                     }
@@ -198,7 +202,11 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public MetaCommand LoadIntoPlan => new MetaCommand(
             o => FillCurrentPlan(),
-            o => Structures.Count > 0
+            o => context?.CurrentPlan != null && Structures.Count > 0
+        );
+        public MetaCommand ClearCurrentPlanObjectives => new MetaCommand(
+            o => SourceModel.ClearObjectivesFromCurrentPlan(),
+            o => context?.CurrentPlan != null
         );
         public MetaCommand SetOarsPriority => new MetaCommand(
             priorityString => SetPriorityForOars(priorityString as string),

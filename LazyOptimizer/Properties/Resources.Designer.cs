@@ -93,6 +93,16 @@ namespace LazyOptimizer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap starred {
+            get {
+                object obj = ResourceManager.GetObject("starred", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TargetEUD {
             get {
                 object obj = ResourceManager.GetObject("TargetEUD", resourceCulture);
@@ -106,6 +116,16 @@ namespace LazyOptimizer.Properties {
         internal static System.Drawing.Bitmap Unknown {
             get {
                 object obj = ResourceManager.GetObject("Unknown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap unstarred {
+            get {
+                object obj = ResourceManager.GetObject("unstarred", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

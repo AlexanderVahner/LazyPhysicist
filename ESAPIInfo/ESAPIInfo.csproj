@@ -69,6 +69,7 @@
     <Compile Include="Plan\ObjectiveInfo.cs" />
     <Compile Include="Plan\IPlanInfo.cs" />
     <Compile Include="Plan\PlanInfo.cs" />
+    <Compile Include="Plan\PlanSetupApprovalStatus.cs" />
     <Compile Include="Structures\IStructureInfo.cs" />
     <Compile Include="Structures\StructureInfo.cs" />
   </ItemGroup>

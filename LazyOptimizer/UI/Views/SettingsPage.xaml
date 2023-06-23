@@ -22,21 +22,28 @@
         <GroupBox Header="Plugin" Grid.Column="0" Padding="5">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>Selection Count Limit for Cached Plans:</TextBlock>
-                    <TextBox Text="{Binding Settings.PlansSelectLimit}" Width="50" Margin="5 0 0 0"/>
+                    <TextBox Text="{Binding Settings.PlansSelectLimit}" Width="50"/>
+                    <TextBlock Margin="5 0 0 0">Selection Count Limit for Cached Plans:</TextBlock>
                 </StackPanel>
                 <CheckBox IsChecked="{Binding Settings.PlanMergeEnabled}" Content="Enable Plan Merge Mode"  Margin="0 5 0 0"/>
+                <TextBlock Text="Show this Plan Approval Statuses if the filter checked:" Margin="0 5 0 0"/>
+                <ListBox ItemsSource="{Binding Settings.ApprovalStatuses}" Margin="0 5 0 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding StatusName}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="PlansCache App" Grid.Column="1" Padding="5">
-            <StackPanel>
-                <TextBlock>PlansCache App Path</TextBlock>
-                <DockPanel Margin="0 5 0 0">
-                    <Button Content=" ... " DockPanel.Dock="Right" Click="Button_Click"/>
-                    <TextBox x:Name="PlansCacheAppPathText" Text="{Binding Settings.PlansCacheAppPath}"/>
-                </DockPanel>                
+            <StackPanel>   
                 <CheckBox IsChecked="{Binding Settings.PlansCacheVerboseMode}" Content="Verbose mode"  Margin="0 5 0 0"/>
                 <CheckBox IsChecked="{Binding Settings.PlansCacheRecheckAllPatients}" Content="Recheck all patients next time"  Margin="0 5 0 0"/>
+                <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                    <TextBox Text="{Binding Settings.YearsLimit, UpdateSourceTrigger=PropertyChanged}"  Width="30"/>
+                    <TextBlock Text="previous years (0 - no limit)" Margin="5 0 0 0"/>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         <CheckBox IsChecked="{Binding Settings.DebugMode}" Content="Debug Mode" Grid.Row="1" Margin="10"/>    

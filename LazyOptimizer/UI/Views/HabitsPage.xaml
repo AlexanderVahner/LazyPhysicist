@@ -25,10 +25,11 @@
             
             
             <DockPanel Width="200" DockPanel.Dock="Right">
-                <Button DockPanel.Dock="Bottom" Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
-                <!--<StackPanel DockPanel.Dock="Bottom" Height="50">
-                    <Button Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5"/>
-                </StackPanel>-->
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Button  Content="Remove current plan objectives" Command="{Binding LoadIntoPlan}" Margin="5" Height="25"/>
+                    <Button  Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
+                </StackPanel>
+                
                 <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Bottom" TextWrapping="Wrap" Padding="3">

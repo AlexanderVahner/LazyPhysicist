@@ -1,5 +1,6 @@
 ﻿using LazyPhysicist.Common;
 using System;
+using System.Collections.Generic;
 
 namespace LazyOptimizerDataService.DBModel
 {
@@ -16,6 +17,9 @@ namespace LazyOptimizerDataService.DBModel
         private string machineId = "";
         private bool matchTechnique = false;
         private bool matchMachine = false;
+        private bool starredOnly = false;
+        private bool checkedApprovalStatusesOnly = false;
+        private List<int> checkedApprovalStatuses;
         private int limit = 0;
         public string StructuresString { get => structuresString; set => SetProperty(ref structuresString, value); }
         public double SingleDose { get => singleDose; set => SetProperty(ref singleDose, value); }
@@ -24,7 +28,10 @@ namespace LazyOptimizerDataService.DBModel
         public string MachineId { get => machineId; set => SetProperty(ref machineId, value); }
         public bool MatchTechnique { get => matchTechnique; set => SetProperty(ref matchTechnique, value); }
         public bool MatchMachine { get => matchMachine; set => SetProperty(ref matchMachine, value); }
+        public bool StarredOnly { get => starredOnly; set => SetProperty(ref starredOnly, value); }
         public int Limit { get => limit; set => SetProperty(ref limit, value); }
+        public bool CheckedApprovalStatusesOnly { get => checkedApprovalStatusesOnly; set => SetProperty(ref checkedApprovalStatusesOnly, value); }
+        public List<int> CheckedApprovalStatuses { get => checkedApprovalStatuses; set => SetProperty(ref checkedApprovalStatuses, value); }
 
         public void Update()
         {

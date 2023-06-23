@@ -22,13 +22,13 @@ namespace LazyOptimizer.UI.Views
             {
                 if (mainVM == null)
                 {
-                    if (DataContext is MainVM vm && vm?.Context?.Settings != null)
+                    if (DataContext is MainVM vm && vm?.Context?.UserSettings != null)
                     {
                         mainVM = vm;
                     }
                 }
 
-                isDebugMode = mainVM?.Context?.Settings?.DebugMode ?? false;
+                isDebugMode = mainVM?.Context?.UserSettings?.DebugMode ?? false;
 
                 if (!isDebugMode && type == LogMessageType.Debug)
                 {

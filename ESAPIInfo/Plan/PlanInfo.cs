@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
+using VT = VMS.TPS.Common.Model.Types;
 
 namespace ESAPIInfo.Plan
 {
@@ -54,8 +54,8 @@ namespace ESAPIInfo.Plan
                 plan = value;
                 nto = null;
                 structures = null;
-                creationDate = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).ApprovalDateTime ?? default;
-                creatorId = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).UserId ?? "";
+                creationDate = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == VT.PlanSetupApprovalStatus.UnApproved).ApprovalDateTime ?? default;
+                creatorId = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == VT.PlanSetupApprovalStatus.UnApproved).UserId ?? "";
                 technique = "";
                 machineId = "";
             }
@@ -68,7 +68,7 @@ namespace ESAPIInfo.Plan
         public DateTime CreationDate => creationDate;
         public string CreatorId => creatorId;
 
-        public PlanSetupApprovalStatus ApprovalStatus => Plan?.ApprovalStatus ?? PlanSetupApprovalStatus.Unknown;
+        public PlanSetupApprovalStatus ApprovalStatus => Plan != null ? (PlanSetupApprovalStatus)(int)Plan?.ApprovalStatus : PlanSetupApprovalStatus.Unknown;
         public double SingleDose => Plan?.DosePerFraction.Dose ?? .0;
         public int FractionsCount => Plan?.NumberOfFractions ?? 0;
         public int ObjectivesCount => Plan?.OptimizationSetup?.Objectives.Count() ?? 0;

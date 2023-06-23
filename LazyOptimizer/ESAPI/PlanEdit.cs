@@ -106,11 +106,15 @@ namespace LazyOptimizer.ESAPI
 
             try
             {
+                int i = 0;
                 plan.Plan.Course.Patient.BeginModifications();
                 foreach (var objective in plan.Plan.OptimizationSetup.Objectives)
                 {
                     plan.Plan.OptimizationSetup.RemoveObjective(objective);
+                    ++i;
                 }
+
+                Logger.Write(plan, $"Removed objectives count: {i}", LogMessageType.Error);
             }
             catch (Exception ex)
             {

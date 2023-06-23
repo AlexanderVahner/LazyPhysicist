@@ -128,6 +128,7 @@
     <ProjectReference Include="..\LazyOptimizer\LazyOptimizer.csproj">
       <Project>{3bad3fdc-fee9-4e48-a769-7b81d322763d}</Project>
       <Name>LazyOptimizer</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

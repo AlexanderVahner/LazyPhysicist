@@ -5,6 +5,10 @@ namespace LazyOptimizer.UI.ViewModels
 {
     public sealed class SettingsVM : Notifier
     {
-        public Settings Settings { get; set; }
+        public SettingsVM()
+        {
+            
+        }
+        public UserSettings Settings { get; set; }
     }
 }
