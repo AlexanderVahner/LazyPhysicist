@@ -141,7 +141,7 @@ namespace LazyOptimizer.ESAPI
                 plan.Plan.Course.Patient.BeginModifications();
                 objectives.ForEach(o => plan.Plan.OptimizationSetup.RemoveObjective(o));
 
-                Logger.Write(plan, $"Objectives removed: {i}", LogMessageType.Error);
+                Logger.Write(plan, $"Objectives removed: {i}", LogMessageType.Info);
             }
             catch (Exception ex)
             {

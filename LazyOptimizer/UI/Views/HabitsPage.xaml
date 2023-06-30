@@ -84,7 +84,7 @@
                             <CheckBox IsChecked="{Binding LoadNto}"  Margin="5" >
                                 <TextBlock Text="{Binding SelectedNtoString}" TextWrapping="Wrap"/>
                             </CheckBox>
-                            <Button  Content="Remove current plan objectives" Command="{Binding LoadIntoPlan}" Margin="5" Height="25"/>
+                            <Button  Content="Remove current plan objectives" Command="{Binding ClearCurrentPlanObjectives}" Margin="5" Height="25"/>
                             <Button  Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
                         </StackPanel>
                         <TextBlock TextWrapping="Wrap" Padding="3" Margin="5 10 0 0">
