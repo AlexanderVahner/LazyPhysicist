@@ -26,7 +26,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Text="!" Visibility="{Binding PlanTargetAttentionVisible}" Width="15" Margin="3" FontSize="12" FontWeight="Heavy" Background="Red" Foreground="White" TextAlignment="Center"/>
+                    <TextBlock Text="!" Visibility="{Binding PlanTargetAttentionVisible}" Width="10" Margin="3" FontWeight="Heavy" Foreground="Red" TextAlignment="Center"/>
                     <TextBlock Text="{Binding CachedStructureId}" FontSize="14" FontWeight="Bold"/>
                 </StackPanel>
                 

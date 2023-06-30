@@ -60,6 +60,6 @@ namespace LazyOptimizer.UI.ViewModels
         public SolidColorBrush Brush { get => new SolidColorBrush(Color); }
         public Visibility PlanTargetAttentionVisible { get => 
                 IsTarget && currentPlan.TargetId != (PlanStructure?.Id ?? "") 
-                ? Visibility.Visible : Visibility.Hidden; }
+                ? Visibility.Visible : Visibility.Collapsed; }
     }
 }

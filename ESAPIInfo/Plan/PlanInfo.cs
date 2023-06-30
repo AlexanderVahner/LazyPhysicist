@@ -17,18 +17,20 @@ namespace ESAPIInfo.Plan
         {
             StringBuilder targetsString = new StringBuilder();
             StringBuilder oarsString = new StringBuilder();
+
             if (plan?.StructureSet != null && plan.StructureSet.Structures.Count() > 0)
             {
                 foreach (Structure structure in plan.StructureSet.Structures.OrderBy(s => s.Id))
                 {
-                    if (StructureInfo.IsTarget(structure.Id))
+                    string id = structure.Id.ToUpper().Replace(" ", "").Replace("_", "");
+                    if (StructureInfo.IsTarget(id))
                     {
-                        targetsString.Append(structure.Id.ToUpper());
+                        targetsString.Append(id);
                         targetsString.Append("/");
                     }
                     else
                     {
-                        oarsString.Append((structure.Id.Length > MaxLengthOfStructureId ? structure.Id.ToUpper().Remove(MaxLengthOfStructureId) : structure.Id.ToUpper()));
+                        oarsString.Append((id.Length > MaxLengthOfStructureId ? id.Remove(MaxLengthOfStructureId) : id));
                         oarsString.Append("/");
                     }
                 }

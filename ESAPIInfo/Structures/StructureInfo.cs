@@ -12,7 +12,7 @@ namespace ESAPIInfo.Structures
 
         public static bool IsTarget(string structureId)
         {
-            return StructureInfo.TargetNames.FirstOrDefault(tn => structureId.StartsWith(tn)) != null;
+            return StructureInfo.TargetNames.FirstOrDefault(tn => structureId.ToUpper().StartsWith(tn)) != null;
         }
 
         public StructureInfo(Structure structure)

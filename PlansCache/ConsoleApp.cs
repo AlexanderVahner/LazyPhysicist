@@ -108,10 +108,8 @@ namespace PlansCache
 
                 TimeSpan executionTime = DateTime.Now - startTime;
 
-                double speed = patientsCount / ((double)executionTime.Milliseconds / 60000);
-
                 Console.Title = "All is done";
-                Logger.Write(app, $"\nAll is done in {executionTime:g} for {patientsCount} patients. Speed: {speed:F0} patients/min", LogMessageType.Info);
+                Logger.Write(app, $"\nAll is done in {executionTime:g} for {patientsCount} patients.", LogMessageType.Info);
 
             }
             if (parameters.VerboseMode)
