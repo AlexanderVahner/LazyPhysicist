@@ -9,6 +9,8 @@ namespace LazyOptimizer.ESAPI
 {
     internal class PlanEdit
     {
+        private const int MAX_OBJECTIVES_COUNT_FOR_ADDING = 200;
+
         public static void LoadNtoIntoPlan(IPlanInfo plan, INtoInfo nto)
         {
             if (nto != null && plan != null)
@@ -44,12 +46,20 @@ namespace LazyOptimizer.ESAPI
             try
             {
                 plan.Plan.Course.Patient.BeginModifications();
+
                 foreach (IObjectiveInfo objective in objectives)
                 {
+                    if (loadedObjectivesCount >= MAX_OBJECTIVES_COUNT_FOR_ADDING)
+                    {
+                        Logger.Write(plan, $"Too many objectives (>{MAX_OBJECTIVES_COUNT_FOR_ADDING}). Stopped.", LogMessageType.Error);
+                        break;
+                    }
+
                     if (onlyEmptyStructures && plan.StructureHasObjectives(objective.Structure))
                     {
                         continue;
                     }
+
                     LoadObjective(plan, objective);
                     loadedObjectivesCount++;
                 }
@@ -76,7 +86,12 @@ namespace LazyOptimizer.ESAPI
             }
             if (objective.Structure == null)
             {
-                Logger.Write(plan, "Can't load the objective. Structure is not defined", LogMessageType.Error);
+                Logger.Write(plan, "Can't load the objective. Structure is null", LogMessageType.Error);
+                return;
+            }
+            if (objective.Structure.IsEmpty)
+            {
+                Logger.Write(plan, $"Can't load the objective. Structure \"{objective.Structure.Id}\" is empty", LogMessageType.Error);
                 return;
             }
 

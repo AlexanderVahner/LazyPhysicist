@@ -67,6 +67,7 @@ namespace ESAPIInfo.Plan
         public string CourseId => Plan?.Course?.Id ?? "";
         public DateTime CreationDate => creationDate;
         public string CreatorId => creatorId;
+        public string TargetId => Plan?.TargetVolumeID ?? "";
 
         public PlanSetupApprovalStatus ApprovalStatus => Plan != null ? (PlanSetupApprovalStatus)(int)Plan?.ApprovalStatus : PlanSetupApprovalStatus.Unknown;
         public double SingleDose => Plan?.DosePerFraction.Dose ?? .0;

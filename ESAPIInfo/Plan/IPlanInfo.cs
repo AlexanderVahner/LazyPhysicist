@@ -16,6 +16,7 @@ namespace ESAPIInfo.Plan
         string CourseId { get; }
         DateTime CreationDate { get; }
         string CreatorId { get; }
+        string TargetId { get; }
         PlanSetupApprovalStatus ApprovalStatus { get; }
         double SingleDose { get; }
         int FractionsCount { get; }

@@ -2,8 +2,11 @@
 using LazyOptimizer.App;
 using LazyOptimizer.Model;
 using LazyPhysicist.Common;
+using LazyOptimizer.UI.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.ComponentModel.Design;
 
 namespace LazyOptimizer.UI.ViewModels
 {
@@ -15,6 +18,8 @@ namespace LazyOptimizer.UI.ViewModels
         private ObservableCollection<IStructureSuggestionModel> unusedStructures;
         private bool loadNto;
         private string prioritySetter;
+        private readonly DvhVM dvhVM = new DvhVM();
+        private DVHPage dvhPage;
 
         public HabitsVM(HabitsModel habitsModel, AppContext context) : base(habitsModel)
         {
@@ -58,6 +63,8 @@ namespace LazyOptimizer.UI.ViewModels
                         break;
                 }
             };
+
+            Structures.CollectionChanged += (s, e) => dvhVM.Paint(Structures);
         }
 
         private void SetCanMergeFeature(bool canMerge)
@@ -70,6 +77,7 @@ namespace LazyOptimizer.UI.ViewModels
 
         private void BindCollections(PlanVM plan)
         {
+            dvhVM.Frozen = true;
             if (plan?.SourceModel == null)
             {
                 Structures.BreakFree();
@@ -80,6 +88,8 @@ namespace LazyOptimizer.UI.ViewModels
                 Structures.ObeyTheMaster(plan.SourceModel.Structures, m => CreateStructureVM(m), vm => vm.SourceModel);
                 UnusedStructures = plan.SourceModel.UndefinedStructures;
             }
+            dvhVM.Frozen = false;
+            dvhVM.Paint(Structures);
         }
 
         private PlanVM CreatePlanVM(IPlanBaseModel plan)
@@ -93,7 +103,7 @@ namespace LazyOptimizer.UI.ViewModels
 
         private StructureVM CreateStructureVM(IStructureModel model)
         {
-            StructureVM result = new StructureVM(model);
+            StructureVM result = new StructureVM(context.CurrentPlan, model);
             return result;
         }
 
@@ -151,7 +161,7 @@ namespace LazyOptimizer.UI.ViewModels
                     {
                         continue;
                     }
-                    
+
                     if (objective.Priority != 0) // Don't touch objectives with zero priority initially
                     {
                         objective.Priority = priority;
@@ -200,19 +210,22 @@ namespace LazyOptimizer.UI.ViewModels
                 }
             }
         }
+
         public MetaCommand LoadIntoPlan => new MetaCommand(
             o => FillCurrentPlan(),
             o => context?.CurrentPlan != null && Structures.Count > 0
         );
+
         public MetaCommand ClearCurrentPlanObjectives => new MetaCommand(
             o => SourceModel.ClearObjectivesFromCurrentPlan(),
             o => context?.CurrentPlan != null
         );
+
         public MetaCommand SetOarsPriority => new MetaCommand(
             priorityString => SetPriorityForOars(priorityString as string),
             o => Structures.Count > 0
         );
 
-
+        public DVHPage DvhPage => dvhPage ?? (dvhPage = new DVHPage { ViewModel = dvhVM });
     }
 }

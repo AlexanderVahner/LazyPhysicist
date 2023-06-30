@@ -122,7 +122,7 @@ namespace LazyOptimizer.App
             MainVM mainVM = new MainVM();
             MainPage mainPage = new MainPage() { DataContext = mainVM };
 
-            window.Width = 900;
+            window.Width = 1000;
             window.Height = 800;
             window.Title = "LazyOptimizer";
             window.Closing += (s, e) => Dispose();

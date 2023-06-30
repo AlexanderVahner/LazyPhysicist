@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Windows.Media;
 using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
@@ -18,15 +19,19 @@ namespace ESAPIInfo.Structures
         {
             Structure = structure;
         }
+
         public bool IsTarget()
         {
             return Structure != null && StructureInfo.IsTarget(Structure.Id);
         }
+
         public Structure Structure { get; set; }
         public string Id => Structure?.Id ?? "<none>";
         public string DicomType => Structure?.DicomType ?? "UNKNOWN";
         public bool IsSupport => SupportStructureDicomTypes.Contains(DicomType);
-        public bool CanOptimize => !NonOptimizedStructureDicomTypes.Contains(DicomType);
+        public bool IsEmpty => Structure?.IsEmpty ?? true;
+        public bool CanOptimize => !IsEmpty && !NonOptimizedStructureDicomTypes.Contains(DicomType);
+        public Color Color => Structure?.Color ?? Color.FromRgb(200, 200, 200);
         public override string ToString() => Id;
     }
 }
