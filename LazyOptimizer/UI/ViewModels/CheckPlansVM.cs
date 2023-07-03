@@ -3,12 +3,13 @@ using LazyPhysicist.Common;
 
 namespace LazyOptimizer.UI.ViewModels
 {
-    public sealed class SettingsVM : Notifier
+    public sealed class CheckPlansVM : Notifier
     {
-        public SettingsVM()
+        public CheckPlansVM()
         {
             
         }
+        public MainVM MainVM { get; set; }
         public UserSettings Settings { get; set; }
     }
 }

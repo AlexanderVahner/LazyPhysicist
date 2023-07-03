@@ -160,8 +160,17 @@ namespace LazyOptimizer.Model
         }
 
         public override string PlanTitle => $"({cachedPlan.PatientId}).[{cachedPlan.CourseId}].{cachedPlan.PlanId}";
-        public DateTime CreationDate => cachedPlan.CreationDate;
+        public DateTime CreationDate => cachedPlan.CreationDate;        
         public List<CachedObjective> CachedObjectives => GetCachedObjectives();
+        public bool IsStarred 
+        {
+            get => cachedPlan.Starred == 1;
+            set
+            {
+                cachedPlan.Starred = value == true ? 1 : 0;
+                context.PlansContext.UpdatePlan(cachedPlan);
+            }
+        }
 
     }
 }

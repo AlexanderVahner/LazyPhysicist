@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LazyOptimizerDataService.DB
 {
@@ -15,17 +16,33 @@ namespace LazyOptimizerDataService.DB
         private readonly SQLiteConnection connection;
         private SQLiteTransaction transaction;
         private bool connected = false;
+        private bool dbCreated = false;
         public SQLiteService(string dbFileName)
         {
             try
             {
+                dbFileName = Environment.ExpandEnvironmentVariables(dbFileName);
                 if (!File.Exists(dbFileName))
                 {
                     SQLiteConnection.CreateFile(dbFileName);
+                    dbCreated = true;
                 }
+
+                // Sqlite needs 4 (four!) backslashes for network path
+                Regex regex = new Regex(@"^\\\\");
+                dbFileName = regex.Replace(dbFileName, "\\\\\\\\");
+
                 connection = new SQLiteConnection($@"Data Source=""{dbFileName}""");
                 Connected = true;
-                CreateTables();
+
+                if (dbCreated)
+                {
+                    CreateTables();
+                }
+                else
+                {
+                    new DBUpdate(this);
+                }
 
                 SQLiteFunction.RegisterFunction(typeof(LevenshteinDistanceFunction));
             }

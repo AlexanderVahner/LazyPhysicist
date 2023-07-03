@@ -18,6 +18,8 @@ namespace LazyOptimizerDataService.DBModel
         public long? LDistance { get; set; }
         public string StructuresString { get; set; }
         public string Description { get; set; }
+        public long? ApprovalStatus { get; set; }
+        public long? Starred { get; set; }
 
         public List<CachedObjective> Objectives { get; set; }
         public CachedNto Nto { get; set; }

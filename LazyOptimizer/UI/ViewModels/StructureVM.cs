@@ -1,19 +1,26 @@
-﻿using ESAPIInfo.Structures;
+﻿using ESAPIInfo.Plan;
+using ESAPIInfo.Structures;
 using LazyOptimizer.Model;
 using LazyPhysicist.Common;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Media;
 
 namespace LazyOptimizer.UI.ViewModels
 {
     public sealed class StructureVM : ViewModel<IStructureModel>
     {
+        private readonly IPlanInfo currentPlan;
         private readonly IStructureModel structureModel;
         private IStructureSuggestionModel planStructureHack;
-        public StructureVM(IStructureModel structureModel) : base(structureModel)
+        public StructureVM(IPlanInfo currentPlan, IStructureModel structureModel) : base(structureModel)
         {
+            this.currentPlan = currentPlan;
             this.structureModel = structureModel;
             StructureSuggestions = structureModel.StructureSuggestions;
             Objectives = new SlaveCollection<IObjectiveModel, ObjectiveVM>(structureModel.Objectives, m => new ObjectiveVM(m), vm => vm.SourceModel);
+            NotifyPropertyChanged(nameof(Color));
+            NotifyPropertyChanged(nameof(Brush));
         }
 
         public string CachedStructureId => structureModel.CachedStructureId;
@@ -24,6 +31,9 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 structureModel.CurrentPlanStructure = value;
                 NotifyPropertyChanged(nameof(PlanStructure));
+                NotifyPropertyChanged(nameof(Color));
+                NotifyPropertyChanged(nameof(Brush));
+                NotifyPropertyChanged(nameof(PlanTargetAttentionVisible));
             }
         }
 
@@ -46,5 +56,10 @@ namespace LazyOptimizer.UI.ViewModels
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions { get; }
         public SlaveCollection<IObjectiveModel, ObjectiveVM> Objectives { get; }
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
+        public Color Color { get => PlanStructure?.StructureInfo?.Color ?? Color.FromRgb(200, 200, 200); }
+        public SolidColorBrush Brush { get => new SolidColorBrush(Color); }
+        public Visibility PlanTargetAttentionVisible { get => 
+                IsTarget && currentPlan.TargetId != (PlanStructure?.Id ?? "") 
+                ? Visibility.Visible : Visibility.Collapsed; }
     }
 }

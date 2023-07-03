@@ -4,60 +4,38 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LazyOptimizer.UI.Views" xmlns:viewmodels="clr-namespace:LazyOptimizer.UI.ViewModels"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="1000"
       Title="HabitsPage">
     <!--<Page.DataContext>
         <viewmodels:HabitsVM/>
     </Page.DataContext>-->
-    <Grid>
-        <DockPanel>
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="5 0 0 0">Finded Plans</TextBlock>
-                <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedPlan}" MinWidth="300" DockPanel.Dock="Left">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <local:PlanElement DataContext="{Binding}" Width="285"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </DockPanel>
-            
-            
-            <DockPanel Width="200" DockPanel.Dock="Right">
-                <Button DockPanel.Dock="Bottom" Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
-                <!--<StackPanel DockPanel.Dock="Bottom" Height="50">
-                    <Button Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5"/>
-                </StackPanel>-->
-                <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Bottom" TextWrapping="Wrap" Padding="3">
-                        Try double-clicking an undefined structure to look for it in other similar plans.
-                    </TextBlock>
-                    <ListBox ItemsSource="{Binding UnusedStructures}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Id}"></TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                <EventSetter Event="MouseDoubleClick" Handler="UndefinedStrucutres_MouseDoubleClick"/>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                </DockPanel>
-                
-            </DockPanel>
-            
-            <DockPanel>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Left">
+            <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="5 0 0 0">Finded Plans</TextBlock>
+            <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedPlan}" Width="320">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:PlanElement DataContext="{Binding}" Width="285"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350" MinWidth="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="0">
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="1" FontWeight="Bold">Vol,%</TextBlock>
                     <TextBlock Grid.Column="2" FontWeight="Bold">Dose,Gy</TextBlock>
@@ -75,7 +53,7 @@
                             <TextBox Text="{Binding Path=PrioritySetter, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
                         </StackPanel>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedNtoString}" Margin="0 5 0 0"/>
+                    
                 </StackPanel>
 
                 <ListBox ItemsSource="{Binding Structures}">
@@ -85,9 +63,142 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                
+
+            </DockPanel>
+
+            <GridSplitter Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="100"/>
+                    <RowDefinition MinHeight="130"/>
+                </Grid.RowDefinitions>
+
+                <Frame x:Name="DvhFrame" Content="{Binding DvhPage}" Grid.Row="0" NavigationUIVisibility="Hidden"/>
+
+                <GridSplitter Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ResizeBehavior="CurrentAndNext"/>
+
+                <DockPanel Grid.Row="1">
+                    <DockPanel DockPanel.Dock="Right" Width="200">
+                        <StackPanel DockPanel.Dock="Bottom" >
+                            <CheckBox IsChecked="{Binding LoadNto}"  Margin="5" >
+                                <TextBlock Text="{Binding SelectedNtoString}" TextWrapping="Wrap"/>
+                            </CheckBox>
+                            <Button  Content="Remove current plan objectives" Command="{Binding ClearCurrentPlanObjectives}" Margin="5" Height="25"/>
+                            <Button  Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" Padding="3" Margin="5 10 0 0">
+                        Try double-clicking an undefined structure to look for it in other similar plans.
+                        </TextBlock>
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
+                        <DockPanel>
+
+                            <ListBox ItemsSource="{Binding UnusedStructures}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Id}"></TextBlock>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                        <EventSetter Event="MouseDoubleClick" Handler="UndefinedStrucutres_MouseDoubleClick"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </DockPanel>
+                    </DockPanel>
+                </DockPanel>
+
+            </Grid>
+        </Grid>
+    </DockPanel>
+    <!--
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Right" Width="300">
+                <Frame x:Name="DvhFrame" Content="{Binding DvhPage}" NavigationUIVisibility="Hidden"/>
             </DockPanel>
             
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Left">
+                    <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="5 0 0 0">Finded Plans</TextBlock>
+                    <ListBox ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedPlan}" MinWidth="300" DockPanel.Dock="Left">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <local:PlanElement DataContext="{Binding}" Width="285"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+
+
+                <DockPanel Width="200" DockPanel.Dock="Right">
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Button  Content="Remove current plan objectives" Command="{Binding LoadIntoPlan}" Margin="5" Height="25"/>
+                        <Button  Content="Load into Plan" Command="{Binding LoadIntoPlan}" FontSize="14" FontWeight="Bold" Margin="5" Height="40"/>
+                    </StackPanel>
+
+                    <TextBlock DockPanel.Dock="Top" FontWeight="Bold">Not defined</TextBlock>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Bottom" TextWrapping="Wrap" Padding="3">
+                        Try double-clicking an undefined structure to look for it in other similar plans.
+                        </TextBlock>
+                        <ListBox ItemsSource="{Binding UnusedStructures}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Id}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <EventSetter Event="MouseDoubleClick" Handler="UndefinedStrucutres_MouseDoubleClick"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </DockPanel>
+
+                </DockPanel>
+
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1" FontWeight="Bold">Vol,%</TextBlock>
+                        <TextBlock Grid.Column="2" FontWeight="Bold">Dose,Gy</TextBlock>
+                        <TextBlock Grid.Column="3" FontWeight="Bold">gEUD,a</TextBlock>
+                        <TextBlock Grid.Column="4" FontWeight="Bold">Priority</TextBlock>
+                    </Grid>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="5">
+                        <StackPanel Orientation="Horizontal">
+
+                            <TextBlock Text="OARs Priority:"/>
+                            <Button Content="=0" Command="{Binding SetOarsPriority}" CommandParameter="0"  Width="40" Margin="5 0 0 0"/>
+                            <Button Content="As Is" Command="{Binding SetOarsPriority}" CommandParameter="-1" Width="40" Margin="5 0 0 0"/>
+                            <StackPanel Orientation="Horizontal"  Margin="5 0 0 0">
+                                <Button Content="Set:" Command="{Binding SetOarsPriority}" CommandParameter="{Binding PrioritySetter}" Width="30"/>
+                                <TextBox Text="{Binding Path=PrioritySetter, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <CheckBox IsChecked="{Binding LoadNto}" Content="{Binding SelectedNtoString}" Margin="0 5 0 0"/>
+                    </StackPanel>
+
+                    <ListBox ItemsSource="{Binding Structures}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <local:StructureElement DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </DockPanel>
+
+            </DockPanel>
         </DockPanel>
-    </Grid>
+        -->
 </Page>

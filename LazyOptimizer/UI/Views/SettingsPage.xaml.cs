@@ -16,32 +16,6 @@ namespace LazyOptimizer.UI.Views
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var dialog = new Microsoft.Win32.OpenFileDialog
-                {
-                    FileName = "PlansCache.exe",
-                    Filter = "PlansCache.exe|PlansCache.exe"
-                };
-
-                bool? result = dialog.ShowDialog();
-
-                if (result == true && Settings != null)
-                {
-                    // Open document
-                    Settings.PlansCacheAppPath = dialog.FileName;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Logger.Write(this, $"File Dialog is broken:\n{ex.Message}", LogMessageType.Error);
-            }
-
-        }
-
-        public Settings Settings { get; set; }
+        public UserSettings Settings { get; set; }
     }
 }

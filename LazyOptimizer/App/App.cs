@@ -29,11 +29,14 @@ namespace LazyOptimizer.App
                 return;
             }
 
+            var generalSettings = GeneralSettings.ReadGeneralSettings();
+            var userSettings = UserSettings.ReadUserSettings(generalSettings.UserPath, args.CurrentUser.Id);
+
             context = new AppContext()
             {
                 CurrentPlan = new PlanInfo(args.Plan),
-                Settings = Settings.ReadSettings(),
-
+                GeneralSettings = generalSettings,
+                UserSettings = userSettings
             };
 
             if (!CheckPlanEditability(context.CurrentPlan))
@@ -41,6 +44,7 @@ namespace LazyOptimizer.App
                 Logger.Write(this, "The plan is not ready for Optimization.", LogMessageType.Error);
                 return;
             }
+
             context.PlansFilterArgs = new PlansFilterArgs()
             {
                 StructuresString = context.CurrentPlan.StructuresPseudoHash,
@@ -48,28 +52,37 @@ namespace LazyOptimizer.App
                 SingleDose = context.CurrentPlan.SingleDose,
                 MachineId = context.CurrentPlan.MachineId,
                 Technique = context.CurrentPlan.Technique,
-                MatchMachine = context.Settings.MatchMachine,
-                MatchTechnique = context.Settings.MatchTechnique,
-                Limit = context.Settings.PlansSelectLimit
+                MatchMachine = context.UserSettings.MatchMachine,
+                MatchTechnique = context.UserSettings.MatchTechnique,
+                Limit = context.UserSettings.PlansSelectLimit,
+                StarredOnly = context.UserSettings.ShowStarredOnly,
+                CheckedApprovalStatuses = context.UserSettings.GetCheckedApprovalStatusesInInt(),
+                CheckedApprovalStatusesOnly = context.UserSettings.ShowCheckedApprovalStatusOnly
             };
 
-            context.DbService = new SQLiteService(context.Settings.SqliteDbPath);
+            context.DbService = new SQLiteService(context.UserSettings.SqliteDbPath);
             context.PlansContext = new PlansDbContext(context.DbService);
 
-            context.Settings.PropertyChanged += (s, e) =>
+            context.UserSettings.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
                 {
-                    case "MatchMachine":
-                        context.PlansFilterArgs.MatchMachine = context.Settings.MatchMachine;
+                    case nameof(context.UserSettings.MatchMachine):
+                        context.PlansFilterArgs.MatchMachine = context.UserSettings.MatchMachine;
                         break;
-                    case "MatchTechnique":
-                        context.PlansFilterArgs.MatchTechnique = context.Settings.MatchTechnique;
+                    case nameof(context.UserSettings.MatchTechnique):
+                        context.PlansFilterArgs.MatchTechnique = context.UserSettings.MatchTechnique;
                         break;
-                    case "PlansSelectLimit":
-                        context.PlansFilterArgs.Limit = context.Settings.PlansSelectLimit;
+                    case nameof(context.UserSettings.PlansSelectLimit):
+                        context.PlansFilterArgs.Limit = context.UserSettings.PlansSelectLimit;
                         break;
-
+                    case nameof(context.UserSettings.ShowStarredOnly):
+                        context.PlansFilterArgs.StarredOnly = context.UserSettings.ShowStarredOnly;
+                        break;
+                    case nameof(context.UserSettings.ShowCheckedApprovalStatusOnly):
+                        context.PlansFilterArgs.CheckedApprovalStatuses = context.UserSettings.GetCheckedApprovalStatusesInInt();
+                        context.PlansFilterArgs.CheckedApprovalStatusesOnly = context.UserSettings.ShowCheckedApprovalStatusOnly;
+                        break;
                 }
             };
 
@@ -77,7 +90,7 @@ namespace LazyOptimizer.App
             mainViewModel.RefreshPlansClick += (s, context) =>
             {
                 PlansCacheAppStart(context);
-                context.Settings.PlansCacheRecheckAllPatients = false;
+                context.UserSettings.PlansCacheRecheckAllPatients = false;
                 context.PlansFilterArgs.Update();
             };
         }
@@ -109,7 +122,7 @@ namespace LazyOptimizer.App
             MainVM mainVM = new MainVM();
             MainPage mainPage = new MainPage() { DataContext = mainVM };
 
-            window.Width = 900;
+            window.Width = 1000;
             window.Height = 800;
             window.Title = "LazyOptimizer";
             window.Closing += (s, e) => Dispose();
@@ -122,39 +135,79 @@ namespace LazyOptimizer.App
 
         public void PlansCacheAppStart(AppContext context)
         {
-            if (!File.Exists(context.Settings.PlansCacheAppPath))
+            if (!File.Exists(context.GeneralSettings.PlansCacheFullFileName))
             {
-                Logger.Write(this, "PlansCache App not found. Check the Settings.", LogMessageType.Error);
+                Logger.Write(this, $"PlansCache App not found. Check the Settings in \"{context.GeneralSettings.SettingsFullName}\".", LogMessageType.Error);
                 return;
             }
 
-            StringBuilder appArgs = new StringBuilder($"-db \"{context.Settings.SqliteDbPath}\"");
-            if (context.Settings.PlansCacheRecheckAllPatients)
+            StringBuilder appArgs = new StringBuilder($"-db \"{context.UserSettings.SqliteDbPath}\"");
+            if (context.UserSettings.PlansCacheRecheckAllPatients)
             {
                 appArgs.Append(" -all");
             }
-            if (context.Settings.PlansCacheVerboseMode)
+            if (context.UserSettings.PlansCacheVerboseMode)
             {
                 appArgs.Append(" -verbose");
             }
-            if (context.Settings.DebugMode)
+            if (context.UserSettings.DebugMode)
             {
                 appArgs.Append(" -debug");
             }
+            if (context.UserSettings.YearsLimit > 0)
+            {
+                appArgs.Append($" -years {context.UserSettings.YearsLimit}");
+            }
             context.PlansContext.Connected = false;
+            //--------------------------------------------------------------------
+
+            // Trying to read PlansCache output to a wpf. No success
+
+            /*var processStartInfo = new ProcessStartInfo
+            {
+                FileName = context.GeneralSettings.PlansCacheFullFileName,
+                Arguments = appArgs.ToString(),
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
             using (Process process = new Process())
             {
-                process.StartInfo.FileName = context.Settings.PlansCacheAppPath;
+                process.StartInfo = processStartInfo;
+                process.OutputDataReceived += (sender, args) =>
+                {
+                    Logger.Write(this, args.Data);
+                };
+
+                
+
+                process.Start();
+                var reader = process.StandardOutput;
+                while (!reader.EndOfStream)
+                {
+                    Logger.Write(this, reader.ReadLine());
+                }
+
+                process.WaitForExit();
+            }*/
+
+            using (Process process = new Process())
+            {
+                process.StartInfo.FileName = context.GeneralSettings.PlansCacheFullFileName;
                 process.StartInfo.Arguments = appArgs.ToString();
                 process.Start();
                 process.WaitForExit();
             };
+
+            //--------------------------------------------------------------------
             context.PlansContext.Connected = true;
         }
 
         public void Dispose()
         {
-            context?.Dispose();
+            context?.DbService?.Dispose();
+            context?.UserSettings?.Save();
         }
     }
 }

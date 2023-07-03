@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VMS.TPS.Common.Model.API;
-using VMS.TPS.Common.Model.Types;
+using VT = VMS.TPS.Common.Model.Types;
 
 namespace ESAPIInfo.Plan
 {
@@ -17,18 +17,20 @@ namespace ESAPIInfo.Plan
         {
             StringBuilder targetsString = new StringBuilder();
             StringBuilder oarsString = new StringBuilder();
+
             if (plan?.StructureSet != null && plan.StructureSet.Structures.Count() > 0)
             {
                 foreach (Structure structure in plan.StructureSet.Structures.OrderBy(s => s.Id))
                 {
-                    if (StructureInfo.IsTarget(structure.Id))
+                    string id = structure.Id.ToUpper().Replace(" ", "").Replace("_", "");
+                    if (StructureInfo.IsTarget(id))
                     {
-                        targetsString.Append(structure.Id.ToUpper());
+                        targetsString.Append(id);
                         targetsString.Append("/");
                     }
                     else
                     {
-                        oarsString.Append((structure.Id.Length > MaxLengthOfStructureId ? structure.Id.ToUpper().Remove(MaxLengthOfStructureId) : structure.Id.ToUpper()));
+                        oarsString.Append((id.Length > MaxLengthOfStructureId ? id.Remove(MaxLengthOfStructureId) : id));
                         oarsString.Append("/");
                     }
                 }
@@ -54,8 +56,8 @@ namespace ESAPIInfo.Plan
                 plan = value;
                 nto = null;
                 structures = null;
-                creationDate = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).ApprovalDateTime ?? default;
-                creatorId = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == PlanSetupApprovalStatus.UnApproved).UserId ?? "";
+                creationDate = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == VT.PlanSetupApprovalStatus.UnApproved).ApprovalDateTime ?? default;
+                creatorId = Plan?.ApprovalHistory.OrderBy(ah => ah.ApprovalDateTime).FirstOrDefault(ah => ah.ApprovalStatus == VT.PlanSetupApprovalStatus.UnApproved).UserId ?? "";
                 technique = "";
                 machineId = "";
             }
@@ -67,8 +69,9 @@ namespace ESAPIInfo.Plan
         public string CourseId => Plan?.Course?.Id ?? "";
         public DateTime CreationDate => creationDate;
         public string CreatorId => creatorId;
+        public string TargetId => Plan?.TargetVolumeID ?? "";
 
-        public PlanSetupApprovalStatus ApprovalStatus => Plan?.ApprovalStatus ?? PlanSetupApprovalStatus.Unknown;
+        public PlanSetupApprovalStatus ApprovalStatus => Plan != null ? (PlanSetupApprovalStatus)(int)Plan?.ApprovalStatus : PlanSetupApprovalStatus.Unknown;
         public double SingleDose => Plan?.DosePerFraction.Dose ?? .0;
         public int FractionsCount => Plan?.NumberOfFractions ?? 0;
         public int ObjectivesCount => Plan?.OptimizationSetup?.Objectives.Count() ?? 0;

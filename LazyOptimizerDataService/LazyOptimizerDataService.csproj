@@ -67,6 +67,7 @@
     <Compile Include="DBModel\CachedPlan.cs" />
     <Compile Include="DBModel\PlansDbContext.cs" />
     <Compile Include="DBModel\Vars.cs" />
+    <Compile Include="DB\DBUpdate.cs" />
     <Compile Include="DB\IDbService.cs" />
     <Compile Include="DB\LevenshteinDistanceFunction.cs" />
     <Compile Include="DB\SQLiteService.cs" />

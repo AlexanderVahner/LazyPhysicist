@@ -82,8 +82,9 @@
   <ItemGroup>
     <Compile Include="App\App.cs" />
     <Compile Include="App\AppContext.cs" />
+    <Compile Include="App\GeneralSettings.cs" />
     <Compile Include="App\PluginTesterInitializer.cs" />
-    <Compile Include="App\Settings.cs" />
+    <Compile Include="App\UserSettings.cs" />
     <Compile Include="ESAPI\PlanEdit.cs" />
     <Compile Include="LazyOptimizer.cs" />
     <Compile Include="Model\IPlanMergedModel.cs" />
@@ -107,13 +108,21 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="App\ScriptArgs.cs" />
+    <Compile Include="UI\ViewModels\DvhVM.cs" />
     <Compile Include="UI\ViewModels\HabitsVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="UI\ViewModels\ObjectiveVM.cs" />
     <Compile Include="UI\ViewModels\PlanVM.cs" />
+    <Compile Include="UI\ViewModels\CheckPlansVM.cs" />
     <Compile Include="UI\ViewModels\SettingsVM.cs" />
     <Compile Include="UI\ViewModels\StructureVM.cs" />
     <Compile Include="UI\ViewModels\ViewModel.cs" />
+    <Compile Include="UI\Views\CheckPlansPage.xaml.cs">
+      <DependentUpon>CheckPlansPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\DVHPage.xaml.cs">
+      <DependentUpon>DVHPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\HabitsPage.xaml.cs">
       <DependentUpon>HabitsPage.xaml</DependentUpon>
     </Compile>
@@ -149,6 +158,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Views\CheckPlansPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\DVHPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\HabitsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -194,6 +211,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\example.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\starred.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unstarred.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Views\starred.png" />
+    <Resource Include="UI\Views\unstarred.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

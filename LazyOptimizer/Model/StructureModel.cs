@@ -1,5 +1,6 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
+using LazyOptimizer.App;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace LazyOptimizer.Model
         }
 
         public ObservableCollection<IStructureSuggestionModel> StructureSuggestions => structuresBroker.StructureSuggestions;
-        public double GetObjectivesMaxDose() => objectives?.Max(o => o.Dose ?? .0) ?? .0;
+        public double GetObjectivesMaxDose() => (objectives?.Count() ?? 0) > 0 ? objectives?.Max(o => o.Dose ?? .0) ?? .0 : 0;
         public string CachedStructureId { get; }
         public ObservableCollection<IObjectiveModel> Objectives => objectives ?? (objectives = new ObservableCollection<IObjectiveModel>());
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);

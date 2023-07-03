@@ -12,6 +12,7 @@ namespace LazyOptimizer.UI.ViewModels
         private bool canMerge;
         private Visibility mergeLinkVisibility;
         private Visibility elementVisibility;
+        private Visibility starVisibility;
 
         public PlanVM(IPlanBaseModel planModel) : base(planModel)
         {
@@ -40,6 +41,7 @@ namespace LazyOptimizer.UI.ViewModels
                 }
             };
             SetMergeFeatureVisibility();
+            StarVisibility = planCachedModel != null ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void SetMergeFeatureVisibility()
@@ -53,14 +55,31 @@ namespace LazyOptimizer.UI.ViewModels
             o => planCachedModel != null
         );
 
+        public MetaCommand ToggleStarred => new MetaCommand(
+            o => IsStarred = !IsStarred,
+            o => planCachedModel != null
+        );
+
         public string PlanTitle => SourceModel.PlanTitle;
         public string CreationDate => planCachedModel?.CreationDate.ToString("g") ?? "";
         public INtoInfo Nto => SourceModel.NtoInfo;
         public string Description { get => SourceModel.Description; set => SetProperty((v) => { SourceModel.Description = v; }, value); }
         public bool IsDescriptionReadOnly => planCachedModel == null;
         public long SelectionFrequency { get => SourceModel.SelectionFrequency; set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value); }
+        public bool IsStarred { 
+            get => planCachedModel?.IsStarred ?? false; 
+            set => SetProperty((v) => { 
+                if (planCachedModel != null)
+                {
+                    planCachedModel.IsStarred = v;
+                    NotifyPropertyChanged(nameof(StarImageSource));
+                }
+                    
+            }, value);
+        }
         public Visibility MergeLinkVisibility { get => mergeLinkVisibility; set => SetProperty(ref mergeLinkVisibility, value); }
         public Visibility ElementVisibility { get => elementVisibility; set => SetProperty(ref elementVisibility, value); }
+        public Visibility StarVisibility { get => starVisibility; set => SetProperty(ref starVisibility, value); }
         public bool CanMerge
         {
             get => canMerge;
@@ -68,6 +87,13 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 SetProperty(ref canMerge, value);
                 SetMergeFeatureVisibility();
+            }
+        }
+        public string StarImageSource
+        {
+            get
+            {
+                return IsStarred ? "/LazyOptimizer.esapi;component/UI/Views/starred.png" : "/LazyOptimizer.esapi;component/UI/Views/unstarred.png";
             }
         }
         public string SelectionFrequencyBackground

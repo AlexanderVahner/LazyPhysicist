@@ -2,12 +2,15 @@
 using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VMS.TPS.Common.Model.Types;
 
 namespace LazyOptimizer.ESAPI
 {
     internal class PlanEdit
     {
+        private const int MAX_OBJECTIVES_COUNT_FOR_ADDING = 200;
+
         public static void LoadNtoIntoPlan(IPlanInfo plan, INtoInfo nto)
         {
             if (nto != null && plan != null)
@@ -43,12 +46,20 @@ namespace LazyOptimizer.ESAPI
             try
             {
                 plan.Plan.Course.Patient.BeginModifications();
+
                 foreach (IObjectiveInfo objective in objectives)
                 {
+                    if (loadedObjectivesCount >= MAX_OBJECTIVES_COUNT_FOR_ADDING)
+                    {
+                        Logger.Write(plan, $"Too many objectives (>{MAX_OBJECTIVES_COUNT_FOR_ADDING}). Stopped.", LogMessageType.Error);
+                        break;
+                    }
+
                     if (onlyEmptyStructures && plan.StructureHasObjectives(objective.Structure))
                     {
                         continue;
                     }
+
                     LoadObjective(plan, objective);
                     loadedObjectivesCount++;
                 }
@@ -75,20 +86,38 @@ namespace LazyOptimizer.ESAPI
             }
             if (objective.Structure == null)
             {
-                Logger.Write(plan, "Can't load the objective. Structure is not defined", LogMessageType.Error);
+                Logger.Write(plan, "Can't load the objective. Structure is null", LogMessageType.Error);
+                return;
+            }
+            if (objective.Structure.IsEmpty)
+            {
+                Logger.Write(plan, $"Can't load the objective. Structure \"{objective.Structure.Id}\" is empty", LogMessageType.Error);
                 return;
             }
 
             switch (objective.Type)
             {
                 case ObjectiveType.Point:
-                    plan.Plan.OptimizationSetup.AddPointObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Volume, objective.Priority);
+                    plan.Plan.OptimizationSetup.AddPointObjective(
+                        objective.Structure, 
+                        (OptimizationObjectiveOperator)(int)objective.Operator, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.Volume, 
+                        objective.Priority);
                     break;
                 case ObjectiveType.Mean:
-                    plan.Plan.OptimizationSetup.AddMeanDoseObjective(objective.Structure, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.Priority);
+                    plan.Plan.OptimizationSetup.AddMeanDoseObjective(
+                        objective.Structure, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.Priority);
                     break;
                 case ObjectiveType.EUD:
-                    plan.Plan.OptimizationSetup.AddEUDObjective(objective.Structure, (OptimizationObjectiveOperator)(int)objective.Operator, new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), objective.ParameterA, objective.Priority);
+                    plan.Plan.OptimizationSetup.AddEUDObjective(
+                        objective.Structure, 
+                        (OptimizationObjectiveOperator)(int)objective.Operator, 
+                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.ParameterA, 
+                        objective.Priority);
                     break;
                 case ObjectiveType.Unknown:
                     Logger.Write(plan, "Can't load the objective. Type is unknown.", LogMessageType.Error);
@@ -106,11 +135,13 @@ namespace LazyOptimizer.ESAPI
 
             try
             {
+                var objectives = plan.Plan.OptimizationSetup.Objectives.ToList();
+                int i = objectives.Count;
+
                 plan.Plan.Course.Patient.BeginModifications();
-                foreach (var objective in plan.Plan.OptimizationSetup.Objectives)
-                {
-                    plan.Plan.OptimizationSetup.RemoveObjective(objective);
-                }
+                objectives.ForEach(o => plan.Plan.OptimizationSetup.RemoveObjective(o));
+
+                Logger.Write(plan, $"Objectives removed: {i}", LogMessageType.Info);
             }
             catch (Exception ex)
             {

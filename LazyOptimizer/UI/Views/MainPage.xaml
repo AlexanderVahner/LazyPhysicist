@@ -12,20 +12,54 @@
         <viewmodels:MainVM/>
     </Page.DataContext>
     <Grid>
-        <DockPanel>
-            <RichTextBox x:Name="LogBox" DockPanel.Dock="Bottom" Height ="70"></RichTextBox>
-            <StackPanel DockPanel.Dock="Top" Margin="5 5 5 5">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Margin="0 0 5 0">
-                        <CheckBox Content="Same Technique" IsChecked="{Binding MatchTechnique}"/>
-                        <CheckBox Content="Same Treatment Machine" IsChecked="{Binding MatchMachine}"/>
-                    </StackPanel>
-                    <Button Content="Check Previous Plans" Command="{Binding RefreshPlans}" Margin="0 0 5 0" Padding="5"/>
-                    <Button Content="{Binding BtnSettingsContent}" Command="{Binding TogglePages}" Margin="0 0 5 0" Padding="5"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5 5 5 5">
+                <StackPanel Margin="0 0 5 0">
+                    <CheckBox Content="Same Technique" IsChecked="{Binding MatchTechnique}"/>
+                    <CheckBox Content="Same Treatment Machine" IsChecked="{Binding MatchMachine}"/>
+                </StackPanel>
+                <StackPanel Margin="10 0 5 0">
+                    <CheckBox Content="Starred only" IsChecked="{Binding StarredOnly}"/>
+                    <CheckBox Content="Checked Approval Statuses only" IsChecked="{Binding CheckedApprovalStatusesOnly}"/>
                 </StackPanel>
             </StackPanel>
-            <Frame x:Name="MainFrame" Content="{Binding CurrentPage}" NavigationUIVisibility="Hidden"/>
-        </DockPanel>
-        
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                <Button Command="{Binding OpenPlanSelectionTab}" Padding="5" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <StackPanel>
+                        <TextBlock FontSize="18">Plan Selection</TextBlock>
+                        <TextBlock Height="3" Background="{Binding PlanSelectionButtonColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenCheckPlansTab}" Padding="5" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <StackPanel>
+                        <TextBlock FontSize="18">Check Previous Plans</TextBlock>
+                        <TextBlock Height="3" Background="{Binding CheckPlansButtonColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenSettingsTab}" Padding="5" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <StackPanel >
+                        <TextBlock FontSize="18">Settings</TextBlock>
+                        <TextBlock Height="3" Background="{Binding SettingsButtonColor}"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Frame x:Name="MainFrame" Grid.Row="1"  Content="{Binding CurrentPage}" NavigationUIVisibility="Hidden"/>
+
+        <RichTextBox x:Name="LogBox" Grid.Row="2" DockPanel.Dock="Bottom" Height ="70"></RichTextBox>
+
     </Grid>
 </Page>

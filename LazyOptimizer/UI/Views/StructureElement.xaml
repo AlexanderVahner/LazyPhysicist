@@ -18,15 +18,22 @@
             <Image x:Key="ImageUnknown" Source="..\..\Resources\Unknown.png" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid MinWidth="300" Margin="0 0 0 10">
+    <Grid Margin="0 0 0 10">
         <StackPanel>
             <Grid Margin="0 2 0 2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding CachedStructureId}" FontSize="14" FontWeight="Bold"/>
-                <ComboBox Grid.Column="1" 
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="!" Visibility="{Binding PlanTargetAttentionVisible}" Width="10" Margin="3" FontWeight="Heavy" Foreground="Red" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding CachedStructureId}" FontSize="14" FontWeight="Bold"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    
+                    <TextBlock Background="{Binding Brush}" Width="15" Margin="3"/>
+                    <ComboBox
                     ItemsSource="{Binding StructureSuggestions}" 
                     SelectedItem="{Binding PlanStructureHack}" 
                     IsEditable="True" 
@@ -35,22 +42,24 @@
                     Width="150"
                     HorizontalAlignment="Right"
                     FontWeight="Bold"/>
+                </StackPanel>
+                
             </Grid>
             <ListBox ItemsSource="{Binding Objectives}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid DockPanel.Dock="Top">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="60"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="Fill" Source="{Binding ArrowImageSource}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Volume}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding VolumeString}"/>
                             <TextBlock Grid.Column="2" Text="{Binding Dose}"/>
-                            <TextBlock Grid.Column="3" Text="{Binding ParameterA}"/>
+                            <TextBlock Grid.Column="3" Text="{Binding ParameterAString}"/>
                             <TextBox Grid.Column="4" Width="60" Text="{Binding Priority}"/>
                         </Grid>
                     </DataTemplate>

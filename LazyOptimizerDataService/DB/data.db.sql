@@ -1,4 +1,5 @@
 BEGIN TRANSACTION;
+PRAGMA user_version = 1;
 CREATE TABLE IF NOT EXISTS "Vars" (
 	"LastCheckDate"	TEXT
 );
@@ -30,17 +31,19 @@ CREATE TABLE IF NOT EXISTS "Plans" (
 	"CreationDate"	TEXT,
 	"MachineId"	TEXT,
 	"Technique"	TEXT,
+	"ApprovalStatus"	INTEGER,
+	"Starred"	INTEGER,
 	"SelectionFrequency"	INTEGER DEFAULT 0,
 	"StructuresString"	TEXT,
 	"Description"	TEXT DEFAULT ''
-);
-CREATE INDEX IF NOT EXISTS "IdxPlans_CreationDate" ON "Plans" (
-	"CreationDate"	ASC
 );
 CREATE INDEX IF NOT EXISTS "IdxNTO_PlanRowId" ON "Ntos" (
 	"PlanRowId"	ASC
 );
 CREATE INDEX IF NOT EXISTS "IdxObjectives_PlanRowId" ON "Objectives" (
 	"PlanRowId"	ASC
+);
+CREATE INDEX IF NOT EXISTS "IdxPlans_CreationDate" ON "Plans" (
+	"CreationDate"	ASC
 );
 COMMIT;

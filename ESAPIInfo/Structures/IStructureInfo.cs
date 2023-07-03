@@ -1,4 +1,5 @@
-﻿using VMS.TPS.Common.Model.API;
+﻿using System.Windows.Media;
+using VMS.TPS.Common.Model.API;
 
 namespace ESAPIInfo.Structures
 {
@@ -9,6 +10,8 @@ namespace ESAPIInfo.Structures
         string Id { get; }
         string DicomType { get; }
         bool IsSupport { get; }
+        bool IsEmpty { get; }
         bool CanOptimize { get; }
+        Color Color { get; }
     }
 }

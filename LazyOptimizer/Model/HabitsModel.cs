@@ -91,6 +91,11 @@ namespace LazyOptimizer.Model
             PlanEdit.LoadNtoIntoPlan(context.CurrentPlan, nto);
         }
 
+        public void ClearObjectivesFromCurrentPlan()
+        {
+            PlanEdit.ClearObjectives(context.CurrentPlan);
+        }
+
         public ObservableCollection<IPlanBaseModel> PlanModels { get; } = new ObservableCollection<IPlanBaseModel> { };
         public PlanInteractions PlanInteractions => planInteractions;
     }
