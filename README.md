@@ -22,7 +22,7 @@ technique and, most importantly, patient's structures.</p>
 Because they need to be updated quite often, removing irrelevant ones if your planning skills change. With this plugin, this is not necessary. You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
 </p>
 
-<img src="/LazyOptimizer/Resources/example.png" alt="How LazyOptimizer works"/>
+<img src="/Images/LazyOptimizer_example.png" alt="How LazyOptimizer works"/>
 
 <h2>Using LazyOptimizer</h2>
 <p>
