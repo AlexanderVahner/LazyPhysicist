@@ -159,6 +159,39 @@ namespace LazyOptimizer.App
                 appArgs.Append($" -years {context.UserSettings.YearsLimit}");
             }
             context.PlansContext.Connected = false;
+            //--------------------------------------------------------------------
+
+            // Trying to read PlansCache output to a wpf. No success
+
+            /*var processStartInfo = new ProcessStartInfo
+            {
+                FileName = context.GeneralSettings.PlansCacheFullFileName,
+                Arguments = appArgs.ToString(),
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using (Process process = new Process())
+            {
+                process.StartInfo = processStartInfo;
+                process.OutputDataReceived += (sender, args) =>
+                {
+                    Logger.Write(this, args.Data);
+                };
+
+                
+
+                process.Start();
+                var reader = process.StandardOutput;
+                while (!reader.EndOfStream)
+                {
+                    Logger.Write(this, reader.ReadLine());
+                }
+
+                process.WaitForExit();
+            }*/
+
             using (Process process = new Process())
             {
                 process.StartInfo.FileName = context.GeneralSettings.PlansCacheFullFileName;
@@ -166,6 +199,8 @@ namespace LazyOptimizer.App
                 process.Start();
                 process.WaitForExit();
             };
+
+            //--------------------------------------------------------------------
             context.PlansContext.Connected = true;
         }
 
@@ -173,7 +208,6 @@ namespace LazyOptimizer.App
         {
             context?.DbService?.Dispose();
             context?.UserSettings?.Save();
-            context?.GeneralSettings?.Save();
         }
     }
 }

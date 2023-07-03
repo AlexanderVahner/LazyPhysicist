@@ -113,9 +113,13 @@
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="UI\ViewModels\ObjectiveVM.cs" />
     <Compile Include="UI\ViewModels\PlanVM.cs" />
+    <Compile Include="UI\ViewModels\CheckPlansVM.cs" />
     <Compile Include="UI\ViewModels\SettingsVM.cs" />
     <Compile Include="UI\ViewModels\StructureVM.cs" />
     <Compile Include="UI\ViewModels\ViewModel.cs" />
+    <Compile Include="UI\Views\CheckPlansPage.xaml.cs">
+      <DependentUpon>CheckPlansPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\DVHPage.xaml.cs">
       <DependentUpon>DVHPage.xaml</DependentUpon>
     </Compile>
@@ -154,6 +158,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Views\CheckPlansPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\DVHPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

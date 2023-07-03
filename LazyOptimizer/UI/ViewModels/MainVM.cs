@@ -2,17 +2,19 @@
 using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace LazyOptimizer.UI.ViewModels
 {
     public sealed class MainVM : Notifier
     {
         private App.AppContext context;
-        private string btnSettingsContent = "Settings";
         private Page currentPage;
         private HabitsPage habitsPage;
         private SettingsPage settingsPage;
+        private CheckPlansPage checkPlansPage;
         private void InitializeModel(App.AppContext context)
         {
             if (context != null)
@@ -39,7 +41,16 @@ namespace LazyOptimizer.UI.ViewModels
                     Settings = context.UserSettings
                 };
 
-                CurrentPage = habitsPage;
+                checkPlansPage = new CheckPlansPage()
+                {
+                    DataContext = new CheckPlansVM()
+                    {
+                        MainVM = this,
+                        Settings = context.UserSettings
+                    }
+                };
+
+                SelectTab(habitsPage);
 
                 NotifyPropertyChanged(nameof(MatchMachine));
                 NotifyPropertyChanged(nameof(MatchTechnique));
@@ -101,33 +112,48 @@ namespace LazyOptimizer.UI.ViewModels
                 NotifyPropertyChanged(nameof(CheckedApprovalStatusesOnly));
             }
         }
-        public string BtnSettingsContent
-        {
-            get => btnSettingsContent;
-            set => SetProperty(ref btnSettingsContent, value);
-        }
+
+        private readonly static Brush selectedTabColor = new SolidColorBrush(Color.FromRgb(255, 11, 121));
+        private readonly static Brush defaultTabColor = new SolidColorBrush(Color.FromRgb(200, 200, 200));
+        private Brush planSelectionButtonColor = defaultTabColor;
+        private Brush checkPlansButtonColor = defaultTabColor;
+        private Brush settingsButtonColor = defaultTabColor;
+        public Brush PlanSelectionButtonColor { get => planSelectionButtonColor; set => SetProperty(ref planSelectionButtonColor, value); }
+        public Brush CheckPlansButtonColor { get => checkPlansButtonColor; set => SetProperty(ref checkPlansButtonColor, value); }
+        public Brush SettingsButtonColor { get => settingsButtonColor; set => SetProperty(ref settingsButtonColor, value); }
+
+        public MetaCommand OpenPlanSelectionTab => new MetaCommand(o => SelectTab(habitsPage));
+        public MetaCommand OpenCheckPlansTab => new MetaCommand(o => SelectTab(checkPlansPage));
+        public MetaCommand OpenSettingsTab => new MetaCommand(o => SelectTab(settingsPage));
         public MetaCommand RefreshPlans => new MetaCommand(
                 o =>
                 {
                     RefreshPlansClick?.Invoke(this, Context);
                 },
                 o => RefreshPlansClick != null
-            );
-        public MetaCommand TogglePages => new MetaCommand(
-                o =>
-                {
-                    BtnSettingsContent = BtnSettingsContent == "Settings" ? "Back To Plans" : "Settings";
-                    if (Equals(CurrentPage, habitsPage))
-                    {
-                        CurrentPage = settingsPage;
-                    }
-                    else
-                    {
-                        context.UserSettings.Save();
-                        CurrentPage = habitsPage;
-                    }
-                }
-            );
+            );        
+
+        public void SelectTab(Page selectedPage)
+        {
+            CurrentPage = selectedPage;
+
+            PlanSelectionButtonColor = defaultTabColor;
+            CheckPlansButtonColor = defaultTabColor;
+            SettingsButtonColor = defaultTabColor;
+
+            if (Equals(selectedPage, habitsPage))
+            {
+                PlanSelectionButtonColor = selectedTabColor;
+            }
+            else if (Equals(selectedPage, checkPlansPage))
+            {
+                CheckPlansButtonColor = selectedTabColor;
+            }
+            else if (Equals(selectedPage, settingsPage))
+            {
+                SettingsButtonColor = selectedTabColor;
+            }
+        }
 
         public event EventHandler<App.AppContext> RefreshPlansClick;
     }

@@ -33,7 +33,16 @@ namespace LazyOptimizer.App
             else
             {
                 settings = new GeneralSettings();
-                Logger.Write(null, $"User Path is \"{settings.UserPath}\".\nYou can change it in the file \"{settings.SettingsFullName}\" after closing.", LogMessageType.Warning);
+                try
+                {
+                    Xml.WriteXmlFromObject(generalSettingsFullFileName, settings);
+                    Logger.Write(null, $"User Path is \"{settings.UserPath}\".\nYou can change it in the file \"{settings.SettingsFullName}\".", LogMessageType.Warning);
+                }
+                catch (Exception e)
+                {
+                    Logger.Write(null, e.Message, LogMessageType.Error);
+                }
+                
             }
 
             settings.CheckUserPath();
