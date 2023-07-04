@@ -19,7 +19,8 @@ The selection of a suitable plan is based on the number of fractions, single dos
 technique and, most importantly, patient's structures.</p>
 
 <p><i>— Why not objective templates?</i> you may ask.<br>
-Because they need to be updated quite often, removing irrelevant ones if your planning skills change. With this plugin, this is not necessary. You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
+Because they need to be updated quite often, removing irrelevant ones if your planning skills change. With this plugin, this is not necessary.<br>
+You just make your plans and they will always be up to date for reuse. Also, templates don't always match structures so well.
 </p>
 
 <img src="/Images/LazyOptimizer_example.png" alt="How LazyOptimizer works"/>
@@ -38,8 +39,13 @@ Because they need to be updated quite often, removing irrelevant ones if your pl
 	
 <b>More details:</b>
 </p>
-<p>First you need to add a script to Eclipse from <i>Tools > Scripts menu</i>. The plugin can be on the local network, as the user settings and database will be stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.<br>
-You also need to install the <a href="https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48">.NET Framework 4.8</a> Runtime.
+<p>First you need to compile and add the script from <i>LazyPhysicist\bin\release</i> to Eclipse from <i>Tools > Scripts menu</i>.<br>
+The plugin can be on the local network, as the user settings and database will be initially stored in the local folder <i>%APPDATA%\LazyOptimizer</i>.<br>
+You can change the general user path in the <i>_GeneralSettings.xml</i> file that will be created on first run in the plugin path. Or add it manually. <a href="/LazyOptimizer/_GeneralSettings.xml">File example</a><br>
+This can be a network path, but users must have write access.<br>
+There will be no conflicts in user files.
+</p>
+<p>You also need to install the <a href="https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48">.NET Framework 4.8</a> Runtime on your clinical workstations.
 </p>
 <p>Scripts to be approved in  <i>Tools > Script Approvals...</i>
 <ul>
@@ -50,7 +56,10 @@ You also need to install the <a href="https://dotnet.microsoft.com/en-us/downloa
 </p>
 <p>Create the plan you are going to calculate, add the fields and run this plugin.
 </p>
-<p>At the first start, it is necessary to fill the database with previous plans by clicking the <b>Check Previous Plans</b> button. The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients). Only the current user's plans (as accurate as possible) are written to the database. On next launches, only new patients will be checked.
+<p>At the first start, it is necessary to fill the database with previous plans in the <b>Check Previous Plans</b> tab.<br>
+The first launch can be long, as all plans for all patients are checked (about a couple of minutes per thousand patients).<br>
+It is possible to limit the number of years for the creation date of patients.<br>
+Only the current user's plans (as accurate as possible) are written to the database. On next launches, only new patients will be checked.
 </p>
 <p>If plans are found that match the current plan, they will be shown in the list.
 Plan Selection Criteria:
@@ -59,10 +68,16 @@ Plan Selection Criteria:
 	<li>Same dose per fraction</li>
 	<li>Similar set of structures</li>
 	<li>Optionally the same Treatment Machine and Technique</li>
+	<li>Optionally selected Approval Statuses (check the Settings tab)</li>
 </ul>
 </p>
-<p>Choose the plan that suits you, match the structures if there are inaccuracies. Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.<br>
-If no match is found for a structure, then you can <b>double-click</b> on the structure in the list of <b>undefined structures</b>. The best match will be found in other plans and added.
+<p>You can also star your favorite plans and filter them.</p>
+<p>Choose the plan that suits you, match the structures if there are inaccuracies.<br>
+Structures are matched using the Levenshtein algorithm, the names of the structures do not have to be exactly the same.<br>
+If no match is found for a structure, then you can <b>double-click</b> on the structure in the list of <b>undefined structures</b>.<br>
+The best match will be found in other plans and added.
+</p>
+<p>If you see the <b><font color="#F00">!</font></b> in front of a structure, then the current plan target doesn't match the selected structure.
 </p>
 <p>There is one more option - <b>Merging</b> the structures of several plans, and averaging the doses, priorities and EUD A parameters in the structures. Activate this mode in the settings if you want to use it.
 </p>
@@ -75,6 +90,8 @@ If no match is found for a structure, then you can <b>double-click</b> on the st
 </ul>
 </p>
 <p>Check or uncheck the box for adding NTO.
+</p>
+<p><b>Remove current plan objectives</b> if needed.
 </p>
 <p>Add objectives to the plan by clicking the <b>Load into plan</b> button.
 </p>
