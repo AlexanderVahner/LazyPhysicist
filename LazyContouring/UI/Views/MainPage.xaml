@@ -1,0 +1,70 @@
+﻿<Page x:Class="LazyContouring.UI.Views.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LazyContouring.UI.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MainPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0" MouseWheel="Viewbox_MouseWheel">
+            <Image Source="{Binding CTSlice}"/>
+        </Viewbox>
+        <Viewport3D Grid.Row="1">
+            <Viewport3D.Camera>
+                <!--Установка камеры - перспективная проекция-->
+                <PerspectiveCamera Position="{Binding CameraPosition}" LookDirection="{Binding LookDirection}"/>
+            </Viewport3D.Camera>
+            <Viewport3D.Children>
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <!--Установка освещения - прямой свет-->
+                        <DirectionalLight Color="White" Direction="-1,-1,-2" />
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+                
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <GeometryModel3D Geometry="{Binding MeshBrain}">
+                            <GeometryModel3D.Material>
+                                <MaterialGroup>
+                                    <DiffuseMaterial>
+                                        <DiffuseMaterial.Brush>
+                                            <SolidColorBrush Color="Red"/>
+                                        </DiffuseMaterial.Brush>
+
+                                    </DiffuseMaterial>
+                                    <SpecularMaterial Brush="LightPink" SpecularPower="19" />
+                                    <!--<EmissiveMaterial>
+                                        <EmissiveMaterial.Brush>
+                                            <SolidColorBrush x:Name="mySolidColorBrush" Color="LightYellow" />
+                                        </EmissiveMaterial.Brush>
+                                    </EmissiveMaterial>-->
+                                </MaterialGroup>
+                            </GeometryModel3D.Material>
+                        </GeometryModel3D>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <GeometryModel3D Geometry="{Binding Mesh}">
+                            <GeometryModel3D.Material>
+                                <DiffuseMaterial>
+                                    <DiffuseMaterial.Brush>
+                                        <SolidColorBrush Color="Cyan" Opacity="0.3"/>
+                                    </DiffuseMaterial.Brush>
+                                </DiffuseMaterial>
+                            </GeometryModel3D.Material>
+                        </GeometryModel3D>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+            </Viewport3D.Children>
+        </Viewport3D>
+    </Grid>
+</Page>
