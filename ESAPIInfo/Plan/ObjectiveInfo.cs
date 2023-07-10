@@ -80,7 +80,7 @@ namespace ESAPIInfo.Plan
         public string StructureId { get; set; } = "";
         public double Priority { get; set; } = .0;
         public Operator Operator { get; set; } = Operator.None;
-        public double Dose { get; set; } = .0;
+        public double Dose { get; set; } = .0; // Gy
         public double Volume { get; set; } = .0;
         public double ParameterA { get; set; } = .0;
     }

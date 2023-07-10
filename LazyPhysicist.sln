@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazyOptimizerDataService", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FieldIdAsGantry", "FieldIdAsGantry\FieldIdAsGantry.csproj", "{9A0D630D-27D4-48F4-80DE-E167CA165602}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazyContouring", "LazyContouring\LazyContouring.csproj", "{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,14 @@ Global
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|x64.ActiveCfg = Release|Any CPU
 		{9A0D630D-27D4-48F4-80DE-E167CA165602}.Release|x64.Build.0 = Release|Any CPU
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Debug|Any CPU.Build.0 = Debug|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Debug|x64.ActiveCfg = Debug|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Debug|x64.Build.0 = Debug|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Release|Any CPU.ActiveCfg = Release|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Release|Any CPU.Build.0 = Release|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Release|x64.ActiveCfg = Release|x64
+		{4BB9A7A4-34BA-4D30-B646-81A15BA0D5D7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

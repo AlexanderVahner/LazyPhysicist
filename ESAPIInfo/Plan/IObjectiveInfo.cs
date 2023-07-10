@@ -9,7 +9,7 @@ namespace ESAPIInfo.Plan
         string StructureId { get; set; }
         double Priority { get; set; }
         Operator Operator { get; set; }
-        double Dose { get; set; }
+        double Dose { get; set; } // Gy
         double Volume { get; set; }
         double ParameterA { get; set; }
     }

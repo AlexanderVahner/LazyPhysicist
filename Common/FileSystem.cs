@@ -5,7 +5,7 @@ namespace LazyPhysicist.Common
 {
     public static class FileSystem
     {
-        private static readonly char[] invalidPathChars = { ':', '\\', '/', '*', '?', '<', '>', '|', '\"' };
+        private static readonly char[] invalidPathChars = Path.GetInvalidFileNameChars();
 
         public static string ClearFileNameFromInvalidChars(string input)
         {

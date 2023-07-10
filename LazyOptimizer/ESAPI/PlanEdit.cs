@@ -95,27 +95,30 @@ namespace LazyOptimizer.ESAPI
                 return;
             }
 
+            DoseValue.DoseUnit doseUnit = plan.Plan.DosePerFraction.Unit;
+            DoseValue objectiveDose = new DoseValue(objective.Dose * (doseUnit == DoseValue.DoseUnit.cGy ? 100 : 1), doseUnit);
+
             switch (objective.Type)
             {
                 case ObjectiveType.Point:
                     plan.Plan.OptimizationSetup.AddPointObjective(
                         objective.Structure, 
-                        (OptimizationObjectiveOperator)(int)objective.Operator, 
-                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        (OptimizationObjectiveOperator)(int)objective.Operator,
+                        objectiveDose, 
                         objective.Volume, 
                         objective.Priority);
                     break;
                 case ObjectiveType.Mean:
                     plan.Plan.OptimizationSetup.AddMeanDoseObjective(
-                        objective.Structure, 
-                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        objective.Structure,
+                        objectiveDose, 
                         objective.Priority);
                     break;
                 case ObjectiveType.EUD:
                     plan.Plan.OptimizationSetup.AddEUDObjective(
                         objective.Structure, 
-                        (OptimizationObjectiveOperator)(int)objective.Operator, 
-                        new DoseValue(objective.Dose, DoseValue.DoseUnit.Gy), 
+                        (OptimizationObjectiveOperator)(int)objective.Operator,
+                        objectiveDose, 
                         objective.ParameterA, 
                         objective.Priority);
                     break;
