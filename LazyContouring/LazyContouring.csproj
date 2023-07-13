@@ -57,12 +57,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\ContourStorage.cs" />
+    <Compile Include="Graphics\ContourSlice.cs" />
+    <Compile Include="Graphics\SliceCanvas.cs" />
+    <Compile Include="Graphics\StructureSetStorage.cs" />
+    <Compile Include="Graphics\StructureStorage.cs" />
     <Compile Include="LazyContouring.cs" />
+    <Compile Include="Operations\Operation.cs" />
+    <Compile Include="Operations\OperationNode.cs" />
+    <Compile Include="Operations\OperationProcessor.cs" />
+    <Compile Include="Operations\StructureVariable.cs" />
     <Compile Include="PluginTesterInitializer.cs" />
     <Compile Include="ScriptArgs.cs" />
+    <Compile Include="Graphics\ImageSlice.cs" />
+    <Compile Include="Graphics\ImageStorage.cs" />
+    <Compile Include="UI\ViewModels\SliceVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
+    <Compile Include="Graphics\VoxelsToPixels.cs" />
     <Compile Include="UI\Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\SliceControl.xaml.cs">
+      <DependentUpon>SliceControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Views\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\SliceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

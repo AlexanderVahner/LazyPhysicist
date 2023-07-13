@@ -10,12 +10,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Viewbox Grid.Row="0" MouseWheel="Viewbox_MouseWheel">
-            <Image Source="{Binding CTSlice}"/>
-        </Viewbox>
-        <Viewport3D Grid.Row="1">
+        
+        <Grid x:Name="PlaceForSliceControl" Grid.Row="0">
+            
+        </Grid>
+
+        <Viewport3D Grid.Row="0" Visibility="Collapsed">
             <Viewport3D.Camera>
                 <!--Установка камеры - перспективная проекция-->
                 <PerspectiveCamera Position="{Binding CameraPosition}" LookDirection="{Binding LookDirection}"/>
@@ -66,5 +67,8 @@
                 </ModelVisual3D>
             </Viewport3D.Children>
         </Viewport3D>
+
+        
+        
     </Grid>
 </Page>

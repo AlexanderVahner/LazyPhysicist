@@ -38,15 +38,17 @@ namespace LazyContouring.UI.Views
             if (e.Delta > 0)
             {
                 MainVM.CurrentSlice++;
+                MainVM.SliceCanvas.CurrentSlice++;
             }
             else if (e.Delta < 0)
             {
                 MainVM.CurrentSlice--;
+                MainVM.SliceCanvas.CurrentSlice--;
             }
         }
 
         private MainVM mainVM;
-        private MainVM MainVM
+        public MainVM MainVM
         {
             get
             {
@@ -55,9 +57,15 @@ namespace LazyContouring.UI.Views
                     if (DataContext is MainVM vm)
                     {
                         mainVM = vm;
+                        PlaceForSliceControl.Children.Add(vm.SliceControl);
                     }
                 }
                 return mainVM;
+            }
+            set
+            {
+                mainVM = value;
+                PlaceForSliceControl.Children.Add(value.SliceControl);
             }
         }
 

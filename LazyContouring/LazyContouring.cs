@@ -41,10 +41,15 @@ namespace VMS.TPS
             
             mainVM.StructureSet = args.StructureSet;
             mainVM.Init();
-            mainVM.PaintSlice(100);
+            
             var mainPage = new MainPage() { DataContext = mainVM };
+            mainPage.MainVM = mainVM;
+
+            
 
             args.Window.Content = mainPage;
+
+            mainVM.PaintSlice(100);
         }
     }
 }

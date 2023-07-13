@@ -125,9 +125,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LazyOptimizer\LazyOptimizer.csproj">
-      <Project>{3bad3fdc-fee9-4e48-a769-7b81d322763d}</Project>
-      <Name>LazyOptimizer</Name>
+    <ProjectReference Include="..\LazyContouring\LazyContouring.csproj">
+      <Project>{4bb9a7a4-34ba-4d30-b646-81a15ba0d5d7}</Project>
+      <Name>LazyContouring</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
