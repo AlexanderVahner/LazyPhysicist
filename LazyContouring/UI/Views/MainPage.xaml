@@ -10,13 +10,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
+            <RowDefinition Height ="100"/>
         </Grid.RowDefinitions>
         
-        <Grid x:Name="PlaceForSliceControl" Grid.Row="0">
-            
+        <Grid Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="StructuresListGrid" Grid.Column="0">
+
+                </Grid>
+
+                <Grid x:Name="SliceGrid" Grid.Column="1">
+                    
+                </Grid>
+            </Grid>
         </Grid>
 
-        <Viewport3D Grid.Row="0" Visibility="Collapsed">
+        <Grid x:Name="OperationsGrid" Grid.Row="1">
+            <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
+        </Grid>
+
+
+        <Viewport3D Grid.Row="0" Visibility="Hidden">
             <Viewport3D.Camera>
                 <!--Установка камеры - перспективная проекция-->
                 <PerspectiveCamera Position="{Binding CameraPosition}" LookDirection="{Binding LookDirection}"/>
@@ -28,7 +47,7 @@
                         <DirectionalLight Color="White" Direction="-1,-1,-2" />
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-                
+
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <GeometryModel3D Geometry="{Binding MeshBrain}">
@@ -67,8 +86,5 @@
                 </ModelVisual3D>
             </Viewport3D.Children>
         </Viewport3D>
-
-        
-        
     </Grid>
 </Page>

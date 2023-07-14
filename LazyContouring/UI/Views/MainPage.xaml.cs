@@ -57,7 +57,8 @@ namespace LazyContouring.UI.Views
                     if (DataContext is MainVM vm)
                     {
                         mainVM = vm;
-                        PlaceForSliceControl.Children.Add(vm.SliceControl);
+                        SliceGrid.Children.Add(vm.SliceControl);
+                        //OperationsGrid.Children.Add(vm.OperationPage);
                     }
                 }
                 return mainVM;
@@ -65,7 +66,8 @@ namespace LazyContouring.UI.Views
             set
             {
                 mainVM = value;
-                PlaceForSliceControl.Children.Add(value.SliceControl);
+                SliceGrid.Children.Add(value.SliceControl);
+                //OperationsGrid.Children.Add(value.OperationPage);
             }
         }
 

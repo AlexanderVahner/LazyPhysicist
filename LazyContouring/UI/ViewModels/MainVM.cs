@@ -23,13 +23,8 @@ namespace LazyContouring.UI.ViewModels
         public int W;
         public int H;
         public int D;
-        int[,] buffer;
-        byte[] pixelBuffer;
 
-        WriteableBitmap writeableBitmap;
-        ImageStorage imageStorage;
-        ContourStorage bodyStorage;
-        VoxelsToPixels converter;
+        public OperationPage OperationPage { get; set; }
 
         SliceCanvas sliceCanvas;
         public MainVM()
@@ -46,73 +41,13 @@ namespace LazyContouring.UI.ViewModels
             SliceControl = new SliceControl() { DataContext = sliceVm };
             SliceControl.ViewModel = sliceVm;
 
-
-            /*
-            sliceCanvas.CurrentSlice = 100;
-
-            W = CTImage.XSize;
-            H = CTImage.YSize;
-            D = CTImage.ZSize;
-
-            imageStorage = new ImageStorage(StructureSet.Image);
-            converter = new VoxelsToPixels();
-
-            writeableBitmap = new WriteableBitmap(
-                W,
-                H,
-                96,
-                96,
-                PixelFormats.Bgra32,
-                null);
-
-            pixelBuffer = new byte[W * H * 4];
-
-            bodyStorage = new ContourStorage(BodyStructure, imageStorage.Image);
-            pathBody = new PathGeometry();*/
+            var OperationsVM = new OperationsVM();
+            OperationPage = new OperationPage() { DataContext = OperationsVM };
         }
 
         public void PaintSlice(int slice)
         {
             sliceCanvas.CurrentSlice = slice;
-            /*if (slice > D - 1 || slice < 0)
-            {
-                return;
-            }
-
-            PaintBody(slice);
-
-            buffer = imageStorage.GetVoxels(slice);
-            //CTImage.GetVoxels(slice, buffer);
-
-            try
-            {
-                // Reserve the back buffer for updates.
-                writeableBitmap.Lock();
-
-                unsafe
-                {
-                    // Get a pointer to the back buffer.
-                    IntPtr pBackBuffer = writeableBitmap.BackBuffer;
-
-                    for (int y = 0; y < H; y++)
-                    {
-                        for (int x = 0; x < W; x++)
-                        {
-                            *((int*)pBackBuffer) = converter.GetBrga32(buffer[x, y]);
-
-                            pBackBuffer += 4;
-
-                            // Specify the area of the bitmap that changed.
-                            writeableBitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                // Release the back buffer and make it available for display.
-                writeableBitmap.Unlock();
-            }*/
 
         }
 
@@ -143,7 +78,6 @@ namespace LazyContouring.UI.ViewModels
                 SetProperty(ref currentSlice, value);
             }
         }
-        public WriteableBitmap CTSlice => writeableBitmap;
 
         private Point3D cameraPosition = new Point3D(0, 0, 1000);
         public Point3D CameraPosition { get => cameraPosition; set => SetProperty(ref cameraPosition, value); }

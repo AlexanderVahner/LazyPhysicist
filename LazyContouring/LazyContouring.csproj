@@ -65,17 +65,24 @@
     <Compile Include="LazyContouring.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\OperationNode.cs" />
-    <Compile Include="Operations\OperationProcessor.cs" />
     <Compile Include="Operations\StructureVariable.cs" />
     <Compile Include="PluginTesterInitializer.cs" />
     <Compile Include="ScriptArgs.cs" />
     <Compile Include="Graphics\ImageSlice.cs" />
     <Compile Include="Graphics\ImageStorage.cs" />
+    <Compile Include="UI\ViewModels\OperationNodeVM.cs" />
+    <Compile Include="UI\ViewModels\OperationStringVM.cs" />
+    <Compile Include="UI\ViewModels\OperationsVM.cs" />
+    <Compile Include="UI\ViewModels\OperationVM.cs" />
     <Compile Include="UI\ViewModels\SliceVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="Graphics\VoxelsToPixels.cs" />
+    <Compile Include="UI\ViewModels\StructureVariableVM.cs" />
     <Compile Include="UI\Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\OperationPage.xaml.cs">
+      <DependentUpon>OperationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
@@ -89,6 +96,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Views\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\OperationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
