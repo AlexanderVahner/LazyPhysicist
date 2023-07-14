@@ -35,56 +35,6 @@
         </Grid>
 
 
-        <Viewport3D Grid.Row="0" Visibility="Hidden">
-            <Viewport3D.Camera>
-                <!--Установка камеры - перспективная проекция-->
-                <PerspectiveCamera Position="{Binding CameraPosition}" LookDirection="{Binding LookDirection}"/>
-            </Viewport3D.Camera>
-            <Viewport3D.Children>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <!--Установка освещения - прямой свет-->
-                        <DirectionalLight Color="White" Direction="-1,-1,-2" />
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <GeometryModel3D Geometry="{Binding MeshBrain}">
-                            <GeometryModel3D.Material>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="Red"/>
-                                        </DiffuseMaterial.Brush>
-
-                                    </DiffuseMaterial>
-                                    <SpecularMaterial Brush="LightPink" SpecularPower="19" />
-                                    <!--<EmissiveMaterial>
-                                        <EmissiveMaterial.Brush>
-                                            <SolidColorBrush x:Name="mySolidColorBrush" Color="LightYellow" />
-                                        </EmissiveMaterial.Brush>
-                                    </EmissiveMaterial>-->
-                                </MaterialGroup>
-                            </GeometryModel3D.Material>
-                        </GeometryModel3D>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <GeometryModel3D Geometry="{Binding Mesh}">
-                            <GeometryModel3D.Material>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="Cyan" Opacity="0.3"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
-                            </GeometryModel3D.Material>
-                        </GeometryModel3D>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-            </Viewport3D.Children>
-        </Viewport3D>
+        
     </Grid>
 </Page>

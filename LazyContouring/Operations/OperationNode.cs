@@ -17,8 +17,6 @@ namespace LazyContouring.Operations
             }
 
             Operation.Perform(this);
-
-            
         }
 
         public void FindOrCreateStructure(StructureSet structureSet)
