@@ -33,7 +33,7 @@ namespace LazyContouring.UI.Views
             set
             {
                 vm = value;
-                MainGrid.Children.Add(vm.OpsTextBox);
+                MainGrid.Children.Add(vm.UIElement);
             }
         } 
     }

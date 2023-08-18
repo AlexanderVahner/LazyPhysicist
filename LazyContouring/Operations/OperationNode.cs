@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using LazyContouring.Models;
+using System.Linq;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations
@@ -6,10 +7,10 @@ namespace LazyContouring.Operations
     public sealed class OperationNode
     {
         private SegmentVolume segmentVolume;
-        private void Reify(StructureSet structureSet)
+        private void Materialize(StructureSet structureSet)
         {
-            NodeLeft?.Reify(structureSet);
-            NodeRight?.Reify(structureSet);
+            NodeLeft?.Materialize(structureSet);
+            NodeRight?.Materialize(structureSet);
 
             if (Operation.StructureNedded)
             {
@@ -47,6 +48,8 @@ namespace LazyContouring.Operations
             get => segmentVolume ?? StructureVar?.Structure?.SegmentVolume; 
             set => segmentVolume = value; 
         }
+
+        public bool IsRootNode { get; set; } = false;
         public StructureVariable StructureVar { get; set; }
         public Operation Operation { get; set; }
         public OperationNode NodeLeft { get; set; }

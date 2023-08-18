@@ -1,4 +1,6 @@
 ﻿using LazyContouring.Graphics;
+using LazyContouring.Models;
+using LazyContouring.Operations;
 using LazyContouring.UI.Views;
 using LazyPhysicist.Common;
 using System;
@@ -25,6 +27,8 @@ namespace LazyContouring.UI.ViewModels
         public int D;
 
         public OperationPage OperationPage { get; set; }
+        private OperationsVM operations = new OperationsVM();
+        private StructureSetModel structureSetModel;
 
         SliceCanvas sliceCanvas;
         public MainVM()
@@ -41,8 +45,32 @@ namespace LazyContouring.UI.ViewModels
             SliceControl = new SliceControl() { DataContext = sliceVm };
             SliceControl.ViewModel = sliceVm;
 
-            var OperationsVM = new OperationsVM();
-            OperationPage = new OperationPage() { DataContext = OperationsVM };
+            var node = new OperationNode() 
+            {
+                IsRootNode = true,
+                StructureVar = new StructureVariable { Structure = BodyStructure, StructureId = "BODY" },
+                Operation = new AssignOperation(),
+                NodeLeft = new OperationNode()
+                {
+                    Operation = new SubOperation(),
+                    NodeLeft = new OperationNode()
+                    {
+                        Operation = new EmptyOperation(),
+                        StructureVar = new StructureVariable { Structure = BodyStructure, StructureId = "BODY" }
+                    },
+                    NodeRight = new OperationNode()
+                    {
+                        Operation = new EmptyOperation(),
+                        StructureVar = new StructureVariable { Structure = StructureBrain, StructureId = "Brain" }
+                    }
+                }
+            };
+
+            operations.AddOperationString(node);
+
+
+            OperationPage = new OperationPage() { DataContext = operations };
+            OperationPage.ViewModel = operations;
         }
 
         public void PaintSlice(int slice)
