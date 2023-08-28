@@ -67,7 +67,7 @@ namespace LazyPhysicist.Common
         /// <exception cref="InvalidOperationException">TMaster and TSlave are not equal</exception>
         public void ObeyTheMaster(ObservableCollection<TMaster> masterCollection)
         {
-            if (Equals(typeof(TMaster), typeof(TSlave)))
+            if (!Equals(typeof(TMaster), typeof(TSlave)))
             {
                 throw new InvalidOperationException("The slave doesn't fit the Master");
             }

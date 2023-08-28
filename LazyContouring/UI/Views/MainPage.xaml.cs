@@ -1,4 +1,6 @@
-﻿using LazyContouring.UI.ViewModels;
+﻿using LazyContouring.Models;
+using LazyContouring.Operations;
+using LazyContouring.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +34,6 @@ namespace LazyContouring.UI.Views
             {
                 return;
             }
-
-            //MainVM.CurrentSlice += e.Delta * System.Windows.Forms.SystemInformation.MouseWheelScrollLines / 120; ;
 
             if (e.Delta > 0)
             {
@@ -71,5 +71,26 @@ namespace LazyContouring.UI.Views
             }
         }
 
+        private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement fwElement && fwElement.Tag != null && fwElement.Tag is StructureVariable sVar)
+            {
+                /*var node = new OperationNode 
+                {
+                    Operation = new EmptyOperation(),
+                    StructureVar = sVar
+                };*/
+
+                DragDrop.DoDragDrop(fwElement, fwElement.Tag, DragDropEffects.Move);
+            }
+        }
+
+        private void OperationBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement fwElement && fwElement.Tag != null && fwElement.Tag is string operation)
+            {
+                DragDrop.DoDragDrop(fwElement, operation, DragDropEffects.Move);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LazyContouring.UI.ViewModels;
+﻿using LazyContouring.Models;
+using LazyContouring.UI.ViewModels;
 using LazyContouring.UI.Views;
 using ScriptArgsNameSpace;
 using System;
@@ -8,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using VMS.TPS.Common.Model.API;
 
 // TODO: Replace the following version attributes by creating AssemblyInfo.cs. You can do this in the properties of the Visual Studio project.
@@ -37,17 +39,22 @@ namespace VMS.TPS
         }
         public void Run(ScriptArgs args)
         {
-            var mainVM = new MainVM();
-            
-            mainVM.StructureSet = args.StructureSet;
+            if (args.Patient == null)
+            {
+                MessageBox.Show("Please open a patient first.");
+                return;
+            }
+
+            var ssModel = new StructureSetModel(args.Patient) { StructureSet = args.StructureSet };
+
+            var mainVM = new MainVM(ssModel);
             mainVM.Init();
             
             var mainPage = new MainPage() { DataContext = mainVM };
             mainPage.MainVM = mainVM;
 
-            
-
             args.Window.Content = mainPage;
+            args.Window.Title = "LazyContouring";
 
             mainVM.PaintSlice(100);
         }

@@ -45,7 +45,7 @@ namespace LazyContouring.Operations
 
         public SegmentVolume SegmentVolume 
         { 
-            get => segmentVolume ?? StructureVar?.Structure?.SegmentVolume; 
+            get => segmentVolume ?? StructureVar?.SegmentVolume; 
             set => segmentVolume = value; 
         }
 

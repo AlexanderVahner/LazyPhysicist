@@ -1,5 +1,6 @@
 ﻿using LazyContouring.Models;
 using LazyContouring.Operations;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,34 +12,39 @@ using System.Windows.Media;
 
 namespace LazyContouring.UI.ViewModels
 {
-    public sealed class StructureVariableVM
+    public sealed class StructureVariableVM : Notifier
     {
         private readonly StructureVariable structureVar;
-        private readonly Border mainElement;
+        private Brush strokeBrush;
+        private Brush fillBrush;
 
         public StructureVariableVM(StructureVariable structureVar)
         {
             this.structureVar = structureVar;
+            StrokeBrush = new SolidColorBrush(structureVar.Color);
+            FillBrush = StructureVariable.IsEmpty ? null : new SolidColorBrush(structureVar.Color);
+            NotifyPropertyChanged(nameof(CanEditVisibility));
 
-            mainElement = new Border() 
+            structureVar.PropertyChanged += (s, e) =>
             {
-                Background = Brushes.White,
-                BorderBrush = new SolidColorBrush(structureVar.Structure.Color),
-                BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(5),
-                Padding = new Thickness(25)
+                switch (e.PropertyName)
+                {
+                    case (nameof(StructureVariable.Color)):
+                        StrokeBrush = new SolidColorBrush(this.structureVar.Color);
+                        break;
+                    case (nameof(StructureVariable.IsEmpty)):
+                        FillBrush = StructureVariable.IsEmpty ? null : new SolidColorBrush(this.structureVar.Color);
+                        break;
+                    case (nameof(StructureVariable.CanEditSegmentVolume)):
+                        NotifyPropertyChanged(nameof(CanEditVisibility));
+                        break;
+                }
             };
-
-            mainElement.Child = new TextBlock() { Text = structureVar.StructureId };
-
-            UIElement = mainElement;
         }
 
-        /*public void CreateUIElement()
-        {
-            UIElement = new StackPanel();
-        }*/
-
-        public UIElement UIElement { get; set; }
+        public StructureVariable StructureVariable => structureVar;
+        public Visibility CanEditVisibility => StructureVariable.CanEditSegmentVolume ? Visibility.Hidden : Visibility.Visible;
+        public Brush StrokeBrush { get => strokeBrush; set => SetProperty(ref strokeBrush, value); }
+        public Brush FillBrush { get => fillBrush; set => SetProperty(ref fillBrush, value); }
     }
 }

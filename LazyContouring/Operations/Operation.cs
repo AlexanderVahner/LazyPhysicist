@@ -1,9 +1,10 @@
-﻿using VMS.TPS.Common.Model.API;
+﻿using LazyPhysicist.Common;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations
 {
     public enum OperationType { Empty, Assign, And, Or, Not, Sub, Xor, Wall, Margin, AsymmetricMargin, Crop }
-    public abstract class Operation
+    public abstract class Operation : Notifier
     {
         public abstract void Perform(OperationNode node);
         public abstract OperationType OperationType { get; }

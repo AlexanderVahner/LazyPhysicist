@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -62,6 +63,7 @@
     <Compile Include="Graphics\SliceCanvas.cs" />
     <Compile Include="Graphics\StructureSetStorage.cs" />
     <Compile Include="Graphics\StructureStorage.cs" />
+    <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="LazyContouring.cs" />
     <Compile Include="Models\StructureSetModel.cs" />
     <Compile Include="Operations\AndOperation.cs" />
@@ -79,6 +81,11 @@
     <Compile Include="Operations\WallOperation.cs" />
     <Compile Include="Operations\XorOperation.cs" />
     <Compile Include="PluginTesterInitializer.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ScriptArgs.cs" />
     <Compile Include="Graphics\ImageSlice.cs" />
     <Compile Include="Graphics\ImageStorage.cs" />
@@ -98,6 +105,9 @@
     </Compile>
     <Compile Include="UI\Views\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\WallOperationControl.xaml.cs">
+      <DependentUpon>WallOperationControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +129,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\WallOperationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AndOperation.png" />
+    <Resource Include="Images\AsymmetricMarginOperation.png" />
+    <Resource Include="Images\CropInnerOperation.png" />
+    <Resource Include="Images\CropOuterOperation.png" />
+    <Resource Include="Images\MarginOperation.png" />
+    <Resource Include="Images\NotOperation.png" />
+    <Content Include="Images\Operations.svg" />
+    <Content Include="Images\OperationsCut.svg" />
+    <Resource Include="Images\OrOperation.png" />
+    <Resource Include="Images\SubOperation.png" />
+    <Resource Include="Images\WallOperation.png" />
+    <Resource Include="Images\XorOperation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

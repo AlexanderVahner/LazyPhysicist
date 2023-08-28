@@ -6,6 +6,7 @@ using LazyPhysicist.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -22,33 +23,36 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class MainVM : Notifier
     {
+        private StructureSetModel structureSetModel;
+        private StructureSet structureSet;
+
+
         public int W;
         public int H;
         public int D;
 
         public OperationPage OperationPage { get; set; }
         private OperationsVM operations = new OperationsVM();
-        private StructureSetModel structureSetModel;
+        
 
         SliceCanvas sliceCanvas;
-        public MainVM()
+        public MainVM(StructureSetModel structureSetModel)
         {
-
-
-
+            this.structureSetModel = structureSetModel;
+            StructureSet = structureSetModel.StructureSet;
         }
         public void Init()
         {
-            
+
             sliceCanvas = new SliceCanvas(new StructureSetStorage(StructureSet), new ImageStorage(StructureSet.Image));
             var sliceVm = new SliceVM(sliceCanvas);
             SliceControl = new SliceControl() { DataContext = sliceVm };
             SliceControl.ViewModel = sliceVm;
 
-            var node = new OperationNode() 
+            var node = new OperationNode()
             {
                 IsRootNode = true,
-                StructureVar = new StructureVariable { Structure = BodyStructure, StructureId = "BODY" },
+                StructureVar = new StructureVariable { Structure = BodyStructure},
                 Operation = new AssignOperation(),
                 NodeLeft = new OperationNode()
                 {
@@ -56,13 +60,25 @@ namespace LazyContouring.UI.ViewModels
                     NodeLeft = new OperationNode()
                     {
                         Operation = new EmptyOperation(),
-                        StructureVar = new StructureVariable { Structure = BodyStructure, StructureId = "BODY" }
+                        StructureVar = new StructureVariable { Structure = BodyStructure}
                     },
                     NodeRight = new OperationNode()
                     {
-                        Operation = new EmptyOperation(),
-                        StructureVar = new StructureVariable { Structure = StructureBrain, StructureId = "Brain" }
+                        Operation = new WallOperation(),
+                        NodeLeft = new OperationNode()
+                        {
+                            Operation = new EmptyOperation(),
+                            StructureVar = new StructureVariable { Structure = StructureBrain }
+                        }
                     }
+
+                    /*
+                     new OperationNode()
+                    {
+                        Operation = new EmptyOperation(),
+                        StructureVar = new StructureVariable { Structure = StructureBrain}
+                    }
+                     */
                 }
             };
 
@@ -79,8 +95,22 @@ namespace LazyContouring.UI.ViewModels
 
         }
 
+        public ObservableCollection<StructureSet> StructureSets => structureSetModel.StructureSets;
+        public StructureSet StructureSet 
+        {
+            get => structureSet;
+            set
+            {
+                structureSetModel.StructureSet = value;
+                SetProperty(ref structureSet, structureSetModel.StructureSet);
+            }
+        }
+        public SlaveCollection<StructureVariable, StructureVariableVM> Structures => 
+            new SlaveCollection<StructureVariable, StructureVariableVM>(structureSetModel.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
+
+
         public SliceControl SliceControl { get; private set; }
-        public StructureSet StructureSet { get; set; }
+
         public SliceCanvas SliceCanvas => sliceCanvas;
         public Structure BodyStructure => StructureSet.Structures.FirstOrDefault(s => s.DicomType == "EXTERNAL");
         public Structure StructureBrain => StructureSet.Structures.FirstOrDefault(s => s.Id == "Brain");
@@ -118,7 +148,7 @@ namespace LazyContouring.UI.ViewModels
         public int Width => W;
         public int Height => H;
 
-        
+
     }
 }
 

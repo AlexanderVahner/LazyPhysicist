@@ -4,7 +4,7 @@
     {
         public override void Perform(OperationNode node)
         {
-            node.SegmentVolume = node.StructureVar?.Structure?.SegmentVolume;
+            node.SegmentVolume = node.StructureVar?.SegmentVolume;
         }
 
         public override OperationType OperationType => OperationType.Empty;

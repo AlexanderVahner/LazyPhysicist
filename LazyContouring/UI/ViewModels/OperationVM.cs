@@ -1,42 +1,53 @@
-﻿using LazyContouring.Models;
+﻿using LazyContouring.Images;
+using LazyContouring.Models;
 using LazyContouring.Operations;
+using LazyContouring.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LazyContouring.UI.ViewModels
 {
     public abstract class OperationVM
     {
-        public static OperationVM CreateOperationVM(OperationNode node)
+        protected const double defaultImageWidth = 30;
+        protected const double defaultImageHeight = 30;
+        public static OperationVM CreateOperationVM(OperationNode node, Border border)
         {
             OperationVM result = null;
 
             switch (node.Operation.OperationType)
             {
                 case OperationType.Empty:
-                    result = new EmptyOperationVM(node);
+                    result = new EmptyOperationVM(node, border);
                     break;
                 case OperationType.Assign:
-                    result = new AssignOperationVM(node);
+                    result = new AssignOperationVM(node, border);
                     break;
                 case OperationType.And:
+                    result = new AndOperationVM(node, border);
                     break;
                 case OperationType.Or:
+                    result = new OrOperationVM(node, border);
                     break;
                 case OperationType.Not:
+                    result = new NotOperationVM(node, border);
                     break;
                 case OperationType.Sub:
-                    result = new SubOperationVM(node);
+                    result = new SubOperationVM(node, border);
                     break;
                 case OperationType.Xor:
+                    result = new XorOperationVM(node, border);
                     break;
                 case OperationType.Wall:
+                    result = new WallOperationVM(node, border);
                     break;
                 case OperationType.Margin:
                     break;
@@ -49,100 +60,136 @@ namespace LazyContouring.UI.ViewModels
             return result;
         }
 
-        protected Border CreateDefaultBorder()
-        {
-            return new Border
-            {
-                CornerRadius = new CornerRadius(5),
-                BorderThickness = new Thickness(1),
-                BorderBrush = Brushes.Black,
-                Background = Brushes.White,
-                Margin = new Thickness(5),
-                Padding = new Thickness(3),
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-        }
-
-        protected Border CreateDefaultStructureBorder(StructureVariable structureVar)
-        {
-            var border = CreateDefaultBorder();
-            border.BorderBrush = new SolidColorBrush(structureVar?.Structure?.Color ?? Color.FromRgb(0, 0, 0));
-            border.BorderThickness = new Thickness(3);
-            border.Child = new TextBlock
-            {
-                Text = structureVar?.StructureId ?? "Drop structure here",
-            };
-            return border;
-        }
-
         private OperationNode node;
 
-        public OperationVM(OperationNode node)
+        public OperationVM(OperationNode node, Border border)
         {
             SetNode(node);
+            InitBorder(border);
         }
 
         private void SetNode(OperationNode node)
         {
             this.node = node;
-            CreateUI();
         }
 
-        protected abstract void CreateUI();
+        protected abstract void InitBorder(Border border);
 
         public OperationNode Node { get => node; set => SetNode(node); }
-        public UIElement UIElement { get; set; }
     }
 
     public sealed class EmptyOperationVM : OperationVM
     {
-        public EmptyOperationVM(OperationNode node) : base(node) { }
+        public EmptyOperationVM(OperationNode node, Border border) : base(node, border) { }
 
-        protected override void CreateUI()
+        protected override void InitBorder(Border border)
         {
-            var structureBorder = CreateDefaultStructureBorder(Node.StructureVar);
-            UIElement = structureBorder;
+            border.BorderBrush = new SolidColorBrush(Node?.StructureVar?.Color ?? Color.FromRgb(0, 0, 0));
+            border.BorderThickness = new Thickness(3);
+            border.Child = new TextBlock
+            {
+                Text = Node?.StructureVar?.StructureId ?? "*drop structure here*",
+            };
         }
     }
 
     public sealed class AssignOperationVM : OperationVM
     {
-        public AssignOperationVM(OperationNode node) : base(node) { }
+        public AssignOperationVM(OperationNode node, Border border) : base(node, border) { }
 
-        protected override void CreateUI()
+        protected override void InitBorder(Border border)
         {
-            var structureBorder = CreateDefaultStructureBorder(Node.StructureVar);
-
-            var operationBorder = CreateDefaultBorder();
-            operationBorder.Child = new TextBlock 
-            { 
-                Text = "=",
-                FontWeight = FontWeights.Bold
+            border.BorderBrush = new SolidColorBrush(Node?.StructureVar?.Color ?? Color.FromRgb(0, 0, 0));
+            border.BorderThickness = new Thickness(3);
+            border.Child = new TextBlock
+            {
+                Text = (Node?.StructureVar?.StructureId ?? "*drop structure here*") + " = ",
             };
+        }
+    }
 
-            var stackPanel = new StackPanel 
-            { 
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Left
+    public sealed class AndOperationVM : OperationVM
+    {
+        public AndOperationVM(OperationNode node, Border border) : base(node, border) { }
+
+        protected override void InitBorder(Border border)
+        {
+            border.Child = new Image()
+            {
+                Width = defaultImageWidth,
+                Height = defaultImageHeight,
+                Source = ImageLoader.LoadBitmapFromResource("Images/AndOperation.png")
             };
-            stackPanel.Children.Add(structureBorder);
-            stackPanel.Children.Add(operationBorder);
+        }
+    }
 
-            UIElement = stackPanel;
+    public sealed class OrOperationVM : OperationVM
+    {
+        public OrOperationVM(OperationNode node, Border border) : base(node, border) { }
+
+        protected override void InitBorder(Border border)
+        {
+            border.Child = new Image()
+            {
+                Width = defaultImageWidth,
+                Height = defaultImageHeight,
+                Source = ImageLoader.LoadBitmapFromResource("Images/OrOperation.png")
+            };
+        }
+    }
+
+    public sealed class NotOperationVM : OperationVM
+    {
+        public NotOperationVM(OperationNode node, Border border) : base(node, border) { }
+
+        protected override void InitBorder(Border border)
+        {
+            border.Child = new Image()
+            {
+                Width = defaultImageWidth,
+                Height = defaultImageHeight,
+                Source = ImageLoader.LoadBitmapFromResource("Images/NotOperation.png")
+            };
         }
     }
 
     public sealed class SubOperationVM : OperationVM
     {
-        public SubOperationVM(OperationNode node) : base(node) { }
+        public SubOperationVM(OperationNode node, Border border) : base(node, border) { }
 
-        protected override void CreateUI()
+        protected override void InitBorder(Border border)
         {
-            var border = CreateDefaultBorder();
-            border.Child = new TextBlock { Text = "Sub" };
-            UIElement = border;
+            border.Child = new Image() { 
+                Width = defaultImageWidth, 
+                Height = defaultImageHeight, 
+                Source = ImageLoader.LoadBitmapFromResource("Images/SubOperation.png") };
+        }
+    }
+
+    public sealed class XorOperationVM : OperationVM
+    {
+        public XorOperationVM(OperationNode node, Border border) : base(node, border) { }
+
+        protected override void InitBorder(Border border)
+        {
+            border.Child = new Image()
+            {
+                Width = defaultImageWidth,
+                Height = defaultImageHeight,
+                Source = ImageLoader.LoadBitmapFromResource("Images/XorOperation.png")
+            };
+        }
+    }
+
+    public sealed class WallOperationVM : OperationVM
+    {
+        public WallOperationVM(OperationNode node, Border border) : base(node, border) { }
+
+        protected override void InitBorder(Border border)
+        {
+            var wallControl = new WallOperationControl() { DataContext = Node.Operation as WallOperation };
+
+            border.Child = wallControl;
         }
     }
 

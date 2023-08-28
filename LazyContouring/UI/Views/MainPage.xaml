@@ -10,18 +10,138 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height ="100"/>
+            <RowDefinition Height ="200"/>
         </Grid.RowDefinitions>
         
         <Grid Grid.Row="0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="250"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="StructuresListGrid" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="80"/>
+                        <RowDefinition Height="10"/>
+                    </Grid.RowDefinitions>
 
+                    <DockPanel Margin="3">
+                        <Button Content="Duplicate" Margin="3 0 0 0" DockPanel.Dock="Right"/>
+                        <ComboBox ItemsSource="{Binding StructureSets}" SelectedItem="{Binding StructureSet}"></ComboBox>
+                        
+                    </DockPanel>
+                    
+                    <ListBox ItemsSource="{Binding Structures}" Grid.Row="1" Margin="3">
+                        <ListBox.ItemTemplate>
+                            
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding StructureVariable.IsVisible}"/>
+                                    <Ellipse Tag="{Binding StructureVariable}"  PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown" 
+                                             Width="10" Height="10" StrokeThickness="2" Stroke="{Binding StrokeBrush}" Fill="{Binding FillBrush}"/>
+                                    <TextBlock Tag="{Binding StructureVariable}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown" 
+                                              Text="{Binding StructureVariable.StructureId}" Margin="5 0 0 0"/>
+                                    <TextBlock Text="🔒" FontSize="8" Foreground="Gray" Visibility="{Binding CanEditVisibility}" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                        <Button Content="Add" Margin="3 3 0 3"/>
+                        <Button Content="Remove" Margin="3 3 0 3"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="0">
+                            <Border.ToolTip>Create union of structures</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/OrOperation.png" 
+                                       Tag="OrOperation"  PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="1">
+                            <Border.ToolTip>Keep the overlapping parts</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/AndOperation.png" 
+                                       Tag="AndOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="2">
+                            <Border.ToolTip>Substract</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/SubOperation.png" 
+                                       Tag="SubOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="3">
+                            <Border.ToolTip>Keep the non overlapping parts</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/XorOperation.png" 
+                                       Tag="XorOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="4">
+                            <Border.ToolTip>Invert</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/NotOperation.png" 
+                                       Tag="NotOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="0">
+                            <Border.ToolTip>Add margin</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/MarginOperation.png" 
+                                       Tag="MarginOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="1">
+                            <Border.ToolTip>Crop outside</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/CropOuterOperation.png" 
+                                       Tag="CropOuterOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="2">
+                            <Border.ToolTip>Crop inside</Border.ToolTip>
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/CropInnerOperation.png" 
+                                       Tag="CropInnerOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="3">
+                            <Border.ToolTip>Add asymmetric margin</Border.ToolTip>
+                            <Viewbox Width="40.1">
+                                <Image Source="/LazyContouring.esapi;component/Images/AsymmetricMarginOperation.png" 
+                                       Tag="AsymmetricMarginOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="4">
+                            <Border.ToolTip>Create a wall</Border.ToolTip>
+                            <Viewbox >
+                                <Image Source="/LazyContouring.esapi;component/Images/WallOperation.png" 
+                                       Tag="WallOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                            </Viewbox>
+                        </Border>
+                        
+                    </Grid>
                 </Grid>
 
                 <Grid x:Name="SliceGrid" Grid.Column="1">
@@ -30,6 +150,8 @@
             </Grid>
         </Grid>
 
+        <GridSplitter Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ResizeBehavior="CurrentAndNext"/>
+        
         <Grid x:Name="OperationsGrid" Grid.Row="1">
             <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
         </Grid>

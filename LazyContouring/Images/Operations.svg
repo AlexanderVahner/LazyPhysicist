@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 67.733332 67.733335"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="D:\vahner\projects\LazyPhysicist\LazyContouring\Images\SubOperation.png"
+   inkscape:export-xdpi="96.000008"
+   inkscape:export-ydpi="96.000008"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   sodipodi:docname="Operations.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     width="256px"
+     inkscape:zoom="3.1328125"
+     inkscape:cx="127.8404"
+     inkscape:cy="128"
+     inkscape:window-width="1904"
+     inkscape:window-height="1011"
+     inkscape:window-x="104"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <g
+       inkscape:label="Layer 1"
+       id="layer1-9" />
+    <circle
+       style="fill:#f5614d;fill-opacity:1;stroke:#171717;stroke-width:2;stroke-linejoin:round"
+       id="path851"
+       cx="33.866665"
+       cy="26.10634"
+       r="18.84375" />
+    <circle
+       style="fill:#f5614d;fill-opacity:1;stroke:#171717;stroke-width:2;stroke-linejoin:round"
+       id="path853"
+       cx="33.866665"
+       cy="41.720978"
+       r="18.84375" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2"
+     style="display:inline">
+    <circle
+       style="fill:none;stroke:#171717;stroke-width:2;stroke-linejoin:round"
+       id="path851-4"
+       cx="33.82444"
+       cy="26.059349"
+       r="18.84375" />
+    <circle
+       style="fill:none;stroke:#171717;stroke-width:2;stroke-linejoin:round"
+       id="path853-0"
+       cx="33.82444"
+       cy="41.673985"
+       r="18.84375" />
+  </g>
+</svg>
