@@ -26,18 +26,18 @@ namespace LazyContouring.UI.ViewModels
         private const double insertPlaceFromRightPosition = 20;
         private const double insertPlaceFromTopPosition = 11;
 
-        private readonly Grid grid = new Grid();
-        private readonly Border mainBorder;
-        private readonly Canvas leftNodeArrows = new Canvas();
-        private readonly Canvas rightNodeArrows = new Canvas();
-        private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
-        private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
-        private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
+        private Grid grid;
+        private ColumnDefinition colDef1;
+        private ColumnDefinition colDef2;
+        private RowDefinition rowDef1;
+        private RowDefinition rowDef2;
 
-        private readonly ColumnDefinition colDef1 = new ColumnDefinition();
-        private readonly ColumnDefinition colDef2 = new ColumnDefinition();
-        private readonly RowDefinition rowDef1 = new RowDefinition();
-        private readonly RowDefinition rowDef2 = new RowDefinition();
+        private Border mainBorder;
+        private Canvas leftNodeArrows;
+        private Canvas rightNodeArrows;
+        private Canvas leftNodeInsertPlace;
+        private Canvas rightNodeInsertPlace;
+        private Brush arrowsBrush;
 
         private bool leftNodeOnlyNedded = false;
         private OperationNode node;
@@ -46,6 +46,32 @@ namespace LazyContouring.UI.ViewModels
 
         public OperationNodeVM()
         {
+            
+        }
+
+        private void InitEmptyUI()
+        {
+            var emptyBorder = CreateDefaultBorder();
+            emptyBorder.Width = 30;
+            emptyBorder.Height = 30;
+            emptyBorder.Child = new TextBlock { Text = "+" };
+            UIElement = emptyBorder;
+        }
+
+        private void InitFullUI()
+        {
+            grid = new Grid();
+            colDef1 = new ColumnDefinition();
+            colDef2 = new ColumnDefinition();
+            rowDef1 = new RowDefinition();
+            rowDef2 = new RowDefinition();
+
+            leftNodeArrows = new Canvas();
+            rightNodeArrows = new Canvas();
+            leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
+            rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
+            arrowsBrush = new SolidColorBrush(Colors.Black);
+
             grid.ColumnDefinitions.Add(colDef1);
             grid.ColumnDefinitions.Add(colDef2);
             grid.RowDefinitions.Add(rowDef1);

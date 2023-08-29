@@ -50,9 +50,7 @@ namespace VMS.TPS
             var mainVM = new MainVM(ssModel);
             mainVM.Init();
 
-#pragma warning disable IDE0017 // Simplify object initialization
             var mainPage = new MainPage() { DataContext = mainVM };
-#pragma warning restore IDE0017 // Simplify object initialization
             mainPage.MainVM = mainVM;
 
             args.Window.Content = mainPage;
