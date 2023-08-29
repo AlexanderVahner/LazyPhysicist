@@ -354,6 +354,8 @@ namespace LazyContouring.UI.ViewModels
         {
             return new Border
             {
+                MinHeight = 20,
+                MinWidth = 20,
                 CornerRadius = new CornerRadius(5),
                 BorderThickness = new Thickness(1),
                 BorderBrush = Brushes.Black,
