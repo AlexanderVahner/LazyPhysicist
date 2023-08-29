@@ -4,6 +4,7 @@ using LazyContouring.Operations;
 using LazyContouring.UI.Views;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -65,6 +66,7 @@ namespace LazyContouring.UI.ViewModels
         public OperationVM(OperationNode node, Border border)
         {
             SetNode(node);
+            ClearBorder(border);
             InitBorder(border);
         }
 
@@ -74,6 +76,17 @@ namespace LazyContouring.UI.ViewModels
         }
 
         protected abstract void InitBorder(Border border);
+
+        private void ClearBorder(Border border)
+        {
+            border.Child = null;
+            border.CornerRadius = new CornerRadius(5);
+            border.BorderThickness = new Thickness(1);
+            border.BorderBrush = Brushes.Black;
+            border.Background = Brushes.White;
+            border.Padding = new Thickness(3);
+            border.AllowDrop = true;
+        }
 
         public OperationNode Node { get => node; set => SetNode(node); }
     }
@@ -118,7 +131,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 Width = defaultImageWidth,
                 Height = defaultImageHeight,
-                Source = ImageLoader.LoadBitmapFromResource("Images/AndOperation.png")
+                Source = ImageLoader.GetImage("AndOperation.png")
             };
         }
     }
@@ -133,7 +146,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 Width = defaultImageWidth,
                 Height = defaultImageHeight,
-                Source = ImageLoader.LoadBitmapFromResource("Images/OrOperation.png")
+                Source = ImageLoader.GetImage("OrOperation.png")
             };
         }
     }
@@ -148,7 +161,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 Width = defaultImageWidth,
                 Height = defaultImageHeight,
-                Source = ImageLoader.LoadBitmapFromResource("Images/NotOperation.png")
+                Source = ImageLoader.GetImage("NotOperation.png")
             };
         }
     }
@@ -162,7 +175,7 @@ namespace LazyContouring.UI.ViewModels
             border.Child = new Image() { 
                 Width = defaultImageWidth, 
                 Height = defaultImageHeight, 
-                Source = ImageLoader.LoadBitmapFromResource("Images/SubOperation.png") };
+                Source = ImageLoader.GetImage("SubOperation.png") };
         }
     }
 
@@ -176,7 +189,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 Width = defaultImageWidth,
                 Height = defaultImageHeight,
-                Source = ImageLoader.LoadBitmapFromResource("Images/XorOperation.png")
+                Source = ImageLoader.GetImage("XorOperation.png")
             };
         }
     }

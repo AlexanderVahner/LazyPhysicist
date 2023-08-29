@@ -82,6 +82,8 @@ namespace LazyContouring.UI.ViewModels
                 }
             };
 
+
+
             operations.AddOperationString(node);
 
 

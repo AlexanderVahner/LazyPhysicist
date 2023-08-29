@@ -1,7 +1,10 @@
-﻿using LazyContouring.Operations;
+﻿using LazyContouring.Models;
+using LazyContouring.Operations;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,26 +26,25 @@ namespace LazyContouring.UI.ViewModels
         private const double insertPlaceFromRightPosition = 20;
         private const double insertPlaceFromTopPosition = 11;
 
-
         private readonly Grid grid = new Grid();
+        private readonly Border mainBorder;
         private readonly Canvas leftNodeArrows = new Canvas();
         private readonly Canvas rightNodeArrows = new Canvas();
         private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
         private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
         private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
-        
-        
+
         private readonly ColumnDefinition colDef1 = new ColumnDefinition();
         private readonly ColumnDefinition colDef2 = new ColumnDefinition();
         private readonly RowDefinition rowDef1 = new RowDefinition();
         private readonly RowDefinition rowDef2 = new RowDefinition();
 
-        
-
         private bool leftNodeOnlyNedded = false;
         private OperationNode node;
+        private OperationNodeVM nodeLeftVM;
+        private OperationNodeVM nodeRightVM;
 
-        public OperationNodeVM(OperationNode node)
+        public OperationNodeVM()
         {
             grid.ColumnDefinitions.Add(colDef1);
             grid.ColumnDefinitions.Add(colDef2);
@@ -76,20 +78,61 @@ namespace LazyContouring.UI.ViewModels
             leftNodeInsertPlace.Children.Add(leftEllipse);
             rightNodeInsertPlace.Children.Add(rightEllipse);
 
+            leftNodeInsertPlace.Drop += LeftInsertionDrop;
+            rightNodeInsertPlace.Drop += RightInsertionDrop;
+
             leftNodeArrows.SizeChanged += LeftNodeArrows_SizeChanged;
             rightNodeArrows.SizeChanged += RightNodeArrows_SizeChanged;
             AddIntoGrid(leftNodeArrows, 0, 0);
             AddIntoGrid(rightNodeArrows, 1, 0);
-            
 
-            Node = node;
+            mainBorder = CreateDefaultBorder();
+            AddIntoGrid(mainBorder, 0, 0, rowSpan: 2);
+
             UIElement = grid;
         }
 
-        public void InitUI()
+        public void DrawOperation()
         {
-            
+            mainBorder.Child = null;
+
+            if (node == null)
+            {
+                return;
+            }
+
+            OperationVM = OperationVM.CreateOperationVM(node, mainBorder);
+            grid.RowDefinitions[1].Height = (leftNodeOnlyNedded == true) ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
         }
+
+        public void DrawKids()
+        {
+            DrawKid(ref nodeLeftVM, node.NodeLeft, 0, 1);
+            DrawKid(ref nodeRightVM, node.NodeRight, 1, 1);
+        }
+
+        private void DrawKid(ref OperationNodeVM kid, OperationNode node, int gridRow, int gridColumn)
+        {
+            if (kid?.UIElement != null)
+            {
+                grid.Children.Remove(kid.UIElement);
+            }
+
+            if (node != null)
+            {
+                kid = new OperationNodeVM();
+                kid.Node = node;
+                AddIntoGrid(kid.UIElement, gridRow, gridColumn);
+            }
+        }
+
+        /*public void DrawAll()
+        {
+            Draw();
+            DrawKids();
+            NodeLeftVM?.DrawAll();
+            NodeRightVM?.DrawAll();
+        }*/
 
         private void SetNode(OperationNode node)
         {
@@ -102,27 +145,88 @@ namespace LazyContouring.UI.ViewModels
 
             leftNodeOnlyNedded = node.Operation.LeftNodeOnlyNedded;
 
-            var border = CreateDefaultBorder();
-            OperationVM = OperationVM.CreateOperationVM(node, border);
-            
-            AddIntoGrid(border, 0, 0, rowSpan: 2);
-            grid.RowDefinitions[1].Height = (leftNodeOnlyNedded == true) ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            DrawOperation();
 
-            if (node.NodeLeft != null)
+            DrawKids();
+        }
+
+        public void InsertBeforeNode(OperationNode node, ref OperationNodeVM beforeThisNode)
+        {
+            if (node == null)
             {
-                var nodeVM = new OperationNodeVM(node.NodeLeft);
-                AddIntoGrid(nodeVM.UIElement, 0, 1);
+                return;
             }
 
-            if (node.NodeRight != null)
+            node.InsertNodeBefore(node, ref beforeThisNode.node);
+            beforeThisNode.Node = node;
+
+        }
+
+        private OperationNode CreateNodeFromDrop(object drop)
+        {
+            OperationNode node = null;
+            Operation operation;
+
+            if (drop is string stringDrop)
             {
-                var nodeVM = new OperationNodeVM(node.NodeRight);
-                AddIntoGrid(nodeVM.UIElement, 1, 1);
+                operation = OperationCreator.CreateFromString(stringDrop);
+                if (operation != null)
+                {
+                    node = new OperationNode { Operation = operation };
+                }
             }
+            else if (drop is StructureVariable strVar)
+            {
+                node = new OperationNode { StructureVar = strVar, Operation = new EmptyOperation() };
+            }
+            return node;
+        }
+
+        private void LeftInsertionDrop(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(typeof(StructureVariable));
+            if (data == null)
+            {
+                return;
+            }
+
+            if (nodeLeftVM == null)
+            {
+                node.NodeLeft = CreateNodeFromDrop(data);
+                nodeLeftVM = new OperationNodeVM();
+                nodeLeftVM.Node = node.NodeLeft;
+                return;
+            }
+
+            InsertBeforeNode(CreateNodeFromDrop(data), ref nodeLeftVM);
+        }
+
+        private void RightInsertionDrop(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(typeof(StructureVariable));
+            if (data == null)
+            {
+                return;
+            }
+
+            if (nodeRightVM == null)
+            {
+                node.NodeRight = CreateNodeFromDrop(data);
+                nodeRightVM = new OperationNodeVM();
+                nodeRightVM.Node = node.NodeRight;
+                return;
+            }
+
+            InsertBeforeNode(CreateNodeFromDrop(data), ref nodeRightVM);
         }
 
         private void AddIntoGrid(UIElement element, int row, int column, int rowSpan = 0, int columnSpan = 0)
         {
+            if (element == null)
+            {
+                return;
+            }
+
             Grid.SetRow(element, row);
             Grid.SetColumn(element, column);
             if (rowSpan > 1)
@@ -236,13 +340,15 @@ namespace LazyContouring.UI.ViewModels
             };
         }
 
-        public OperationNode Node 
+        public OperationNode Node
         {
             get => node;
             set => SetNode(value);
         }
 
         public OperationVM OperationVM { get; private set; }
+        public OperationNodeVM NodeLeftVM { get => nodeLeftVM; private set => nodeLeftVM = value; }
+        public OperationNodeVM NodeRightVM { get => nodeRightVM; private set => nodeRightVM = value; }
 
         public UIElement UIElement { get; set; }
     }

@@ -20,6 +20,12 @@ namespace LazyContouring.Operations
             Operation.Perform(this);
         }
 
+        public void InsertNodeBefore(OperationNode insertNode, ref OperationNode beforeThisNode)
+        {
+            insertNode.NodeLeft = beforeThisNode;
+            beforeThisNode = insertNode;
+        }
+
         public void FindOrCreateStructure(StructureSet structureSet)
         {
             if (StructureVar == null)

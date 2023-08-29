@@ -73,35 +73,35 @@
                             <Border.ToolTip>Create union of structures</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/OrOperation.png" 
-                                       Tag="OrOperation"  PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Or"  PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="1">
                             <Border.ToolTip>Keep the overlapping parts</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/AndOperation.png" 
-                                       Tag="AndOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="And" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="2">
                             <Border.ToolTip>Substract</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/SubOperation.png" 
-                                       Tag="SubOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Sub" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="3">
                             <Border.ToolTip>Keep the non overlapping parts</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/XorOperation.png" 
-                                       Tag="XorOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Xor" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="4">
                             <Border.ToolTip>Invert</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/NotOperation.png" 
-                                       Tag="NotOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Not" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
 
@@ -109,35 +109,35 @@
                             <Border.ToolTip>Add margin</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/MarginOperation.png" 
-                                       Tag="MarginOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Margin" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="1">
                             <Border.ToolTip>Crop outside</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/CropOuterOperation.png" 
-                                       Tag="CropOuterOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="CropOuter" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="2">
                             <Border.ToolTip>Crop inside</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/CropInnerOperation.png" 
-                                       Tag="CropInnerOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="CropInner" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="3">
                             <Border.ToolTip>Add asymmetric margin</Border.ToolTip>
                             <Viewbox Width="40.1">
                                 <Image Source="/LazyContouring.esapi;component/Images/AsymmetricMarginOperation.png" 
-                                       Tag="AsymmetricMarginOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="AsymmetricMargin" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="4">
                             <Border.ToolTip>Create a wall</Border.ToolTip>
                             <Viewbox >
                                 <Image Source="/LazyContouring.esapi;component/Images/WallOperation.png" 
-                                       Tag="WallOperation" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                                       Tag="Wall" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
                         

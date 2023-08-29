@@ -73,21 +73,15 @@ namespace LazyContouring.UI.Views
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement fwElement && fwElement.Tag != null && fwElement.Tag is StructureVariable sVar)
+            if (sender is FrameworkElement fwElement && fwElement.Tag is StructureVariable sVar)
             {
-                /*var node = new OperationNode 
-                {
-                    Operation = new EmptyOperation(),
-                    StructureVar = sVar
-                };*/
-
-                DragDrop.DoDragDrop(fwElement, fwElement.Tag, DragDropEffects.Move);
+                DragDrop.DoDragDrop(fwElement, sVar, DragDropEffects.Move);
             }
         }
 
         private void OperationBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement fwElement && fwElement.Tag != null && fwElement.Tag is string operation)
+            if (sender is FrameworkElement fwElement && fwElement.Tag is string operation)
             {
                 DragDrop.DoDragDrop(fwElement, operation, DragDropEffects.Move);
             }

@@ -74,6 +74,7 @@
     <Compile Include="Operations\MarginOperation.cs" />
     <Compile Include="Operations\NotOperation.cs" />
     <Compile Include="Operations\Operation.cs" />
+    <Compile Include="Operations\OperationCreator.cs" />
     <Compile Include="Operations\OperationNode.cs" />
     <Compile Include="Models\StructureVariable.cs" />
     <Compile Include="Operations\OrOperation.cs" />
