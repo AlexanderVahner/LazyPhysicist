@@ -18,7 +18,6 @@ namespace LazyContouring.UI.ViewModels
     {
         private const double arrowsThickness = 1.0;
         private const int arrowsMarginY = 20;
-        private const int arrowsMarginX = 20;
         private readonly Thickness defaultBorderMargin = new Thickness(0, 5, 22, 5);
         private const double insertPlaceSize = 18;
         private const double insertPlaceEllipseSize = 10;
@@ -26,52 +25,42 @@ namespace LazyContouring.UI.ViewModels
         private const double insertPlaceFromRightPosition = 20;
         private const double insertPlaceFromTopPosition = 11;
 
-        private Grid grid;
-        private ColumnDefinition colDef1;
-        private ColumnDefinition colDef2;
-        private RowDefinition rowDef1;
-        private RowDefinition rowDef2;
+        private readonly Grid grid = new Grid() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
+        private readonly ColumnDefinition colDef1 = new ColumnDefinition();
+        private readonly ColumnDefinition colDef2 = new ColumnDefinition();
+        private readonly RowDefinition rowDef1 = new RowDefinition();
+        private readonly RowDefinition rowDef2 = new RowDefinition();
 
-        private Border mainBorder;
-        private Canvas leftNodeArrows;
-        private Canvas rightNodeArrows;
-        private Canvas leftNodeInsertPlace;
-        private Canvas rightNodeInsertPlace;
-        private Brush arrowsBrush;
+        private readonly Border mainBorder = new Border()
+        {
+            MinHeight = 20,
+            MinWidth = 20,
+            CornerRadius = new CornerRadius(5),
+            BorderThickness = new Thickness(1),
+            BorderBrush = Brushes.Black,
+            Background = Brushes.White,
+            Margin = new Thickness(0, 5, 22, 5),
+            Padding = new Thickness(3),
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            AllowDrop = true
+        };
 
-        private bool leftNodeOnlyNedded = false;
+        private readonly Border leftBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
+        private readonly Border rightBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
+
+        private readonly Canvas leftNodeArrows = new Canvas() { MinHeight = 30 };
+        private readonly Canvas rightNodeArrows = new Canvas() { MinHeight = 30 };
+        private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
+        private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
+        private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
+
         private OperationNode node;
         private OperationNodeVM nodeLeftVM;
         private OperationNodeVM nodeRightVM;
 
         public OperationNodeVM()
         {
-            
-        }
-
-        private void InitEmptyUI()
-        {
-            var emptyBorder = CreateDefaultBorder();
-            emptyBorder.Width = 30;
-            emptyBorder.Height = 30;
-            emptyBorder.Child = new TextBlock { Text = "+" };
-            UIElement = emptyBorder;
-        }
-
-        private void InitFullUI()
-        {
-            grid = new Grid();
-            colDef1 = new ColumnDefinition();
-            colDef2 = new ColumnDefinition();
-            rowDef1 = new RowDefinition();
-            rowDef2 = new RowDefinition();
-
-            leftNodeArrows = new Canvas();
-            rightNodeArrows = new Canvas();
-            leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
-            rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
-            arrowsBrush = new SolidColorBrush(Colors.Black);
-
             grid.ColumnDefinitions.Add(colDef1);
             grid.ColumnDefinitions.Add(colDef2);
             grid.RowDefinitions.Add(rowDef1);
@@ -112,68 +101,68 @@ namespace LazyContouring.UI.ViewModels
             AddIntoGrid(leftNodeArrows, 0, 0);
             AddIntoGrid(rightNodeArrows, 1, 0);
 
-            mainBorder = CreateDefaultBorder();
+
             AddIntoGrid(mainBorder, 0, 0, rowSpan: 2);
+            AddIntoGrid(leftBorder, 0, 1);
+            AddIntoGrid(rightBorder, 1, 1);
 
-            UIElement = grid;
+            uiElement = grid;
         }
 
-        public void DrawOperation()
+        private void SetNode(OperationNode newNode)
         {
-            mainBorder.Child = null;
-
-            if (node == null)
+            if (node != null)
             {
-                return;
+                node.PropertyChanged -= Node_PropertyChanged;
             }
 
-            OperationVM = OperationVM.CreateOperationVM(node, mainBorder);
-            grid.RowDefinitions[1].Height = (leftNodeOnlyNedded == true) ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
-        }
-
-        public void DrawKids()
-        {
-            DrawKid(ref nodeLeftVM, node.NodeLeft, 0, 1);
-            DrawKid(ref nodeRightVM, node.NodeRight, 1, 1);
-        }
-
-        private void DrawKid(ref OperationNodeVM kid, OperationNode node, int gridRow, int gridColumn)
-        {
-            if (kid?.UIElement != null)
-            {
-                grid.Children.Remove(kid.UIElement);
-            }
+            node = newNode;
 
             if (node != null)
             {
-                kid = new OperationNodeVM();
-                kid.Node = node;
-                AddIntoGrid(kid.UIElement, gridRow, gridColumn);
+                node.PropertyChanged += Node_PropertyChanged;
+            }
+
+            DrawNode();
+        }
+
+        private void Node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(node.NodeLeft):
+                    if (node.NodeLeft != null)
+                    {
+                        NodeLeftVM = new OperationNodeVM();
+                        leftBorder.Child = NodeLeftVM?.UIElement;
+                    }
+                    NodeLeftVM.Node = node.NodeLeft;
+                    break;
+                case nameof(node.NodeRight):
+                    if (node.NodeRight != null)
+                    {
+                        NodeRightVM = new OperationNodeVM();
+                        rightBorder.Child = NodeRightVM?.UIElement;
+                    }
+                    NodeRightVM.Node = node.NodeRight;
+                    break;
+                case nameof(node.Operation):
+                    OperationVM = OperationVM.CreateOperationVM(node, mainBorder);
+                    break;
             }
         }
 
-        /*public void DrawAll()
+        public void DrawNode()
         {
-            Draw();
-            DrawKids();
-            NodeLeftVM?.DrawAll();
-            NodeRightVM?.DrawAll();
-        }*/
+            OperationVM = OperationVM.CreateOperationVM(node, mainBorder);
 
-        private void SetNode(OperationNode node)
-        {
-            this.node = node;
-
-            if (node == null)
+            grid.ColumnDefinitions[1].Width = (node == null) ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
+            grid.RowDefinitions[1].Height = (LeftNodeOnlyNedded == true) ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
+            if (node != null)
             {
-                return;
+                leftBorder.Child = NodeLeftVM?.UIElement;
+                rightBorder.Child = NodeRightVM?.UIElement;
             }
-
-            leftNodeOnlyNedded = node.Operation.LeftNodeOnlyNedded;
-
-            DrawOperation();
-
-            DrawKids();
         }
 
         public void InsertBeforeNode(OperationNode node, ref OperationNodeVM beforeThisNode)
@@ -186,6 +175,15 @@ namespace LazyContouring.UI.ViewModels
             node.InsertNodeBefore(node, ref beforeThisNode.node);
             beforeThisNode.Node = node;
 
+        }
+        
+        public void InsertLeftNode(OperationNode newNode)
+        {
+            if (node.NodeLeft != null)
+            {
+                newNode.NodeLeft = node.NodeLeft;
+            }
+            node.NodeLeft = newNode;
         }
 
         private OperationNode CreateNodeFromDrop(object drop)
@@ -218,9 +216,8 @@ namespace LazyContouring.UI.ViewModels
 
             if (nodeLeftVM == null)
             {
-                node.NodeLeft = CreateNodeFromDrop(data);
-                nodeLeftVM = new OperationNodeVM();
-                nodeLeftVM.Node = node.NodeLeft;
+                node.NodeLeft = CreateNodeFromDrop(data);                
+                NodeLeftVM.Node = node.NodeLeft;
                 return;
             }
 
@@ -238,8 +235,7 @@ namespace LazyContouring.UI.ViewModels
             if (nodeRightVM == null)
             {
                 node.NodeRight = CreateNodeFromDrop(data);
-                nodeRightVM = new OperationNodeVM();
-                nodeRightVM.Node = node.NodeRight;
+                NodeRightVM.Node = node.NodeRight;
                 return;
             }
 
@@ -278,7 +274,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 X1 = 0,
                 Y1 = arrowsMarginY,
-                X2 = Node.NodeLeft != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2,
+                X2 = Node?.NodeLeft != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2,
                 Y2 = arrowsMarginY,
                 Stroke = arrowsBrush,
                 StrokeThickness = arrowsThickness
@@ -291,7 +287,7 @@ namespace LazyContouring.UI.ViewModels
 
             leftNodeArrows.Children.Add(leftNodeInsertPlace);
 
-            if (!leftNodeOnlyNedded)
+            if (!LeftNodeOnlyNedded)
             {
                 var lineVert = new Line
                 {
@@ -316,7 +312,7 @@ namespace LazyContouring.UI.ViewModels
 
             rightNodeArrows.Children.Clear();
 
-            if (leftNodeOnlyNedded)
+            if (LeftNodeOnlyNedded)
             {
                 return;
             }
@@ -350,24 +346,6 @@ namespace LazyContouring.UI.ViewModels
             rightNodeArrows.Children.Add(lineVert);
         }
 
-        private Border CreateDefaultBorder()
-        {
-            return new Border
-            {
-                MinHeight = 20,
-                MinWidth = 20,
-                CornerRadius = new CornerRadius(5),
-                BorderThickness = new Thickness(1),
-                BorderBrush = Brushes.Black,
-                Background = Brushes.White,
-                Margin = defaultBorderMargin,
-                Padding = new Thickness(3),
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                AllowDrop = true
-            };
-        }
-
         public OperationNode Node
         {
             get => node;
@@ -375,9 +353,41 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public OperationVM OperationVM { get; private set; }
-        public OperationNodeVM NodeLeftVM { get => nodeLeftVM; private set => nodeLeftVM = value; }
-        public OperationNodeVM NodeRightVM { get => nodeRightVM; private set => nodeRightVM = value; }
+        public OperationNodeVM NodeLeftVM
+        {
+            get
+            {
+                /*if (node?.NodeLeft == null)
+                {
+                    nodeLeftVM = null;
+                }*/
+                if (nodeLeftVM == null && node?.NodeLeft != null)
+                {
+                    nodeLeftVM = new OperationNodeVM();
+                    nodeLeftVM.Node = node.NodeLeft;
+                }
 
-        public UIElement UIElement { get; set; }
+                return nodeLeftVM;
+            }
+            private set => nodeLeftVM = value; 
+        }
+        public OperationNodeVM NodeRightVM
+        {
+            get
+            {
+                if (nodeRightVM == null && node?.NodeRight != null)
+                {
+                    nodeRightVM = new OperationNodeVM();
+                    nodeRightVM.Node = node.NodeRight;
+                }
+
+                return nodeRightVM;
+            }
+            private set => nodeRightVM = value;
+        }
+
+        private UIElement uiElement;
+        public UIElement UIElement => uiElement;
+        private bool LeftNodeOnlyNedded => node?.Operation?.LeftNodeOnlyNedded ?? true;
     }
 }

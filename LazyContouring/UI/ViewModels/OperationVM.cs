@@ -24,6 +24,11 @@ namespace LazyContouring.UI.ViewModels
         {
             OperationVM result = null;
 
+            if (node == null)
+            {
+                return new EmptyOperationVM(node, border);
+            }
+
             switch (node.Operation.OperationType)
             {
                 case OperationType.Empty:
@@ -97,6 +102,16 @@ namespace LazyContouring.UI.ViewModels
 
         protected override void InitBorder(Border border)
         {
+            if (Node == null)
+            {
+                border.CornerRadius = new CornerRadius(10);
+                border.Child = new TextBlock
+                {
+                    Text = "+",
+                };
+                return;
+            }
+
             border.BorderBrush = new SolidColorBrush(Node?.StructureVar?.Color ?? Color.FromRgb(0, 0, 0));
             border.BorderThickness = new Thickness(3);
             border.Child = new TextBlock
@@ -201,7 +216,6 @@ namespace LazyContouring.UI.ViewModels
         protected override void InitBorder(Border border)
         {
             var wallControl = new WallOperationControl() { DataContext = Node.Operation as WallOperation };
-
             border.Child = wallControl;
         }
     }

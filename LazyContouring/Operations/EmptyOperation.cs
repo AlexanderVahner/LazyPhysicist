@@ -8,7 +8,6 @@
         }
 
         public override OperationType OperationType => OperationType.Empty;
-        //public override bool StructureNedded { get; } = true;
         public override bool LeftNodeOnlyNedded { get; } = true;
     }
 

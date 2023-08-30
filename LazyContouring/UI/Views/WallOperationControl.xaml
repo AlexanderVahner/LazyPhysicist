@@ -13,8 +13,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Image Grid.Column="0" Grid.RowSpan="2" Source="/LazyContouring.esapi;component/Images/WallOperation.png" Width="30"/>
         

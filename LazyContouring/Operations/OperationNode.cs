@@ -1,12 +1,18 @@
 ﻿using LazyContouring.Models;
+using LazyPhysicist.Common;
 using System.Linq;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations
 {
-    public sealed class OperationNode
+    public sealed class OperationNode : Notifier
     {
         private SegmentVolume segmentVolume;
+        private StructureVariable structureVar;
+        private Operation operation;
+        private OperationNode nodeLeft;
+        private OperationNode nodeRight;
+
         private void Materialize(StructureSet structureSet)
         {
             NodeLeft?.Materialize(structureSet);
@@ -49,16 +55,16 @@ namespace LazyContouring.Operations
             }
         }
 
-        public SegmentVolume SegmentVolume 
-        { 
-            get => segmentVolume ?? StructureVar?.SegmentVolume; 
-            set => segmentVolume = value; 
+        public SegmentVolume SegmentVolume
+        {
+            get => segmentVolume ?? StructureVar?.SegmentVolume;
+            set => segmentVolume = value;
         }
 
         public bool IsRootNode { get; set; } = false;
-        public StructureVariable StructureVar { get; set; }
-        public Operation Operation { get; set; }
-        public OperationNode NodeLeft { get; set; }
-        public OperationNode NodeRight { get; set; }
+        public StructureVariable StructureVar { get => structureVar; set => SetProperty(ref structureVar, value); }
+        public Operation Operation { get => operation; set => SetProperty(ref operation, value); }
+        public OperationNode NodeLeft { get => nodeLeft; set => SetProperty(ref nodeLeft, value); }
+        public OperationNode NodeRight { get => nodeRight; set => SetProperty(ref nodeRight, value); }
     }
 }
