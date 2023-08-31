@@ -45,13 +45,38 @@ namespace LazyContouring.UI.ViewModels
             AllowDrop = true
         };
 
-        private readonly Border leftBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
-        private readonly Border rightBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
+        private readonly Border leftBorder = new Border() 
+        { 
+            VerticalAlignment = VerticalAlignment.Top, 
+            HorizontalAlignment = HorizontalAlignment.Left, 
+            Tag = NodeDirection.Left
+        };
 
-        private readonly Canvas leftNodeArrows = new Canvas() { MinHeight = 30, Tag = "Left" };
-        private readonly Canvas rightNodeArrows = new Canvas() { MinHeight = 30, Tag = "Right" };
-        private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true, Tag = "Left" };
-        private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true, Tag = "Right" };
+        private readonly Border rightBorder = new Border() 
+        { 
+            VerticalAlignment = VerticalAlignment.Top, 
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Tag = NodeDirection.Right
+        };
+
+        private readonly Canvas leftNodeArrows = new Canvas() { MinHeight = 30, Tag = NodeDirection.Left };
+        private readonly Canvas rightNodeArrows = new Canvas() { MinHeight = 30, Tag = NodeDirection.Right };
+
+        private readonly Canvas leftNodeInsertPlace = new Canvas() 
+        {
+            Width = insertPlaceSize, 
+            Height = insertPlaceSize, 
+            AllowDrop = true, 
+            Tag = NodeDirection.Left 
+        };
+        private readonly Canvas rightNodeInsertPlace = new Canvas() 
+        { 
+            Width = insertPlaceSize, 
+            Height = insertPlaceSize, 
+            AllowDrop = true, 
+            Tag = NodeDirection.Right 
+        };
+
         private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
 
         private OperationNode node;
@@ -99,7 +124,9 @@ namespace LazyContouring.UI.ViewModels
             AddIntoGrid(leftNodeArrows, 0, 0);
             AddIntoGrid(rightNodeArrows, 1, 0);
 
-            mainBorder.Drop += ReplaceDrop;
+            leftBorder.Drop += ReplaceDrop;
+            rightBorder.Drop += ReplaceDrop;
+
             AddIntoGrid(mainBorder, 0, 0, rowSpan: 2);
             AddIntoGrid(leftBorder, 0, 1);
             AddIntoGrid(rightBorder, 1, 1);
@@ -191,9 +218,9 @@ namespace LazyContouring.UI.ViewModels
                 return;
             }
 
-            var direction = ((FrameworkElement)sender).Tag.ToString();
+            NodeDirection direction = (NodeDirection)((FrameworkElement)sender).Tag;
             var insertNode = CreateNodeFromDrop(data);
-            node.InsertNode(insertNode, direction == "Left" ? NodeDirection.Left : NodeDirection.Right);
+            node.InsertNode(insertNode, direction);
         }
 
         private void ReplaceDrop(object sender, DragEventArgs e)
@@ -204,7 +231,8 @@ namespace LazyContouring.UI.ViewModels
                 return;
             }
 
-            Node.ReplaceNode(CreateNodeFromDrop(data));
+            NodeDirection direction = (NodeDirection)((FrameworkElement)sender).Tag;
+            Node.ReplaceNode(CreateNodeFromDrop(data), direction);
             DrawNode();
         }
 
@@ -236,7 +264,7 @@ namespace LazyContouring.UI.ViewModels
                 return;
             }
 
-            NodeDirection direction = ((FrameworkElement)sender).Tag.ToString() == "Left" ? NodeDirection.Left : NodeDirection.Right;
+            NodeDirection direction = (NodeDirection)((FrameworkElement)sender).Tag;
             var canvas = direction == NodeDirection.Left ? leftNodeArrows : rightNodeArrows;
 
             canvas.Children.Clear();

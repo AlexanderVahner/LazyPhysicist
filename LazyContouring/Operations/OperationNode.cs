@@ -27,12 +27,6 @@ namespace LazyContouring.Operations
             Operation.Perform(this);
         }
 
-        public void InsertNodeBefore(OperationNode insertNode, ref OperationNode beforeThisNode)
-        {
-            insertNode.NodeLeft = beforeThisNode;
-            beforeThisNode = insertNode;
-        }
-
         public void InsertNode(OperationNode newNode, NodeDirection direction)
         {
             if (newNode == null)
@@ -55,26 +49,36 @@ namespace LazyContouring.Operations
             }
         }
 
-        public void ReplaceNode(OperationNode newNode)
+        public void ReplaceNode(OperationNode newNode, NodeDirection direction)
         {
-            if (newNode == null)
+            if (newNode == null) !!!
             {
-                return;
+                if (direction == NodeDirection.Left)
+                {
+                    NodeLeft = newNode;
+                }
+                else
+                {
+                    NodeRight = newNode;
+                }
             }
 
-            Operation = newNode.Operation;
-            StructureVar = newNode.StructureVar;
-            newNode.NodeLeft = NodeLeft;
-            if (newNode.Operation.LeftNodeOnlyNedded)
+
+            newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft.NodeLeft : NodeRight.nodeLeft;
+
+            if (!newNode.Operation.LeftNodeOnlyNedded)
             {
-                NodeRight = null;
+                newNode.NodeRight = direction == NodeDirection.Left ? NodeLeft.NodeRight : NodeRight.NodeRight;
+            }
+
+            if (direction == NodeDirection.Left)
+            {
+                NodeLeft = newNode;
             }
             else
             {
-                newNode.NodeRight = NodeRight;
+                NodeRight = newNode;
             }
-            NotifyPropertyChanged(nameof(NodeLeft));
-            NotifyPropertyChanged(nameof(NodeRight));
         }
 
         public void DeleteNode(NodeDirection direction)
