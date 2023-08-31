@@ -5,6 +5,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations
 {
+    public enum NodeDirection { Left, Right };
     public sealed class OperationNode : Notifier
     {
         private SegmentVolume segmentVolume;
@@ -30,6 +31,62 @@ namespace LazyContouring.Operations
         {
             insertNode.NodeLeft = beforeThisNode;
             beforeThisNode = insertNode;
+        }
+
+        public void InsertNode(OperationNode newNode, NodeDirection direction)
+        {
+            if (newNode == null)
+            {
+                return;
+            }
+
+            if (newNode.Operation.OperationType != OperationType.Empty)
+            {
+                newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft : NodeRight;
+            }
+            
+            if (direction == NodeDirection.Left)
+            {
+                NodeLeft = newNode;
+            }
+            else
+            {
+                NodeRight = newNode;
+            }
+        }
+
+        public void ReplaceNode(OperationNode newNode)
+        {
+            if (newNode == null)
+            {
+                return;
+            }
+
+            Operation = newNode.Operation;
+            StructureVar = newNode.StructureVar;
+            newNode.NodeLeft = NodeLeft;
+            if (newNode.Operation.LeftNodeOnlyNedded)
+            {
+                NodeRight = null;
+            }
+            else
+            {
+                newNode.NodeRight = NodeRight;
+            }
+            NotifyPropertyChanged(nameof(NodeLeft));
+            NotifyPropertyChanged(nameof(NodeRight));
+        }
+
+        public void DeleteNode(NodeDirection direction)
+        {
+            if (direction == NodeDirection.Left)
+            {
+                NodeLeft = null;
+            }
+            else
+            {
+                NodeRight = null;
+            }
         }
 
         public void FindOrCreateStructure(StructureSet structureSet)

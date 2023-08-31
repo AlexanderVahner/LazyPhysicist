@@ -18,7 +18,6 @@ namespace LazyContouring.UI.ViewModels
     {
         private const double arrowsThickness = 1.0;
         private const int arrowsMarginY = 20;
-        private readonly Thickness defaultBorderMargin = new Thickness(0, 5, 22, 5);
         private const double insertPlaceSize = 18;
         private const double insertPlaceEllipseSize = 10;
         private const double insertPlaceEllipsePosition = 4;
@@ -49,10 +48,10 @@ namespace LazyContouring.UI.ViewModels
         private readonly Border leftBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
         private readonly Border rightBorder = new Border() { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left };
 
-        private readonly Canvas leftNodeArrows = new Canvas() { MinHeight = 30 };
-        private readonly Canvas rightNodeArrows = new Canvas() { MinHeight = 30 };
-        private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
-        private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true };
+        private readonly Canvas leftNodeArrows = new Canvas() { MinHeight = 30, Tag = "Left" };
+        private readonly Canvas rightNodeArrows = new Canvas() { MinHeight = 30, Tag = "Right" };
+        private readonly Canvas leftNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true, Tag = "Left" };
+        private readonly Canvas rightNodeInsertPlace = new Canvas() { Width = insertPlaceSize, Height = insertPlaceSize, AllowDrop = true, Tag = "Right" };
         private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
 
         private OperationNode node;
@@ -92,16 +91,15 @@ namespace LazyContouring.UI.ViewModels
 
             leftNodeInsertPlace.Children.Add(leftEllipse);
             rightNodeInsertPlace.Children.Add(rightEllipse);
+            leftNodeInsertPlace.Drop += InsertionDrop;
+            rightNodeInsertPlace.Drop += InsertionDrop;
 
-            leftNodeInsertPlace.Drop += LeftInsertionDrop;
-            rightNodeInsertPlace.Drop += RightInsertionDrop;
-
-            leftNodeArrows.SizeChanged += LeftNodeArrows_SizeChanged;
-            rightNodeArrows.SizeChanged += RightNodeArrows_SizeChanged;
+            leftNodeArrows.SizeChanged += NodeArrows_SizeChanged;
+            rightNodeArrows.SizeChanged += NodeArrows_SizeChanged;
             AddIntoGrid(leftNodeArrows, 0, 0);
             AddIntoGrid(rightNodeArrows, 1, 0);
 
-
+            mainBorder.Drop += ReplaceDrop;
             AddIntoGrid(mainBorder, 0, 0, rowSpan: 2);
             AddIntoGrid(leftBorder, 0, 1);
             AddIntoGrid(rightBorder, 1, 1);
@@ -165,27 +163,6 @@ namespace LazyContouring.UI.ViewModels
             }
         }
 
-        public void InsertBeforeNode(OperationNode node, ref OperationNodeVM beforeThisNode)
-        {
-            if (node == null)
-            {
-                return;
-            }
-
-            node.InsertNodeBefore(node, ref beforeThisNode.node);
-            beforeThisNode.Node = node;
-
-        }
-        
-        public void InsertLeftNode(OperationNode newNode)
-        {
-            if (node.NodeLeft != null)
-            {
-                newNode.NodeLeft = node.NodeLeft;
-            }
-            node.NodeLeft = newNode;
-        }
-
         private OperationNode CreateNodeFromDrop(object drop)
         {
             OperationNode node = null;
@@ -206,7 +183,20 @@ namespace LazyContouring.UI.ViewModels
             return node;
         }
 
-        private void LeftInsertionDrop(object sender, DragEventArgs e)
+        private void InsertionDrop(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(typeof(StructureVariable));
+            if (data == null || node == null)
+            {
+                return;
+            }
+
+            var direction = ((FrameworkElement)sender).Tag.ToString();
+            var insertNode = CreateNodeFromDrop(data);
+            node.InsertNode(insertNode, direction == "Left" ? NodeDirection.Left : NodeDirection.Right);
+        }
+
+        private void ReplaceDrop(object sender, DragEventArgs e)
         {
             object data = e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(typeof(StructureVariable));
             if (data == null)
@@ -214,33 +204,10 @@ namespace LazyContouring.UI.ViewModels
                 return;
             }
 
-            if (nodeLeftVM == null)
-            {
-                node.NodeLeft = CreateNodeFromDrop(data);                
-                NodeLeftVM.Node = node.NodeLeft;
-                return;
-            }
-
-            InsertBeforeNode(CreateNodeFromDrop(data), ref nodeLeftVM);
+            Node.ReplaceNode(CreateNodeFromDrop(data));
+            DrawNode();
         }
 
-        private void RightInsertionDrop(object sender, DragEventArgs e)
-        {
-            object data = e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(typeof(StructureVariable));
-            if (data == null)
-            {
-                return;
-            }
-
-            if (nodeRightVM == null)
-            {
-                node.NodeRight = CreateNodeFromDrop(data);
-                NodeRightVM.Node = node.NodeRight;
-                return;
-            }
-
-            InsertBeforeNode(CreateNodeFromDrop(data), ref nodeRightVM);
-        }
 
         private void AddIntoGrid(UIElement element, int row, int column, int rowSpan = 0, int columnSpan = 0)
         {
@@ -262,88 +229,64 @@ namespace LazyContouring.UI.ViewModels
             grid.Children.Add(element);
         }
 
-        private void LeftNodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void NodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (Equals(e.NewSize.Width, double.NaN) || Equals(e.NewSize.Height, double.NaN))
             {
                 return;
             }
 
-            leftNodeArrows.Children.Clear();
-            var line = new Line
+            NodeDirection direction = ((FrameworkElement)sender).Tag.ToString() == "Left" ? NodeDirection.Left : NodeDirection.Right;
+            var canvas = direction == NodeDirection.Left ? leftNodeArrows : rightNodeArrows;
+
+            canvas.Children.Clear();
+
+            if (Node.Operation.OperationType == OperationType.Empty)
             {
-                X1 = 0,
+                return;
+            }
+
+            if (direction == NodeDirection.Right && LeftNodeOnlyNedded)
+            {
+                return;
+            }
+            
+            var directNode = direction == NodeDirection.Left ? Node.NodeLeft : Node.NodeRight;
+
+            double x1 = direction == NodeDirection.Left ? 0 : e.NewSize.Width / 2;
+            double x2 = directNode != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2;
+
+            canvas.Children.Add(new Line
+            {
+                X1 = x1,
                 Y1 = arrowsMarginY,
-                X2 = Node?.NodeLeft != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2,
+                X2 = x2,
                 Y2 = arrowsMarginY,
                 Stroke = arrowsBrush,
                 StrokeThickness = arrowsThickness
-            };
-
-            leftNodeArrows.Children.Add(line);
-
-            Canvas.SetLeft(leftNodeInsertPlace, e.NewSize.Width - insertPlaceFromRightPosition);
-            Canvas.SetTop(leftNodeInsertPlace, insertPlaceFromTopPosition);
-
-            leftNodeArrows.Children.Add(leftNodeInsertPlace);
+            });
 
             if (!LeftNodeOnlyNedded)
             {
-                var lineVert = new Line
+                x1 = e.NewSize.Width / 2;
+                double y1 = direction == NodeDirection.Left ? arrowsMarginY : 0;
+                double y2 = direction == NodeDirection.Left ? e.NewSize.Height : arrowsMarginY;
+
+                canvas.Children.Add(new Line
                 {
-                    X1 = e.NewSize.Width / 2,
-                    Y1 = arrowsMarginY,
-                    X2 = e.NewSize.Width / 2,
-                    Y2 = e.NewSize.Height,
+                    X1 = x1,
+                    Y1 = y1,
+                    X2 = x1,
+                    Y2 = y2,
                     Stroke = arrowsBrush,
                     StrokeThickness = arrowsThickness
-                };
-
-                leftNodeArrows.Children.Add(lineVert);
-            }
-        }
-
-        private void RightNodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (Equals(e.NewSize.Width, double.NaN) || Equals(e.NewSize.Height, double.NaN))
-            {
-                return;
+                });
             }
 
-            rightNodeArrows.Children.Clear();
-
-            if (LeftNodeOnlyNedded)
-            {
-                return;
-            }
-
-            var line = new Line
-            {
-                X1 = e.NewSize.Width / 2,
-                Y1 = arrowsMarginY,
-                X2 = Node.NodeRight != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2,
-                Y2 = arrowsMarginY,
-                Stroke = arrowsBrush,
-                StrokeThickness = arrowsThickness
-            };
-
-            rightNodeArrows.Children.Add(line);
-
-            Canvas.SetLeft(rightNodeInsertPlace, e.NewSize.Width - insertPlaceFromRightPosition);
-            Canvas.SetTop(rightNodeInsertPlace, insertPlaceFromTopPosition);
-            rightNodeArrows.Children.Add(rightNodeInsertPlace);
-
-            var lineVert = new Line
-            {
-                X1 = e.NewSize.Width / 2,
-                Y1 = 0,
-                X2 = e.NewSize.Width / 2,
-                Y2 = arrowsMarginY,
-                Stroke = arrowsBrush,
-                StrokeThickness = arrowsThickness
-            };
-
-            rightNodeArrows.Children.Add(lineVert);
+            var insertPlace = direction == NodeDirection.Left ? leftNodeInsertPlace : rightNodeInsertPlace;
+            Canvas.SetLeft(insertPlace, e.NewSize.Width - insertPlaceFromRightPosition);
+            Canvas.SetTop(insertPlace, insertPlaceFromTopPosition);
+            canvas.Children.Add(insertPlace);
         }
 
         public OperationNode Node
@@ -357,10 +300,6 @@ namespace LazyContouring.UI.ViewModels
         {
             get
             {
-                /*if (node?.NodeLeft == null)
-                {
-                    nodeLeftVM = null;
-                }*/
                 if (nodeLeftVM == null && node?.NodeLeft != null)
                 {
                     nodeLeftVM = new OperationNodeVM();

@@ -90,16 +90,36 @@
     <Compile Include="ScriptArgs.cs" />
     <Compile Include="Graphics\ImageSlice.cs" />
     <Compile Include="Graphics\ImageStorage.cs" />
+    <Compile Include="UI\ViewModels\AndOperationVM.cs" />
+    <Compile Include="UI\ViewModels\AssignOperationVM.cs" />
+    <Compile Include="UI\ViewModels\AsymmetricMarginOperationVM.cs" />
+    <Compile Include="UI\ViewModels\CropOperationVM.cs" />
+    <Compile Include="UI\ViewModels\EmptyOperationVM.cs" />
+    <Compile Include="UI\ViewModels\MarginOperationVM.cs" />
+    <Compile Include="UI\ViewModels\NotOperationVM.cs" />
     <Compile Include="UI\ViewModels\OperationNodeVM.cs" />
     <Compile Include="UI\ViewModels\OperationStringVM.cs" />
     <Compile Include="UI\ViewModels\OperationsVM.cs" />
     <Compile Include="UI\ViewModels\OperationVM.cs" />
+    <Compile Include="UI\ViewModels\OrOperationVM.cs" />
     <Compile Include="UI\ViewModels\SliceVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
     <Compile Include="Graphics\VoxelsToPixels.cs" />
     <Compile Include="UI\ViewModels\StructureVariableVM.cs" />
+    <Compile Include="UI\ViewModels\SubOperationVM.cs" />
+    <Compile Include="UI\ViewModels\WallOperationVM.cs" />
+    <Compile Include="UI\ViewModels\XorOperationVM.cs" />
+    <Compile Include="UI\Views\AsymmetricMarginControl.xaml.cs">
+      <DependentUpon>AsymmetricMarginControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\CropOperationControl.xaml.cs">
+      <DependentUpon>CropOperationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\MarginOperationControl.xaml.cs">
+      <DependentUpon>MarginOperationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\OperationPage.xaml.cs">
       <DependentUpon>OperationPage.xaml</DependentUpon>
@@ -118,7 +138,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Views\AsymmetricMarginControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\CropOperationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\MarginOperationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
