@@ -6,14 +6,16 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class SubOperationVM : OperationVM
     {
-        public SubOperationVM(OperationNode node, Border border) : base(node, border) { }
+        public SubOperationVM(OperationNode node) : base(node) { }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            border.Child = new Image() { 
-                Width = defaultImageWidth, 
-                Height = defaultImageHeight, 
-                Source = ImageLoader.GetImage("SubOperation.png") };
+            UIElement = new Image()
+            {
+                Width = defaultImageWidth,
+                Height = defaultImageHeight,
+                Source = ImageLoader.GetImage("SubOperation.png")
+            };
         }
     }
 

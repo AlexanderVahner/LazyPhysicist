@@ -6,6 +6,7 @@ using VMS.TPS.Common.Model.API;
 namespace LazyContouring.Operations
 {
     public enum NodeDirection { Left, Right };
+
     public sealed class OperationNode : Notifier
     {
         private SegmentVolume segmentVolume;
@@ -34,10 +35,9 @@ namespace LazyContouring.Operations
                 return;
             }
 
-            if (newNode.Operation.OperationType != OperationType.Empty)
-            {
-                newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft : NodeRight;
-            }
+            OperationNode nextNode = newNode.Operation.OperationType != OperationType.Empty ?
+                (direction == NodeDirection.Left ? NodeLeft : NodeRight) :
+                null;
             
             if (direction == NodeDirection.Left)
             {
@@ -47,12 +47,38 @@ namespace LazyContouring.Operations
             {
                 NodeRight = newNode;
             }
+
+            newNode.NodeLeft = nextNode;
         }
 
         public void ReplaceNode(OperationNode newNode, NodeDirection direction)
         {
-            if (newNode == null) !!!
+            if (newNode == null) // then removing the node with saving next nodes 
             {
+                if (direction == NodeDirection.Left)
+                {
+                    if (NodeLeft?.NodeLeft != null)
+                    {
+                        NodeLeft = NodeLeft.NodeLeft;
+                    }
+                }
+                else
+                {
+                    if (NodeRight?.NodeLeft != null)
+                    {
+                        NodeRight = NodeRight.NodeLeft;
+                    }
+                }
+            }
+            else 
+            {
+                newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft.NodeLeft : NodeRight.nodeLeft;
+
+                if (!newNode.Operation.LeftNodeOnlyNedded)
+                {
+                    newNode.NodeRight = direction == NodeDirection.Left ? NodeLeft.NodeRight : NodeRight.NodeRight;
+                }
+
                 if (direction == NodeDirection.Left)
                 {
                     NodeLeft = newNode;
@@ -61,23 +87,6 @@ namespace LazyContouring.Operations
                 {
                     NodeRight = newNode;
                 }
-            }
-
-
-            newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft.NodeLeft : NodeRight.nodeLeft;
-
-            if (!newNode.Operation.LeftNodeOnlyNedded)
-            {
-                newNode.NodeRight = direction == NodeDirection.Left ? NodeLeft.NodeRight : NodeRight.NodeRight;
-            }
-
-            if (direction == NodeDirection.Left)
-            {
-                NodeLeft = newNode;
-            }
-            else
-            {
-                NodeRight = newNode;
             }
         }
 

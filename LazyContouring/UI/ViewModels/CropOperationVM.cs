@@ -17,7 +17,7 @@ namespace LazyContouring.UI.ViewModels
         private bool insideChecked;
         private bool outsideChecked;
 
-        public CropOperationVM(OperationNode node, Border border) : base(node, border)
+        public CropOperationVM(OperationNode node) : base(node)
         {
             cropOperation = node.Operation as CropOperation;
             insideChecked = cropOperation.CropPart == CropPart.Inside;
@@ -25,10 +25,9 @@ namespace LazyContouring.UI.ViewModels
             UpdateImage();
         }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            var cropControl = new CropOperationControl() { DataContext = this };
-            border.Child = cropControl;
+            UIElement = new CropOperationControl() { DataContext = this };
         }
 
         private void UpdateImage()
@@ -40,12 +39,15 @@ namespace LazyContouring.UI.ViewModels
             cropOperation.CropPart = insideChecked ? CropPart.Inside : CropPart.Outside;
             UpdateImage();
         }
+
         public BitmapImage BitmapImage { get => bitmapImage; set => SetProperty(ref bitmapImage, value); }
         public bool InsideChecked { 
             get => insideChecked;
             set
             {
                 SetProperty(ref insideChecked, value);
+                outsideChecked = !insideChecked;
+                NotifyPropertyChanged(nameof(OutsideChecked));
                 UpdateCropPart();
             }
         }
@@ -54,6 +56,8 @@ namespace LazyContouring.UI.ViewModels
             set
             {
                 SetProperty(ref outsideChecked, value);
+                insideChecked = !outsideChecked;
+                NotifyPropertyChanged(nameof(InsideChecked));
                 UpdateCropPart();
             }
         }

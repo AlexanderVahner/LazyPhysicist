@@ -7,23 +7,11 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class EmptyOperationVM : OperationVM
     {
-        public EmptyOperationVM(OperationNode node, Border border) : base(node, border) { }
+        public EmptyOperationVM(OperationNode node) : base(node) { }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            if (Node == null)
-            {
-                border.CornerRadius = new CornerRadius(10);
-                border.Child = new TextBlock
-                {
-                    Text = "+",
-                };
-                return;
-            }
-
-            border.BorderBrush = new SolidColorBrush(Node?.StructureVar?.Color ?? Color.FromRgb(0, 0, 0));
-            border.BorderThickness = new Thickness(3);
-            border.Child = new TextBlock
+            UIElement = new TextBlock
             {
                 Text = Node?.StructureVar?.StructureId ?? "*drop structure here*",
             };

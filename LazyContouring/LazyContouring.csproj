@@ -98,6 +98,7 @@
     <Compile Include="UI\ViewModels\MarginOperationVM.cs" />
     <Compile Include="UI\ViewModels\NotOperationVM.cs" />
     <Compile Include="UI\ViewModels\OperationNodeVM.cs" />
+    <Compile Include="UI\ViewModels\OperationNodeVM_temp.cs" />
     <Compile Include="UI\ViewModels\OperationStringVM.cs" />
     <Compile Include="UI\ViewModels\OperationsVM.cs" />
     <Compile Include="UI\ViewModels\OperationVM.cs" />
@@ -120,6 +121,9 @@
     </Compile>
     <Compile Include="UI\Views\MarginOperationControl.xaml.cs">
       <DependentUpon>MarginOperationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\OperationNodeControl.xaml.cs">
+      <DependentUpon>OperationNodeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\OperationPage.xaml.cs">
       <DependentUpon>OperationPage.xaml</DependentUpon>
@@ -151,6 +155,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\MarginOperationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\OperationNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

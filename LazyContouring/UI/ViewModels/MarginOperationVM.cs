@@ -6,12 +6,11 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class MarginOperationVM : OperationVM
     {
-        public MarginOperationVM(OperationNode node, Border border) : base(node, border) { }
+        public MarginOperationVM(OperationNode node) : base(node) { }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            var marginControl = new MarginOperationControl() { DataContext = Node.Operation as MarginOperation };
-            border.Child = marginControl;
+            UIElement = new MarginOperationControl() { DataContext = Node.Operation as MarginOperation };
         }
     }
 

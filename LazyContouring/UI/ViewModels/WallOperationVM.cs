@@ -6,12 +6,11 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class WallOperationVM : OperationVM
     {
-        public WallOperationVM(OperationNode node, Border border) : base(node, border) { }
+        public WallOperationVM(OperationNode node) : base(node) { }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            var wallControl = new WallOperationControl() { DataContext = Node.Operation as WallOperation };
-            border.Child = wallControl;
+            UIElement = new WallOperationControl() { DataContext = Node.Operation as WallOperation };
         }
     }
 

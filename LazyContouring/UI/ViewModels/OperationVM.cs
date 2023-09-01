@@ -18,49 +18,50 @@ namespace LazyContouring.UI.ViewModels
     {
         protected const double defaultImageWidth = 30;
         protected const double defaultImageHeight = 30;
-        public static OperationVM CreateOperationVM(OperationNode node, Border border)
+
+        public static OperationVM CreateOperationVM(OperationNode node)
         {
             OperationVM result = null;
 
             if (node == null)
             {
-                return new EmptyOperationVM(node, border);
+                return new EmptyOperationVM(node);
             }
 
             switch (node.Operation.OperationType)
             {
                 case OperationType.Empty:
-                    result = new EmptyOperationVM(node, border);
+                    result = new EmptyOperationVM(node);
                     break;
                 case OperationType.Assign:
-                    result = new AssignOperationVM(node, border);
+                    result = new AssignOperationVM(node);
                     break;
                 case OperationType.And:
-                    result = new AndOperationVM(node, border);
+                    result = new AndOperationVM(node);
                     break;
                 case OperationType.Or:
-                    result = new OrOperationVM(node, border);
+                    result = new OrOperationVM(node);
                     break;
                 case OperationType.Not:
-                    result = new NotOperationVM(node, border);
+                    result = new NotOperationVM(node);
                     break;
                 case OperationType.Sub:
-                    result = new SubOperationVM(node, border);
+                    result = new SubOperationVM(node);
                     break;
                 case OperationType.Xor:
-                    result = new XorOperationVM(node, border);
+                    result = new XorOperationVM(node);
                     break;
                 case OperationType.Wall:
-                    result = new WallOperationVM(node, border);
+                    result = new WallOperationVM(node);
                     break;
                 case OperationType.Margin:
-                    result = new MarginOperationVM(node, border);
+                    result = new MarginOperationVM(node);
                     break;
                 case OperationType.AsymmetricMargin:
-                    result = new AsymmetricMarginOperationVM(node, border);
+                    result = new AsymmetricMarginOperationVM(node);
                     break;
                 case OperationType.Crop:
-                    result = new CropOperationVM(node, border);
+                    result = new CropOperationVM(node);
                     break;
             }
 
@@ -69,32 +70,16 @@ namespace LazyContouring.UI.ViewModels
 
         private OperationNode node;
 
-        public OperationVM(OperationNode node, Border border)
+        public OperationVM(OperationNode node)
         {
-            SetNode(node);
-            ClearBorder(border);
-            InitBorder(border);
+            Node = node;
+            InitUIElement();
         }
 
-        private void SetNode(OperationNode node)
-        {
-            this.node = node;
-        }
+        protected abstract void InitUIElement();
 
-        protected abstract void InitBorder(Border border);
-
-        private void ClearBorder(Border border)
-        {
-            border.Child = null;
-            border.CornerRadius = new CornerRadius(5);
-            border.BorderThickness = new Thickness(1);
-            border.BorderBrush = Brushes.Black;
-            border.Background = Brushes.White;
-            border.Padding = new Thickness(3);
-            border.AllowDrop = true;
-        }
-
-        public OperationNode Node { get => node; set => SetNode(node); }
+        public OperationNode Node { get => node; set => node = value; }
+        public UIElement UIElement { get; protected set; }
     }
 
 }

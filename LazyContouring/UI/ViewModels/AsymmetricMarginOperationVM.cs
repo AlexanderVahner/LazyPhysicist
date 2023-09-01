@@ -6,12 +6,11 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class AsymmetricMarginOperationVM : OperationVM
     {
-        public AsymmetricMarginOperationVM(OperationNode node, Border border) : base(node, border) { }
+        public AsymmetricMarginOperationVM(OperationNode node) : base(node) { }
 
-        protected override void InitBorder(Border border)
+        protected override void InitUIElement()
         {
-            var marginControl = new AsymmetricMarginControl() { DataContext = Node.Operation as AsymmetricMarginOperation };
-            border.Child = marginControl;
+            UIElement = new AsymmetricMarginControl() { DataContext = Node.Operation as AsymmetricMarginOperation };
         }
     }
 
