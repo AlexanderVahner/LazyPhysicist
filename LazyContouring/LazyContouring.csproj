@@ -110,6 +110,9 @@
     <Compile Include="UI\ViewModels\SubOperationVM.cs" />
     <Compile Include="UI\ViewModels\WallOperationVM.cs" />
     <Compile Include="UI\ViewModels\XorOperationVM.cs" />
+    <Compile Include="UI\Views\AssignOperationControl.xaml.cs">
+      <DependentUpon>AssignOperationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\AsymmetricMarginControl.xaml.cs">
       <DependentUpon>AsymmetricMarginControl.xaml</DependentUpon>
     </Compile>
@@ -142,6 +145,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Views\AssignOperationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\AsymmetricMarginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +189,24 @@
     <Resource Include="Images\CropOuterOperation.png" />
     <Resource Include="Images\MarginOperation.png" />
     <Resource Include="Images\NotOperation.png" />
+    <Resource Include="Images\Ionic-Ionicons-Add-circle-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Add-circle-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Arrow-down-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Arrow-down-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Arrow-undo-circle-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Arrow-undo-circle-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Arrow-up-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Arrow-up-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Caret-forward-circle.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Close-circle-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Copy-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Copy-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Duplicate-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Duplicate-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Enter-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Enter-outline.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Save-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Save-outline.svg" />
     <Content Include="Images\Operations.svg" />
     <Content Include="Images\OperationsCut.svg" />
     <Resource Include="Images\OrOperation.png" />

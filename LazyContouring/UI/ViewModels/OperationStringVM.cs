@@ -24,8 +24,7 @@ namespace LazyContouring.UI.ViewModels
             grid.VerticalAlignment = VerticalAlignment.Top;
             grid.HorizontalAlignment = HorizontalAlignment.Left;
 
-            var nodeVM = new OperationNodeVM();
-            nodeVM.Node = node;
+            var nodeVM = new OperationNodeVM() { Node = node };
             var stringUI = new OperationNodeControl() { VM = nodeVM };
 
             Grid.SetRow(stringUI, 0);

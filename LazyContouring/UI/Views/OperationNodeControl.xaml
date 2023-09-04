@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LazyContouring.UI.Views"
+             xmlns:local="clr-namespace:LazyContouring.UI.Views" 
+             xmlns:viewmodels="clr-namespace:LazyContouring.UI.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:OperationNodeVM}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+    <Grid x:Name="MainGrid"  VerticalAlignment="Top" HorizontalAlignment="Left">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="20"/>
@@ -39,26 +41,22 @@
         </Canvas>
 
         <Border x:Name="LeftBorder" Grid.Column="2" Grid.Row="0" Tag="{Binding LeftDirection}" 
-                VerticalAlignment="Top" HorizontalAlignment="Left"
-                AllowDrop="True"
-                Drop="ReplaceDrop"/>
+                VerticalAlignment="Top" HorizontalAlignment="Left"/>
         <Border x:Name="RightBorder" Grid.Column="2" Grid.Row="1" Tag="{Binding RightDirection}" 
-                VerticalAlignment="Top" HorizontalAlignment="Left"
-                AllowDrop="True"
-                Drop="ReplaceDrop"/>
+                VerticalAlignment="Top" HorizontalAlignment="Left"/>
 
         <Border x:Name="MainBorder" 
                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                AllowDrop="True" Drop="ReplaceDrop"
                 MinHeight="30"
                 MinWidth="30"
                 CornerRadius="5"
-                BorderThickness="1"
-                BorderBrush="Black"
+                BorderThickness="{Binding MainBorderThickNess}"
+                BorderBrush="{Binding BorderBrush}"
                 Background="White"
                 Margin="0 5 0 5"
                 Padding="3"
                 VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                AllowDrop="True"/>
+                HorizontalAlignment="Left"/>
     </Grid>
 </UserControl>

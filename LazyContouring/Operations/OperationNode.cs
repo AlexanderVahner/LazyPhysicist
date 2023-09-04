@@ -38,7 +38,9 @@ namespace LazyContouring.Operations
             OperationNode nextNode = newNode.Operation.OperationType != OperationType.Empty ?
                 (direction == NodeDirection.Left ? NodeLeft : NodeRight) :
                 null;
-            
+
+            newNode.NodeLeft = nextNode;
+
             if (direction == NodeDirection.Left)
             {
                 NodeLeft = newNode;
@@ -48,12 +50,12 @@ namespace LazyContouring.Operations
                 NodeRight = newNode;
             }
 
-            newNode.NodeLeft = nextNode;
+            
         }
 
         public void ReplaceNode(OperationNode newNode, NodeDirection direction)
         {
-            if (newNode == null) // then removing the node with saving next nodes 
+            if (newNode == null) // then removing the node and saving next nodes 
             {
                 if (direction == NodeDirection.Left)
                 {

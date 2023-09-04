@@ -1,4 +1,5 @@
 ﻿using LazyContouring.Operations;
+using LazyContouring.UI.Views;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -7,15 +8,27 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class AssignOperationVM : OperationVM
     {
-        public AssignOperationVM(OperationNode node) : base(node) { }
+        private StructureVariableVM structureVariableVM;
+        private string structureId;
+
+        public AssignOperationVM(OperationNode node) : base(node)
+        {
+            StructureVariableVM = new StructureVariableVM(node.StructureVar);
+            node.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(node.StructureVar))
+                {
+                    StructureVariableVM.StructureVariable = node.StructureVar;
+                }
+            };
+        }
 
         protected override void InitUIElement()
         {
-            UIElement = new TextBlock
-            {
-                Text = (Node?.StructureVar?.StructureId ?? "*drop structure here*") + " = ",
-            };
+            UIElement = new AssignOperationControl() { DataContext = this };
         }
+
+        public StructureVariableVM StructureVariableVM { get => structureVariableVM; set => SetProperty(ref structureVariableVM, value); }
     }
 
 }

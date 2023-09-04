@@ -48,35 +48,52 @@ namespace LazyContouring.UI.Views
                 vM = value;
                 vM.PropertyChanged += VM_PropertyChanged;
                 DataContext = vM;
-                MainBorder.Child = vM.MainElement;
-                LeftBorder.Child = vM.LeftNodeElement;
-                RightBorder.Child = vM.RightNodeElement;
+                MainBorder.Child = vM.OperationVM.UIElement;
+                LeftBorder.Child = CreateNodeUIElement(vM.NodeLeftVM);
+                RightBorder.Child = CreateNodeUIElement(vM.NodeRightVM);
+                DrawGrid();
             }
         }
+
 
         private void VM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case nameof(vM.OperationVM):
-                    MainBorder.Child = vM.MainElement;
+                    MainBorder.Child = vM.OperationVM.UIElement;
+                    DrawGrid();
                     break;
                 case nameof(vM.NodeLeftVM):
-                    LeftBorder.Child = vM.LeftNodeElement;
+                    LeftBorder.Child = CreateNodeUIElement(vM.NodeLeftVM);
                     break;
                 case nameof(vM.NodeRightVM):
-                    RightBorder.Child = vM.RightNodeElement;
-                    break;
-
-                case nameof(vM.LeftNodeOnlyNedded):
-                    DrawGrid();
+                    RightBorder.Child = CreateNodeUIElement(vM.NodeRightVM);
                     break;
             }
         }
 
+        public UIElement CreateNodeUIElement(OperationNodeVM vm)
+        {
+            if (vm == null)
+            {
+                return null;
+            }
+            return new OperationNodeControl { VM = vm };
+        }
+
         private void DrawGrid()
         {
+            Visibility nodesVisibility = vM.IsEmptyOperation ? Visibility.Hidden : Visibility.Visible;
+            Visibility rightNodeVisibility = vM.LeftNodeOnlyNedded ? Visibility.Hidden : Visibility.Visible;
 
+            LeftDropCanvas.Visibility = nodesVisibility;
+            RightDropCanvas.Visibility = vM.IsEmptyOperation ? nodesVisibility : rightNodeVisibility;
+
+            MainGrid.ColumnDefinitions[1].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(20, GridUnitType.Pixel); 
+            MainGrid.ColumnDefinitions[2].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
+
+            MainGrid.RowDefinitions[1].Height = vM.LeftNodeOnlyNedded ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
         }
 
         private void InsertionDrop(object sender, DragEventArgs e)
@@ -87,8 +104,7 @@ namespace LazyContouring.UI.Views
 
         private void ReplaceDrop(object sender, DragEventArgs e)
         {
-            NodeDirection direction = (NodeDirection)((FrameworkElement)sender).Tag;
-            VM.ReplaceDrop(e.Data, direction);
+            VM.ReplaceDrop(e.Data);
         }
 
         private void NodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)

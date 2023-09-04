@@ -103,6 +103,96 @@ namespace LazyContouring.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Add_circle_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Add_circle_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Arrow_down_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Arrow_down_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Arrow_undo_circle_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Arrow_undo_circle_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Arrow_up_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Arrow_up_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Caret_forward_circle_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Caret_forward_circle_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Copy_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Copy_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Duplicate_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Duplicate_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Enter_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Enter_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Save_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Save_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MarginOperation {
             get {
                 object obj = ResourceManager.GetObject("MarginOperation", resourceCulture);
