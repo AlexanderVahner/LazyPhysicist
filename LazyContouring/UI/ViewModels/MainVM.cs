@@ -85,6 +85,7 @@ namespace LazyContouring.UI.ViewModels
 
 
             operations.AddOperationString(node);
+            operations.AddOperationString(node);
 
 
             OperationPage = new OperationPage() { DataContext = operations };

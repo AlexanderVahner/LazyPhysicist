@@ -1,5 +1,6 @@
 ﻿using LazyContouring.Operations;
 using LazyContouring.UI.Views;
+using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,30 +11,30 @@ using System.Windows.Controls;
 
 namespace LazyContouring.UI.ViewModels
 {
-    public sealed class OperationStringVM
+    public sealed class OperationStringVM : Notifier
     {
-        private readonly OperationNode node;
+        private OperationNode node;
+        private UIElement nodeElement;
         private readonly Grid grid = new Grid();
 
-        public OperationStringVM(OperationNode node)
+        public OperationStringVM() { }
+
+        private void SetNode(OperationNode node)
         {
+            if (node == null)
+            {
+                return;
+            }
             this.node = node;
-
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.RowDefinitions.Add(new RowDefinition());
-            grid.VerticalAlignment = VerticalAlignment.Top;
-            grid.HorizontalAlignment = HorizontalAlignment.Left;
-
             var nodeVM = new OperationNodeVM() { Node = node };
-            var stringUI = new OperationNodeControl() { VM = nodeVM };
+            var nodeUI = new OperationNodeControl() { VM = nodeVM };
 
-            Grid.SetRow(stringUI, 0);
-            Grid.SetColumn(stringUI, 0);
-            grid.Children.Add(stringUI);
-
-            UIElement = grid;
+            NodeElement = nodeUI;
+            NotifyPropertyChanged(nameof(Node));
         }
 
-        public UIElement UIElement { get; set; }
+
+        public OperationNode Node { get => node; set => SetNode(value); }
+        public UIElement NodeElement { get => nodeElement; set => SetProperty(ref nodeElement, value); }
     }
 }

@@ -153,6 +153,16 @@ namespace LazyContouring.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Close_circle_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Close_circle_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ionic_Ionicons_Copy_outline_512 {
             get {
                 object obj = ResourceManager.GetObject("Ionic_Ionicons_Copy_outline_512", resourceCulture);

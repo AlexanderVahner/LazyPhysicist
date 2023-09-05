@@ -32,7 +32,11 @@
                     </Grid.RowDefinitions>
 
                     <DockPanel Margin="3">
-                        <Button Content="Duplicate" Margin="3 0 0 0" DockPanel.Dock="Right"/>
+                        <Button Margin="3 0 0 0" DockPanel.Dock="Right">
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Duplicate-outline.512.png"/>
+                            </Viewbox>
+                        </Button>                        
                         <ComboBox ItemsSource="{Binding StructureSets}" SelectedItem="{Binding StructureSet}"></ComboBox>
                         
                     </DockPanel>
@@ -44,7 +48,8 @@
                                 <StackPanel Orientation="Horizontal">
                                     <CheckBox IsChecked="{Binding StructureVariable.IsVisible}"/>
                                     <Ellipse Tag="{Binding StructureVariable}"  PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown" 
-                                             Width="10" Height="10" StrokeThickness="2" Stroke="{Binding StrokeBrush}" Fill="{Binding FillBrush}"/>
+                                             Width="10" Height="10" StrokeThickness="2" Stroke="{Binding StrokeBrush}" Fill="{Binding FillBrush}"
+                                             Margin="5 0 0 0"/>
                                     <TextBlock Tag="{Binding StructureVariable}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown" 
                                               Text="{Binding StructureVariable.StructureId}" Margin="5 0 0 0"/>
                                     <TextBlock Text="🔒" FontSize="8" Foreground="Gray" Visibility="{Binding CanEditVisibility}" Margin="5 0 0 0" VerticalAlignment="Center"/>
@@ -54,8 +59,16 @@
                     </ListBox>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="2">
-                        <Button Content="Add" Margin="3 3 0 3"/>
-                        <Button Content="Remove" Margin="3 3 0 3"/>
+                        <Button Margin="3 3 0 3">
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Add-circle-outline.512.png"/>
+                            </Viewbox>
+                        </Button>
+                        <Button Margin="3 3 0 3">
+                            <Viewbox>
+                                <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Close-circle-outline.512.png"/>
+                            </Viewbox>
+                        </Button>
                     </StackPanel>
 
                     <Grid Grid.Row="3">
@@ -155,7 +168,14 @@
         <GridSplitter Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ResizeBehavior="CurrentAndNext"/>
         
         <Grid x:Name="OperationsGrid" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
+            <Border Grid.Row="1">
+                <TextBlock Text="Drop a structure here to add an expression." Padding="3" Background="LimeGreen"/>
+            </Border>
         </Grid>
 
 

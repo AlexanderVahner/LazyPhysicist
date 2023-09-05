@@ -131,6 +131,9 @@
     <Compile Include="UI\Views\OperationPage.xaml.cs">
       <DependentUpon>OperationPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\OperationStringControl.xaml.cs">
+      <DependentUpon>OperationStringControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
     </Compile>
@@ -173,6 +176,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\OperationStringControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\SliceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -198,14 +205,20 @@
     <Resource Include="Images\Ionic-Ionicons-Arrow-up-outline.512.png" />
     <Content Include="Images\Ionic-Ionicons-Arrow-up-outline.svg" />
     <Resource Include="Images\Ionic-Ionicons-Caret-forward-circle.512.png" />
+    <Resource Include="Images\Ionic-Ionicons-Close-circle-outline.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Caret-forward-circle.svg" />
     <Content Include="Images\Ionic-Ionicons-Close-circle-outline.svg" />
     <Resource Include="Images\Ionic-Ionicons-Copy-outline.512.png" />
+    <Resource Include="Images\Ionic-Ionicons-Contract.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Contract.svg" />
     <Content Include="Images\Ionic-Ionicons-Copy-outline.svg" />
     <Resource Include="Images\Ionic-Ionicons-Duplicate-outline.512.png" />
     <Content Include="Images\Ionic-Ionicons-Duplicate-outline.svg" />
     <Resource Include="Images\Ionic-Ionicons-Enter-outline.512.png" />
     <Content Include="Images\Ionic-Ionicons-Enter-outline.svg" />
     <Resource Include="Images\Ionic-Ionicons-Save-outline.512.png" />
+    <Resource Include="Images\Ionic-Ionicons-Expand.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Expand.svg" />
     <Content Include="Images\Ionic-Ionicons-Save-outline.svg" />
     <Content Include="Images\Operations.svg" />
     <Content Include="Images\OperationsCut.svg" />

@@ -1,4 +1,5 @@
 ﻿using LazyContouring.Operations;
+using LazyContouring.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +30,11 @@ namespace LazyContouring.UI.ViewModels
         {
             grid.RowDefinitions.Add(new RowDefinition());
 
-            var opString = new OperationStringVM(node);
-            Grid.SetRow(opString.UIElement, grid.RowDefinitions.Count - 1);
-            Grid.SetColumn(opString.UIElement, grid.ColumnDefinitions.Count - 1);
-            grid.Children.Add(opString.UIElement);
+            var opString = new OperationStringVM() { Node = node };
+            var opStringUI = new OperationStringControl { DataContext = opString };
+            Grid.SetRow(opStringUI, grid.RowDefinitions.Count - 1);
+            Grid.SetColumn(opStringUI, grid.ColumnDefinitions.Count - 1);
+            grid.Children.Add(opStringUI);
         }
 
         public UIElement UIElement { get; set; }

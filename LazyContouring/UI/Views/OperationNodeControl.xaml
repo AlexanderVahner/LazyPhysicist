@@ -57,6 +57,12 @@
                 Margin="0 5 0 5"
                 Padding="3"
                 VerticalAlignment="Top"
-                HorizontalAlignment="Left"/>
+                HorizontalAlignment="Left"
+                PreviewMouseLeftButtonDown="Node_PreviewMouseLeftButtonDown"/>
+
+        <TextBlock Text="Drop for remove." 
+                   AllowDrop="True"
+                   Drop="ReplaceDrop"
+                   Padding="3" Background="OrangeRed" Visibility="{Binding RemoveDropPlaceVisibility}"/>
     </Grid>
 </UserControl>

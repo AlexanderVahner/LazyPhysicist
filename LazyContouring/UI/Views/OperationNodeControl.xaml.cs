@@ -107,6 +107,14 @@ namespace LazyContouring.UI.Views
             VM.ReplaceDrop(e.Data);
         }
 
+        private void Node_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (VM.Node != null)
+            {
+                DragDrop.DoDragDrop(this, "Remove", DragDropEffects.Move);
+            }
+        }
+
         private void NodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (Equals(e.NewSize.Width, double.NaN) || Equals(e.NewSize.Height, double.NaN))
@@ -114,7 +122,7 @@ namespace LazyContouring.UI.Views
                 return;
             }
 
-            NodeDirection direction = (NodeDirection)((FrameworkElement)sender).Tag;
+            NodeDirection direction = (NodeDirection)(((FrameworkElement)sender).Tag/* ?? NodeDirection.Left*/);
             var canvas = direction == NodeDirection.Left ? LeftArrowsCanvas : RightArrowsCanvas;
 
             canvas.Children.Clear();

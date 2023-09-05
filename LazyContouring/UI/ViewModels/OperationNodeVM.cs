@@ -27,23 +27,25 @@ namespace LazyContouring.UI.ViewModels
         private bool isEmptyOperation;
 
         private Thickness mainBorderThickNess;
-        private Brush borderBrush;
+        private Brush borderBrush; 
+        private Visibility removeDropPlaceVisibility = Visibility.Collapsed;
 
         private readonly Brush defaultBorderBrush = new SolidColorBrush(Colors.Black);
         private readonly Thickness defaultBorderThickness = new Thickness(1);
         private readonly Thickness borderThicknessWihtStructure = new Thickness(3);
+        
 
         public OperationNodeVM()
         {
             mainBorderThickNess = defaultBorderThickness;
-            
+
         }
 
         private void SetNode(OperationNode newNode)
         {
             if (node != null) { node.PropertyChanged -= Node_PropertyChanged; }
             node = newNode;
-            if (node != null) {  node.PropertyChanged += Node_PropertyChanged; }
+            if (node != null) { node.PropertyChanged += Node_PropertyChanged; }
 
             OperationVM = OperationVM.CreateOperationVM(node);
 
@@ -158,7 +160,7 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public EventHandler<OperationNode> ReplaceNeeded;
-
+        
         public OperationNode Node { get => node; set => SetNode(value); }
         public OperationVM OperationVM { get => operationVM; private set => SetProperty(ref operationVM, value); }
         public OperationNodeVM NodeLeftVM
@@ -181,7 +183,7 @@ namespace LazyContouring.UI.ViewModels
                 if (nodeRightVM != null) { nodeRightVM.ReplaceNeeded += PerformReplaceRight; }
             }
         }
-        public StructureVariableVM StructureVarVM 
+        public StructureVariableVM StructureVarVM
         {
             get => structureVarVM;
             set
@@ -189,10 +191,10 @@ namespace LazyContouring.UI.ViewModels
                 if (structureVarVM != null) { structureVarVM.PropertyChanged -= StructureVarVM_PropertyChanged; }
                 SetProperty(ref structureVarVM, value);
                 if (structureVarVM != null) { structureVarVM.PropertyChanged += StructureVarVM_PropertyChanged; }
-            }                
+            }
         }
 
-        
+
 
         public bool LeftNodeOnlyNedded => node?.Operation?.LeftNodeOnlyNedded ?? true;
         public bool IsEmptyOperation { get => isEmptyOperation; set => SetProperty(ref isEmptyOperation, value); }
@@ -201,5 +203,6 @@ namespace LazyContouring.UI.ViewModels
 
         public Thickness MainBorderThickNess { get => mainBorderThickNess; set => SetProperty(ref mainBorderThickNess, value); }
         public Brush BorderBrush { get => borderBrush; set => SetProperty(ref borderBrush, value); }
+        public Visibility RemoveDropPlaceVisibility { get => removeDropPlaceVisibility; set => SetProperty(ref removeDropPlaceVisibility, value); }
     }
 }
