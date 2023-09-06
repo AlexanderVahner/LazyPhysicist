@@ -219,6 +219,8 @@
     <Resource Include="Images\Ionic-Ionicons-Save-outline.512.png" />
     <Resource Include="Images\Ionic-Ionicons-Expand.512.png" />
     <Content Include="Images\Ionic-Ionicons-Expand.svg" />
+    <Resource Include="Images\Ionic-Ionicons-Play-forward-circle.512.png" />
+    <Content Include="Images\Ionic-Ionicons-Play-forward-circle.svg" />
     <Content Include="Images\Ionic-Ionicons-Save-outline.svg" />
     <Content Include="Images\Operations.svg" />
     <Content Include="Images\OperationsCut.svg" />

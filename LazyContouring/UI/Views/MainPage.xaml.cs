@@ -86,5 +86,10 @@ namespace LazyContouring.UI.Views
                 DragDrop.DoDragDrop(fwElement, operation, DragDropEffects.Move);
             }
         }
+
+        private void AddStringNodeDrop(object sender, DragEventArgs e)
+        {
+            MainVM.AddNodeStringFromDrop(e.Data);
+        }
     }
 }

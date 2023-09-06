@@ -20,13 +20,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="StructuresListGrid" Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
-                        <RowDefinition/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition/>
                         <RowDefinition Height="80"/>
                         <RowDefinition Height="10"/>
                     </Grid.RowDefinitions>
@@ -41,7 +42,7 @@
                         
                     </DockPanel>
                     
-                    <ListBox ItemsSource="{Binding Structures}" Grid.Row="1" Margin="3">
+                    <ListBox ItemsSource="{Binding Structures}" Grid.Row="2" Margin="3">
                         <ListBox.ItemTemplate>
                             
                             <DataTemplate>
@@ -58,7 +59,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
                         <Button Margin="3 3 0 3">
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Add-circle-outline.512.png"/>
@@ -159,9 +160,79 @@
                     </Grid>
                 </Grid>
 
-                <Grid x:Name="SliceGrid" Grid.Column="1">
+                <Grid x:Name="SliceGrid" Grid.Column="1" Background="Black">
                     
                 </Grid>
+
+                <Grid Grid.Column="2" Width="250">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Cool features place" Height="150" TextAlignment="Center"/>
+                    
+                    <Grid Grid.Row="1" Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Templates" Padding="3"/>
+                        
+                        <ListBox Grid.Row="1">
+                            <ListBoxItem>
+                                <TextBlock Text="PTVpn"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <TextBlock Text="Breast"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <TextBlock Text="HN 66/60/54"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <TextBlock Text="etc..."/>
+                            </ListBoxItem>
+                        </ListBox>
+
+                        <Grid Grid.Row="2" Margin="0 0 0 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <Button Margin="3 3 0 3" Grid.Column="0">
+                                <Viewbox>
+                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
+                                </Viewbox>
+                            </Button>
+
+                            <Button Margin="3 3 0 3" Grid.Column="0">
+                                <Viewbox>
+                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
+                                </Viewbox>
+                            </Button>
+                            <Button Margin="3 3 0 3" Grid.Column="2">
+                                <Viewbox>
+                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Save-outline.512.png"/>
+                                </Viewbox>
+                            </Button>
+                            <Button Margin="3 3 0 3" Grid.Column="3">
+                                <Viewbox>
+                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Enter-outline.512.png"/>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                
             </Grid>
         </Grid>
 
@@ -174,7 +245,8 @@
             </Grid.RowDefinitions>
             <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
             <Border Grid.Row="1">
-                <TextBlock Text="Drop a structure here to add an expression." Padding="3" Background="LimeGreen"/>
+                <TextBlock Text="Drop a structure here to add an expression." Padding="3" Background="LimeGreen"
+                           AllowDrop="True" Drop="AddStringNodeDrop"/>
             </Border>
         </Grid>
 

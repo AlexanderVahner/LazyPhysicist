@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using System.Xml.Linq;
 using VMS.TPS.Common.Model.API;
 using V = VMS.TPS.Common.Model.API;
 
@@ -85,11 +86,28 @@ namespace LazyContouring.UI.ViewModels
 
 
             operations.AddOperationString(node);
-            operations.AddOperationString(node);
 
 
             OperationPage = new OperationPage() { DataContext = operations };
             OperationPage.ViewModel = operations;
+        }
+
+        public void AddNodeStringFromDrop(IDataObject drop)
+        {
+            object data = drop.GetData(typeof(StructureVariable));
+            if (data == null)
+            {
+                return;
+            }
+
+            var node = new OperationNode()
+            {
+                IsRootNode = true,
+                StructureVar = data as StructureVariable,
+                Operation = new AssignOperation()
+            };
+
+            operations.AddOperationString(node);
         }
 
         public void PaintSlice(int slice)

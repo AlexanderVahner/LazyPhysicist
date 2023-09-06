@@ -9,10 +9,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid x:Name="MainGrid"  VerticalAlignment="Top" HorizontalAlignment="Left">
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -27,17 +27,17 @@
                 Tag="{Binding RightDirection}" 
                 SizeChanged="NodeArrows_SizeChanged"/>
         
-        <Canvas x:Name="LeftDropCanvas" Grid.Column="1" Grid.Row="0" 
+        <Canvas x:Name="LeftDropCanvas" Grid.Column="1" Grid.Row="0"
                 Tag="{Binding LeftDirection}"
                 AllowDrop="True"
                 Drop="InsertionDrop">
-            <Ellipse Width="10" Height="10" Canvas.Left="5" Canvas.Top="15" Stroke="Black" StrokeThickness="1" Fill="White"/>
+            <Ellipse Width="10" Height="10" Canvas.Left="10" Canvas.Top="15" Stroke="Black" StrokeThickness="1" Fill="White"/>
         </Canvas>
-        <Canvas x:Name="RightDropCanvas" Grid.Column="1" Grid.Row="1" 
+        <Canvas x:Name="RightDropCanvas" Grid.Column="1" Grid.Row="1"
                 Tag="{Binding RightDirection}"
                 AllowDrop="True"
                 Drop="InsertionDrop">
-            <Ellipse Width="10" Height="10" Canvas.Left="5" Canvas.Top="15" Stroke="Black" StrokeThickness="1" Fill="White"/>
+            <Ellipse Width="10" Height="10" Canvas.Left="10" Canvas.Top="15" Stroke="Black" StrokeThickness="1" Fill="White"/>
         </Canvas>
 
         <Border x:Name="LeftBorder" Grid.Column="2" Grid.Row="0" Tag="{Binding LeftDirection}" 
@@ -47,7 +47,6 @@
 
         <Border x:Name="MainBorder" 
                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                AllowDrop="True" Drop="ReplaceDrop"
                 MinHeight="30"
                 MinWidth="30"
                 CornerRadius="5"
@@ -58,11 +57,8 @@
                 Padding="3"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Left"
-                PreviewMouseLeftButtonDown="Node_PreviewMouseLeftButtonDown"/>
-
-        <TextBlock Text="Drop for remove." 
-                   AllowDrop="True"
-                   Drop="ReplaceDrop"
-                   Padding="3" Background="OrangeRed" Visibility="{Binding RemoveDropPlaceVisibility}"/>
+                AllowDrop="True"
+                Drop="ReplaceDrop"/>
+        
     </Grid>
 </UserControl>

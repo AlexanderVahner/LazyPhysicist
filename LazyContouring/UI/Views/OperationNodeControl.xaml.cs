@@ -28,7 +28,7 @@ namespace LazyContouring.UI.Views
         private const double insertPlaceSize = 18;
         private const double insertPlaceEllipseSize = 10;
         private const double insertPlaceEllipsePosition = 4;
-        private const double insertPlaceFromRightPosition = 20;
+        private const double insertPlaceFromRightPosition = 30;
         private const double insertPlaceFromTopPosition = 11;
         private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
         private const double arrowsThickness = 1.0;
@@ -90,7 +90,7 @@ namespace LazyContouring.UI.Views
             LeftDropCanvas.Visibility = nodesVisibility;
             RightDropCanvas.Visibility = vM.IsEmptyOperation ? nodesVisibility : rightNodeVisibility;
 
-            MainGrid.ColumnDefinitions[1].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(20, GridUnitType.Pixel); 
+            MainGrid.ColumnDefinitions[1].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(30, GridUnitType.Pixel); 
             MainGrid.ColumnDefinitions[2].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
 
             MainGrid.RowDefinitions[1].Height = vM.LeftNodeOnlyNedded ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
@@ -105,14 +105,6 @@ namespace LazyContouring.UI.Views
         private void ReplaceDrop(object sender, DragEventArgs e)
         {
             VM.ReplaceDrop(e.Data);
-        }
-
-        private void Node_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (VM.Node != null)
-            {
-                DragDrop.DoDragDrop(this, "Remove", DragDropEffects.Move);
-            }
         }
 
         private void NodeArrows_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -139,7 +131,7 @@ namespace LazyContouring.UI.Views
 
             var directNode = direction == NodeDirection.Left ? VM.Node.NodeLeft : VM.Node.NodeRight;
 
-            double x1 = direction == NodeDirection.Left ? 0 : e.NewSize.Width / 2;
+            double x1 = direction == NodeDirection.Left ? 0 : (e.NewSize.Width - insertPlaceFromRightPosition) / 2;
             double x2 = directNode != null ? e.NewSize.Width : e.NewSize.Width - insertPlaceFromRightPosition / 2;
 
             canvas.Children.Add(new Line
@@ -154,7 +146,7 @@ namespace LazyContouring.UI.Views
 
             if (!VM.LeftNodeOnlyNedded)
             {
-                x1 = e.NewSize.Width / 2;
+                x1 = (e.NewSize.Width  - insertPlaceFromRightPosition) / 2;
                 double y1 = direction == NodeDirection.Left ? arrowsMarginY : 0;
                 double y2 = direction == NodeDirection.Left ? e.NewSize.Height : arrowsMarginY;
 

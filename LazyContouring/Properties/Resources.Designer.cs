@@ -193,6 +193,16 @@ namespace LazyContouring.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Play_forward_circle_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Play_forward_circle_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ionic_Ionicons_Save_outline_512 {
             get {
                 object obj = ResourceManager.GetObject("Ionic_Ionicons_Save_outline_512", resourceCulture);
