@@ -2,13 +2,14 @@
 {
     public sealed class EmptyOperation : Operation
     {
-        public override void Perform(OperationNode node)
+        protected override void Method(OperationNode node)
         {
             node.SegmentVolume = node.StructureVar?.SegmentVolume;
         }
 
         public override OperationType OperationType => OperationType.Empty;
-        public override bool LeftNodeOnlyNedded { get; } = true;
+        public override bool LeftNodeNedded { get; } = false;
+        public override bool RightNodeNedded { get; } = false;
     }
 
 }

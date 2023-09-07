@@ -4,7 +4,7 @@
 
     public sealed class CropOperation : Operation
     {
-        public override void Perform(OperationNode node)
+        protected override void Method(OperationNode node)
         {
             if (CropPart == CropPart.Inside)
             {

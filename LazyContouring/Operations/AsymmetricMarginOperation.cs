@@ -11,13 +11,13 @@ namespace LazyContouring.Operations
         private double z1 = 5;
         private double z2 = 5;
 
-        public override void Perform(OperationNode node)
+        protected override void Method(OperationNode node)
         {
             node.SegmentVolume = node.NodeLeft.SegmentVolume.AsymmetricMargin(new AxisAlignedMargins(StructureMarginGeometry, X1, Y1, Z1, X2, Y2, Z2));
         }
 
         public override OperationType OperationType => OperationType.AsymmetricMargin;
-        public override bool LeftNodeOnlyNedded { get; } = true;
+        public override bool RightNodeNedded { get; } = false;
         public StructureMarginGeometry StructureMarginGeometry { get; set; } = StructureMarginGeometry.Outer;
         public double X1 { get => x1; set => SetProperty(ref x1, value); }
         public double X2 { get => x2; set => SetProperty(ref x2, value); }

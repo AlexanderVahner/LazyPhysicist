@@ -24,7 +24,6 @@ namespace LazyContouring.UI.ViewModels
         private OperationNodeVM nodeRightVM;
         private OperationVM operationVM;
         private StructureVariableVM structureVarVM;
-        private bool isEmptyOperation;
 
         private Thickness mainBorderThickNess;
         private Brush borderBrush; 
@@ -57,10 +56,10 @@ namespace LazyContouring.UI.ViewModels
             MainBorderThickNess = StructureVarVM?.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
 
             NotifyPropertyChanged(nameof(Node));
-            NotifyPropertyChanged(nameof(LeftNodeOnlyNedded));
+            NotifyPropertyChanged(nameof(LeftNodeNedded));
+            NotifyPropertyChanged(nameof(RightNodeNedded));
             NotifyPropertyChanged(nameof(BorderBrush));
             NotifyPropertyChanged(nameof(MainBorderThickNess));
-            IsEmptyOperation = (node?.Operation?.OperationType ?? OperationType.Empty) == OperationType.Empty;
         }
 
         private void Node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -196,8 +195,8 @@ namespace LazyContouring.UI.ViewModels
 
 
 
-        public bool LeftNodeOnlyNedded => node?.Operation?.LeftNodeOnlyNedded ?? true;
-        public bool IsEmptyOperation { get => isEmptyOperation; set => SetProperty(ref isEmptyOperation, value); }
+        public bool LeftNodeNedded => node?.Operation?.LeftNodeNedded ?? false;
+        public bool RightNodeNedded => node?.Operation?.RightNodeNedded ?? false;
         public NodeDirection LeftDirection => NodeDirection.Left;
         public NodeDirection RightDirection => NodeDirection.Right;
 

@@ -2,13 +2,13 @@
 {
     public sealed class NotOperation : Operation
     {
-        public override void Perform(OperationNode node)
+        protected override void Method(OperationNode node)
         {
             node.SegmentVolume = node.NodeLeft.SegmentVolume.Not();
         }
 
         public override OperationType OperationType => OperationType.Not;
-        public override bool LeftNodeOnlyNedded { get; } = true;
+        public override bool RightNodeNedded { get; } = false;
     }
 
 }

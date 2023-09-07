@@ -15,17 +15,14 @@ namespace LazyContouring.Operations
         private OperationNode nodeLeft;
         private OperationNode nodeRight;
 
-        private void Materialize(StructureSet structureSet)
+        public void Materialize(StructureSet structureSet)
         {
-            NodeLeft?.Materialize(structureSet);
-            NodeRight?.Materialize(structureSet);
-
-            if (Operation.StructureNedded)
+            /*if (Operation.StructureNedded)
             {
                 FindOrCreateStructure(structureSet);
-            }
+            }*/
 
-            Operation.Perform(this);
+            Operation.Execute(this);
         }
 
         public void InsertNode(OperationNode newNode, NodeDirection direction)
@@ -76,7 +73,7 @@ namespace LazyContouring.Operations
             {
                 newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft.NodeLeft : NodeRight.nodeLeft;
 
-                if (!newNode.Operation.LeftNodeOnlyNedded)
+                if (newNode.Operation.RightNodeNedded)
                 {
                     newNode.NodeRight = direction == NodeDirection.Left ? NodeLeft.NodeRight : NodeRight.NodeRight;
                 }

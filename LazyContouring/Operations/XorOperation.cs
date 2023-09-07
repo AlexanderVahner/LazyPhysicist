@@ -2,7 +2,7 @@
 {
     public sealed class XorOperation : Operation
     {
-        public override void Perform(OperationNode node)
+        protected override void Method(OperationNode node)
         {
             node.SegmentVolume = node.NodeLeft.SegmentVolume.Xor(node.NodeRight.SegmentVolume);
         }

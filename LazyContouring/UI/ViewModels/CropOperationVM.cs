@@ -9,11 +9,10 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class CropOperationVM : OperationVM
     {
-        private BitmapImage insideImage = ImageLoader.GetImage("CropInnerOperation.png");
-        private BitmapImage outsideImage = ImageLoader.GetImage("CropOuterOperation.png");
+        private readonly BitmapImage insideImage = ImageLoader.GetImage("CropInnerOperation.png");
+        private readonly BitmapImage outsideImage = ImageLoader.GetImage("CropOuterOperation.png");
         private BitmapImage bitmapImage;
-        private string selectedCropPart;
-        private CropOperation cropOperation;
+        private readonly CropOperation cropOperation;
         private bool insideChecked;
         private bool outsideChecked;
 

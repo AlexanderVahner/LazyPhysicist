@@ -16,9 +16,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="PerformButtom" Margin="5 5 15 0" VerticalAlignment="Top">
+        <Button x:Name="PerformButtom" Command="{Binding ExecuteCommand}" Margin="5 5 15 0" VerticalAlignment="Top">
             <Viewbox Width="40">
-                <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Caret-forward-circle.512.png"/>
+                <Image Source="{Binding ExecuteButtonImage}"/>
             </Viewbox>
         </Button>
 

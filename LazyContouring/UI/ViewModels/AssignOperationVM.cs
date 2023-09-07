@@ -9,7 +9,6 @@ namespace LazyContouring.UI.ViewModels
     public sealed class AssignOperationVM : OperationVM
     {
         private StructureVariableVM structureVariableVM;
-        private string structureId;
 
         public AssignOperationVM(OperationNode node) : base(node)
         {

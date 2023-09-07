@@ -25,11 +25,8 @@ namespace LazyContouring.UI.Views
     public partial class OperationNodeControl : UserControl
     {
         private const int arrowsMarginY = 20;
-        private const double insertPlaceSize = 18;
-        private const double insertPlaceEllipseSize = 10;
-        private const double insertPlaceEllipsePosition = 4;
+        private const double insertPlaceSize = 30;
         private const double insertPlaceFromRightPosition = 30;
-        private const double insertPlaceFromTopPosition = 11;
         private readonly Brush arrowsBrush = new SolidColorBrush(Colors.Black);
         private const double arrowsThickness = 1.0;
 
@@ -84,16 +81,13 @@ namespace LazyContouring.UI.Views
 
         private void DrawGrid()
         {
-            Visibility nodesVisibility = vM.IsEmptyOperation ? Visibility.Hidden : Visibility.Visible;
-            Visibility rightNodeVisibility = vM.LeftNodeOnlyNedded ? Visibility.Hidden : Visibility.Visible;
+            LeftDropCanvas.Visibility = vM.LeftNodeNedded ? Visibility.Visible : Visibility.Hidden;
+            RightDropCanvas.Visibility = vM.RightNodeNedded ? Visibility.Visible : Visibility.Hidden;
 
-            LeftDropCanvas.Visibility = nodesVisibility;
-            RightDropCanvas.Visibility = vM.IsEmptyOperation ? nodesVisibility : rightNodeVisibility;
+            MainGrid.ColumnDefinitions[1].Width = vM.LeftNodeNedded || vM.RightNodeNedded ? new GridLength(insertPlaceSize, GridUnitType.Pixel) : new GridLength(0); 
+            MainGrid.ColumnDefinitions[2].Width = vM.LeftNodeNedded || vM.RightNodeNedded ? new GridLength(1, GridUnitType.Auto) : new GridLength(0);
 
-            MainGrid.ColumnDefinitions[1].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(30, GridUnitType.Pixel); 
-            MainGrid.ColumnDefinitions[2].Width = vM.IsEmptyOperation ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
-
-            MainGrid.RowDefinitions[1].Height = vM.LeftNodeOnlyNedded ? new GridLength(0) : new GridLength(1, GridUnitType.Auto);
+            MainGrid.RowDefinitions[1].Height = vM.RightNodeNedded ? new GridLength(1, GridUnitType.Auto) : new GridLength(0);
         }
 
         private void InsertionDrop(object sender, DragEventArgs e)
@@ -119,12 +113,12 @@ namespace LazyContouring.UI.Views
 
             canvas.Children.Clear();
 
-            if (VM.Node.Operation.OperationType == OperationType.Empty)
+            if (direction == NodeDirection.Left && !VM.LeftNodeNedded)
             {
                 return;
             }
 
-            if (direction == NodeDirection.Right && VM.LeftNodeOnlyNedded)
+            if (direction == NodeDirection.Right && !VM.RightNodeNedded)
             {
                 return;
             }
@@ -144,7 +138,7 @@ namespace LazyContouring.UI.Views
                 StrokeThickness = arrowsThickness
             });
 
-            if (!VM.LeftNodeOnlyNedded)
+            if (VM.RightNodeNedded)
             {
                 x1 = (e.NewSize.Width  - insertPlaceFromRightPosition) / 2;
                 double y1 = direction == NodeDirection.Left ? arrowsMarginY : 0;
