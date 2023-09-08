@@ -28,7 +28,7 @@ namespace LazyContouring.UI.ViewModels
 
         private void SetNode(OperationNode node)
         {
-            if (node == null || node.Operation is AssignOperation)
+            if (node == null)
             {
                 return;
             }

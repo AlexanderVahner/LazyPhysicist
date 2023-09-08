@@ -17,6 +17,7 @@ namespace LazyContouring.Models
         private Color color = Colors.Magenta;
         private bool isTemporary = false;
         private bool isVisible = true;
+        private bool isNew;
 
         private void SetStructure(Structure structure)
         {
@@ -110,6 +111,7 @@ namespace LazyContouring.Models
         }
 
         public bool CanEditSegmentVolume => Structure?.CanEditSegmentVolume(out _) ?? false;
+        public bool IsNew { get => isNew; set => SetProperty(ref isNew, value); }
         public bool IsTemporary { get => isTemporary; set => SetProperty(ref isTemporary, value); }
         public bool IsEmpty => Structure?.IsEmpty ?? true;
         public bool IsVisible { get => isVisible; set => SetProperty(ref isVisible, value); }

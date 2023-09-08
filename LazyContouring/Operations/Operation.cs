@@ -22,11 +22,11 @@ namespace LazyContouring.Operations
         {
             if (LeftNodeNedded)
             {
-                node.NodeLeft.Operation.ExecuteMethod(node);
+                node.NodeLeft.Operation.ExecuteMethod(node.NodeLeft);
             }
             if (RightNodeNedded)
             {
-                node.NodeRight.Operation.ExecuteMethod(node);
+                node.NodeRight.Operation.ExecuteMethod(node.NodeRight);
             }
             Method(node);
         }

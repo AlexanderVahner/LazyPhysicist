@@ -65,6 +65,9 @@
     <Compile Include="Graphics\StructureStorage.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="LazyContouring.cs" />
+    <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Models\ViewPlaneModel.cs" />
+    <Compile Include="Models\PatientModel.cs" />
     <Compile Include="Models\StructureSetModel.cs" />
     <Compile Include="Operations\AndOperation.cs" />
     <Compile Include="Operations\AssignOperation.cs" />

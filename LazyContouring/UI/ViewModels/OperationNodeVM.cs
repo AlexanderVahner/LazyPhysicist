@@ -25,7 +25,7 @@ namespace LazyContouring.UI.ViewModels
         private OperationVM operationVM;
         private StructureVariableVM structureVarVM;
 
-        private Thickness mainBorderThickNess;
+        private Thickness mainBorderThickness;
         private Brush borderBrush; 
         private Visibility removeDropPlaceVisibility = Visibility.Collapsed;
 
@@ -36,8 +36,7 @@ namespace LazyContouring.UI.ViewModels
 
         public OperationNodeVM()
         {
-            mainBorderThickNess = defaultBorderThickness;
-
+            mainBorderThickness = defaultBorderThickness;
         }
 
         private void SetNode(OperationNode newNode)
@@ -53,13 +52,13 @@ namespace LazyContouring.UI.ViewModels
 
             StructureVarVM = node?.StructureVar != null ? new StructureVariableVM(node?.StructureVar) : null;
             BorderBrush = StructureVarVM?.StructureVariable != null ? StructureVarVM.StrokeBrush : defaultBorderBrush;
-            MainBorderThickNess = StructureVarVM?.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
+            MainBorderThickness = StructureVarVM?.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
 
             NotifyPropertyChanged(nameof(Node));
             NotifyPropertyChanged(nameof(LeftNodeNedded));
             NotifyPropertyChanged(nameof(RightNodeNedded));
             NotifyPropertyChanged(nameof(BorderBrush));
-            NotifyPropertyChanged(nameof(MainBorderThickNess));
+            NotifyPropertyChanged(nameof(MainBorderThickness));
         }
 
         private void Node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -78,7 +77,7 @@ namespace LazyContouring.UI.ViewModels
                 case nameof(node.StructureVar):
                     StructureVarVM.StructureVariable = node.StructureVar;
                     BorderBrush = StructureVarVM.StructureVariable != null ? StructureVarVM.StrokeBrush : defaultBorderBrush;
-                    MainBorderThickNess = StructureVarVM.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
+                    MainBorderThickness = StructureVarVM.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
                     break;
             }
         }
@@ -150,7 +149,7 @@ namespace LazyContouring.UI.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(StructureVarVM.StructureVariable):
-                    MainBorderThickNess = StructureVarVM.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
+                    MainBorderThickness = StructureVarVM.StructureVariable != null ? borderThicknessWihtStructure : defaultBorderThickness;
                     break;
                 case nameof(structureVarVM.StrokeBrush):
                     BorderBrush = StructureVarVM.StructureVariable != null ? StructureVarVM.StrokeBrush : defaultBorderBrush;
@@ -200,7 +199,7 @@ namespace LazyContouring.UI.ViewModels
         public NodeDirection LeftDirection => NodeDirection.Left;
         public NodeDirection RightDirection => NodeDirection.Right;
 
-        public Thickness MainBorderThickNess { get => mainBorderThickNess; set => SetProperty(ref mainBorderThickNess, value); }
+        public Thickness MainBorderThickness { get => mainBorderThickness; set => SetProperty(ref mainBorderThickness, value); }
         public Brush BorderBrush { get => borderBrush; set => SetProperty(ref borderBrush, value); }
         public Visibility RemoveDropPlaceVisibility { get => removeDropPlaceVisibility; set => SetProperty(ref removeDropPlaceVisibility, value); }
     }

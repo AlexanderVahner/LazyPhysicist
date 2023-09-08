@@ -12,68 +12,58 @@ namespace LazyContouring.Models
     {
         private StructureSet structureSet;
         private readonly Patient patient;
+        private ObservableCollection<StructureVariable> structures;
 
-        public StructureSetModel(Patient patient)
+        public StructureSetModel(StructureSet ss)
         {
-            this.patient = patient;
-
-            InitStructureSets();
+            structureSet = ss;
+            patient = ss.Patient;
         }
 
-        private void InitStructureSets()
+        private ObservableCollection<StructureVariable> InitStructures()
         {
-            StructureSets.Clear();
-            foreach (var ss in patient.StructureSets.OrderBy(ss => ss.Id))
-            {
-                StructureSets.Add(ss);
-            }
-        }
-
-        private void SetStructureSet(StructureSet structureSet)
-        {
-            this.structureSet = structureSet;
-            Structures.Clear();
-
+            var structCollection = new ObservableCollection<StructureVariable>();
             foreach (var structure in structureSet.Structures)
             {
-                var strVar = new StructureVariable
-                {
-                    Structure = structure
-                };
-                Structures.Add(strVar);
+                structCollection.Add(new StructureVariable() { Structure = structure });
             }
+            return structCollection;
+        }
+
+        public StructureSetModel DuplicateStructureSet()
+        {
+            StructureSetModel result = null;
+            if (StructureSet != null)
+            {
+                var newSs = StructureSet.Copy();
+                result = new StructureSetModel(newSs);
+            }
+
+            return result;
         }
 
         public void AddStructure(StructureVariable structure)
         {
             patient.BeginModifications();
-            if (StructureSet != null &&  structure != null && StructureSet.CanAddStructure(structure.DicomType, structure.StructureId))
+            if (structureSet != null && structure != null && structureSet.CanAddStructure(structure.DicomType, structure.StructureId))
             {
-                structure.Structure = StructureSet.AddStructure(structure.DicomType, structure.StructureId);
+                structure.Structure = structureSet.AddStructure(structure.DicomType, structure.StructureId);
+                structure.IsNew = true;
+                Structures.Add(structure);
             }
-            Structures.Add(structure);
         }
 
         public void RemoveStructure(StructureVariable structure)
         {
             patient.BeginModifications();
-            if (StructureSet != null && structure?.Structure != null && StructureSet.CanRemoveStructure(structure.Structure))
+            if (structureSet != null && structure?.Structure != null && structureSet.CanRemoveStructure(structure.Structure))
             {
-                StructureSet.RemoveStructure(structure.Structure);
+                structureSet.RemoveStructure(structure.Structure);
                 Structures.Remove(structure);
             }
         }
 
-        public StructureSet DuplicateStructureSet(StructureSet structureSet)
-        {
-            patient.BeginModifications();
-            var newSs = structureSet.Copy();
-            InitStructureSets();            
-            return newSs;
-        }
-
-        public StructureSet StructureSet { get => structureSet; set => SetStructureSet(value); }
-        public ObservableCollection<StructureSet> StructureSets { get; } = new ObservableCollection<StructureSet>();
-        public ObservableCollection<StructureVariable> Structures { get; } = new ObservableCollection<StructureVariable>();
+        public StructureSet StructureSet => structureSet;
+        public ObservableCollection<StructureVariable> Structures => structures ?? (structures = InitStructures());
     }
 }

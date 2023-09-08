@@ -45,6 +45,8 @@ namespace VMS.TPS
                 return;
             }
 
+            var patientModel = new PatientModel(args.Patient);
+
             var ssModel = new StructureSetModel(args.Patient) { StructureSet = args.StructureSet };
 
             var mainVM = new MainVM(ssModel);
