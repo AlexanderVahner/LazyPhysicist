@@ -63,6 +63,7 @@
     <Compile Include="Graphics\SliceCanvas.cs" />
     <Compile Include="Graphics\StructureSetStorage.cs" />
     <Compile Include="Graphics\StructureStorage.cs" />
+    <Compile Include="Graphics\VoxelToPixelConverter.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="LazyContouring.cs" />
     <Compile Include="Models\ImageModel.cs" />
