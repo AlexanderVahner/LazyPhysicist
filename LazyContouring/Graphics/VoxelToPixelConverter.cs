@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace LazyContouring.Graphics
 {
-    public sealed class VoxelToPixelConverter
+    public sealed class VoxelToPixelConverter : IVoxelToPixelConverter
     {
         private int windowWidth = 2000;
         private int windowLevel = 2000;
@@ -40,27 +40,28 @@ namespace LazyContouring.Graphics
             return result;
         }
 
-        public void TuneConverter()
+        private void SetupConverter()
         {
             blackValue = windowLevel - windowWidth / 2;
+            whiteValue = windowLevel + windowWidth / 2;
         }
 
-        public int WindowWidth 
-        { 
+        public int WindowWidth
+        {
             get => windowWidth;
             set
             {
                 windowWidth = value;
-                TuneConverter();
+                SetupConverter();
             }
         }
-        public int WindowLevel 
-        { 
+        public int WindowLevel
+        {
             get => windowLevel;
             set
             {
                 windowLevel = value;
-                TuneConverter();
+                SetupConverter();
             }
         }
     }

@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Graphics\ContourStorage.cs" />
     <Compile Include="Graphics\ContourSlice.cs" />
+    <Compile Include="Graphics\IVoxelToPixelConverter.cs" />
     <Compile Include="Graphics\SliceCanvas.cs" />
     <Compile Include="Graphics\StructureSetStorage.cs" />
     <Compile Include="Graphics\StructureStorage.cs" />
