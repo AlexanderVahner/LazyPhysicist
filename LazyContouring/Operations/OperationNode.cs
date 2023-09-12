@@ -1,5 +1,6 @@
 ﻿using LazyContouring.Models;
 using LazyPhysicist.Common;
+using System;
 using System.Linq;
 using System.Xml.Serialization;
 using VMS.TPS.Common.Model.API;
@@ -8,7 +9,7 @@ namespace LazyContouring.Operations
 {
     public enum NodeDirection { Left, Right };
 
-    public sealed class OperationNode : Notifier
+    public sealed class OperationNode : Notifier, ICloneable
     {
         private SegmentVolume segmentVolume;
         private StructureVariable structureVar;
@@ -123,6 +124,18 @@ namespace LazyContouring.Operations
             {
                 StructureVar.Structure = structureSet.AddStructure(StructureVar.DicomType, StructureVar.StructureId);
             }
+        }
+
+        public object Clone()
+        {
+            return new OperationNode
+            {
+                IsRootNode = this.IsRootNode,
+                StructureVar = this.StructureVar,
+                Operation = (Operation)this.Operation.Clone(),
+                NodeLeft = (OperationNode)this.NodeLeft?.Clone(),
+                NodeRight = (OperationNode)this.NodeRight?.Clone()
+            };
         }
 
         public SegmentVolume SegmentVolume

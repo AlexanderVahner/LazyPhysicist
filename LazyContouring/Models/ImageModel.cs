@@ -50,9 +50,9 @@ namespace LazyContouring.Models
             {
                 currentPlaneIndex = 0;
             }
-            else if (index >= ZSize)
+            else if (index >= zSize)
             {
-                currentPlaneIndex = ZSize - 1;
+                currentPlaneIndex = zSize - 1;
             }
             else
             {
@@ -64,12 +64,11 @@ namespace LazyContouring.Models
 
         public void RepaintBitmap()
         {
-            image.GetVoxels(currentPlaneIndex, voxelBuffer);
-
             try
             {
                 // Reserve the back buffer for updates.
                 bitmap.Lock();
+                image.GetVoxels(currentPlaneIndex, voxelBuffer);
 
                 unsafe
                 {
@@ -81,11 +80,7 @@ namespace LazyContouring.Models
                         for (int x = 0; x < ySize; x++)
                         {
                             *((int*)pBackBuffer) = Converter.VoxelToBgra32(voxelBuffer[x, y]);
-
                             pBackBuffer += 4;
-
-                            // Specify the area of the bitmap that changed.
-                            //bitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
                         }
                     }
                     // Specify the area of the bitmap that changed.
@@ -106,7 +101,7 @@ namespace LazyContouring.Models
         public double YRes => yRes;
         public double ZRes => zRes;
         public VVector Origin => origin;
-        public IVoxelToPixelConverter Converter { get; set; } = new VoxelToPixelConverter();
+        public IVoxelToPixelConverter Converter { get; set; }
         public int CurrentPlaneIndex { get => currentPlaneIndex; set => SetPlane(value); }
 
         public WriteableBitmap PlaneBitmap => bitmap;

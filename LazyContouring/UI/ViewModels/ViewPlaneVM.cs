@@ -1,4 +1,5 @@
-﻿using LazyContouring.Models;
+﻿using LazyContouring.Graphics;
+using LazyContouring.Models;
 using LazyPhysicist.Common;
 using System.Collections.Specialized;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace LazyContouring.UI.ViewModels
         private void SetStructureSet(StructureSetModel ss)
         {
             structureSet = ss;
-            ImageModel = new ImageModel(structureSet.StructureSet.Image);
+            ImageModel = new ImageModel(structureSet.StructureSet.Image) { Converter = new VoxelToPixelConverter() };
             PlaneCount = ImageModel.ZSize;
             PlaneBitmap = ImageModel.PlaneBitmap;
             

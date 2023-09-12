@@ -58,12 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphics\ContourStorage.cs" />
-    <Compile Include="Graphics\ContourSlice.cs" />
     <Compile Include="Graphics\IVoxelToPixelConverter.cs" />
-    <Compile Include="Graphics\SliceCanvas.cs" />
-    <Compile Include="Graphics\StructureSetStorage.cs" />
-    <Compile Include="Graphics\StructureStorage.cs" />
     <Compile Include="Graphics\VoxelToPixelConverter.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="LazyContouring.cs" />
@@ -94,27 +89,23 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ScriptArgs.cs" />
-    <Compile Include="Graphics\ImageSlice.cs" />
-    <Compile Include="Graphics\ImageStorage.cs" />
-    <Compile Include="UI\ViewModels\AndOperationVM.cs" />
-    <Compile Include="UI\ViewModels\AssignOperationVM.cs" />
-    <Compile Include="UI\ViewModels\AsymmetricMarginOperationVM.cs" />
-    <Compile Include="UI\ViewModels\CropOperationVM.cs" />
-    <Compile Include="UI\ViewModels\EmptyOperationVM.cs" />
-    <Compile Include="UI\ViewModels\MarginOperationVM.cs" />
-    <Compile Include="UI\ViewModels\NotOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\AndOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\AssignOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\AsymmetricMarginOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\CropOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\EmptyOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\MarginOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\NotOperationVM.cs" />
     <Compile Include="UI\ViewModels\OperationNodeVM.cs" />
     <Compile Include="UI\ViewModels\OperationStringVM.cs" />
     <Compile Include="UI\ViewModels\OperationsVM.cs" />
-    <Compile Include="UI\ViewModels\OperationVM.cs" />
-    <Compile Include="UI\ViewModels\OrOperationVM.cs" />
-    <Compile Include="UI\ViewModels\SliceVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\OperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\OrOperationVM.cs" />
     <Compile Include="UI\ViewModels\MainVM.cs" />
-    <Compile Include="Graphics\VoxelsToPixels.cs" />
     <Compile Include="UI\ViewModels\StructureVariableVM.cs" />
-    <Compile Include="UI\ViewModels\SubOperationVM.cs" />
-    <Compile Include="UI\ViewModels\WallOperationVM.cs" />
-    <Compile Include="UI\ViewModels\XorOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\SubOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\WallOperationVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\XorOperationVM.cs" />
     <Compile Include="UI\Views\AssignOperationControl.xaml.cs">
       <DependentUpon>AssignOperationControl.xaml</DependentUpon>
     </Compile>

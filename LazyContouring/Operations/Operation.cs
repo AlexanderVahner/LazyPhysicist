@@ -1,4 +1,5 @@
 ﻿using LazyPhysicist.Common;
+using System;
 using System.Xml.Serialization;
 
 namespace LazyContouring.Operations
@@ -16,7 +17,7 @@ namespace LazyContouring.Operations
     [XmlInclude(typeof(SubOperation))]
     [XmlInclude(typeof(WallOperation))]
     [XmlInclude(typeof(XorOperation))]
-    public abstract class Operation : Notifier
+    public abstract class Operation : Notifier, ICloneable
     {
         public void Execute(OperationNode node)
         {
@@ -67,6 +68,12 @@ namespace LazyContouring.Operations
         }
 
         protected abstract void Method(OperationNode node);
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
         public abstract OperationType OperationType { get; }
         public virtual bool StructureNedded { get; } = false;
         public virtual bool LeftNodeNedded { get; } = true;
