@@ -29,7 +29,7 @@
             result |= pixel << 0;   // B
 
             return result;
-        }    
+        }
     }
 }
 

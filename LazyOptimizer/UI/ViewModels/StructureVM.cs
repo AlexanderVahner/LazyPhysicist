@@ -58,8 +58,11 @@ namespace LazyOptimizer.UI.ViewModels
         public bool IsTarget => StructureInfo.IsTarget(CachedStructureId);
         public Color Color { get => PlanStructure?.StructureInfo?.Color ?? Color.FromRgb(200, 200, 200); }
         public SolidColorBrush Brush { get => new SolidColorBrush(Color); }
-        public Visibility PlanTargetAttentionVisible { get => 
-                IsTarget && currentPlan.TargetId != (PlanStructure?.Id ?? "") 
-                ? Visibility.Visible : Visibility.Collapsed; }
+        public Visibility PlanTargetAttentionVisible
+        {
+            get =>
+                IsTarget && currentPlan.TargetId != (PlanStructure?.Id ?? "")
+                ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }

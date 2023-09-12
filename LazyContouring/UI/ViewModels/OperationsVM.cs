@@ -1,14 +1,8 @@
 ﻿using LazyContouring.Operations;
 using LazyContouring.UI.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Xml.Linq;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -16,7 +10,7 @@ namespace LazyContouring.UI.ViewModels
     {
         private readonly Grid grid = new Grid();
 
-        public OperationsVM() 
+        public OperationsVM()
         {
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.Background = new SolidColorBrush(Color.FromRgb(230, 230, 230));

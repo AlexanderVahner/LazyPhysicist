@@ -1,18 +1,6 @@
 ﻿using LazyContouring.UI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LazyContouring.UI.Views
 {
@@ -24,15 +12,33 @@ namespace LazyContouring.UI.Views
         public SliceControl()
         {
             InitializeComponent();
+            PlaneViewBox.MouseWheel += PlaneViewBox_MouseWheel;
         }
 
-        private SliceVM viewModel;
-        public SliceVM ViewModel
+        private void PlaneViewBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (ViewModel == null)
+            {
+                return;
+            }
+
+            if (e.Delta > 0)
+            {
+                ViewModel.CurrentPlaneIndex++;
+            }
+            else if (e.Delta < 0)
+            {
+                ViewModel.CurrentPlaneIndex--;
+            }
+        }
+
+        private ViewPlaneVM viewModel;
+        public ViewPlaneVM ViewModel
         {
             get => viewModel;
             set
             {
-                StructuresViewBox.Child = value?.SliceCanvas;
+                PlaneViewBox.Child = value?.PlaneCanvas;
                 viewModel = value;
             }
         }

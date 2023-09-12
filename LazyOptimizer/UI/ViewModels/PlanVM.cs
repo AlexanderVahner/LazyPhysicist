@@ -66,15 +66,17 @@ namespace LazyOptimizer.UI.ViewModels
         public string Description { get => SourceModel.Description; set => SetProperty((v) => { SourceModel.Description = v; }, value); }
         public bool IsDescriptionReadOnly => planCachedModel == null;
         public long SelectionFrequency { get => SourceModel.SelectionFrequency; set => SetProperty((v) => { SourceModel.SelectionFrequency = v; }, value); }
-        public bool IsStarred { 
-            get => planCachedModel?.IsStarred ?? false; 
-            set => SetProperty((v) => { 
+        public bool IsStarred
+        {
+            get => planCachedModel?.IsStarred ?? false;
+            set => SetProperty((v) =>
+            {
                 if (planCachedModel != null)
                 {
                     planCachedModel.IsStarred = v;
                     NotifyPropertyChanged(nameof(StarImageSource));
                 }
-                    
+
             }, value);
         }
         public Visibility MergeLinkVisibility { get => mergeLinkVisibility; set => SetProperty(ref mergeLinkVisibility, value); }

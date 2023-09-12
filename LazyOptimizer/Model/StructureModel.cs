@@ -1,6 +1,5 @@
 ﻿using ESAPIInfo.Plan;
 using ESAPIInfo.Structures;
-using LazyOptimizer.App;
 using LazyOptimizerDataService.DBModel;
 using LazyPhysicist.Common;
 using System.Collections.Generic;

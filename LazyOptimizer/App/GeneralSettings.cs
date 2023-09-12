@@ -1,13 +1,8 @@
 ﻿using Common;
-using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyOptimizer.App
 {
@@ -42,7 +37,7 @@ namespace LazyOptimizer.App
                 {
                     Logger.Write(null, e.Message, LogMessageType.Error);
                 }
-                
+
             }
 
             settings.CheckUserPath();

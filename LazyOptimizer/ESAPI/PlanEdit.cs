@@ -102,24 +102,24 @@ namespace LazyOptimizer.ESAPI
             {
                 case ObjectiveType.Point:
                     plan.Plan.OptimizationSetup.AddPointObjective(
-                        objective.Structure, 
+                        objective.Structure,
                         (OptimizationObjectiveOperator)(int)objective.Operator,
-                        objectiveDose, 
-                        objective.Volume, 
+                        objectiveDose,
+                        objective.Volume,
                         objective.Priority);
                     break;
                 case ObjectiveType.Mean:
                     plan.Plan.OptimizationSetup.AddMeanDoseObjective(
                         objective.Structure,
-                        objectiveDose, 
+                        objectiveDose,
                         objective.Priority);
                     break;
                 case ObjectiveType.EUD:
                     plan.Plan.OptimizationSetup.AddEUDObjective(
-                        objective.Structure, 
+                        objective.Structure,
                         (OptimizationObjectiveOperator)(int)objective.Operator,
-                        objectiveDose, 
-                        objective.ParameterA, 
+                        objectiveDose,
+                        objective.ParameterA,
                         objective.Priority);
                     break;
                 case ObjectiveType.Unknown:

@@ -4,9 +4,6 @@ using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Xml.Serialization;
 
 namespace LazyOptimizer.App
 {
@@ -17,7 +14,7 @@ namespace LazyOptimizer.App
         private static string settingsFileName;
         private static string settingsFullFileName;
         private static string sqliteDBName;
-        
+
 
         public static UserSettings ReadUserSettings(string settingsPath, string userId)
         {
@@ -120,7 +117,7 @@ namespace LazyOptimizer.App
                 settings.approvalStatuses.Add(new CheckedApprovaStatus(PlanSetupApprovalStatus.UnPlannedTreatment, false));
             }
 
-            settings.approvalStatuses.ForEach(i => i.PropertyChanged += (s, e) => 
+            settings.approvalStatuses.ForEach(i => i.PropertyChanged += (s, e) =>
             {
                 if (settings.ShowCheckedApprovalStatusOnly)
                 {

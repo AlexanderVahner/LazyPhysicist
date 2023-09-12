@@ -1,18 +1,5 @@
 ﻿using LazyOptimizer.UI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LazyOptimizer.UI.Views
 {
@@ -27,9 +14,9 @@ namespace LazyOptimizer.UI.Views
         }
 
         private DvhVM viewModel;
-        public DvhVM ViewModel 
-        { 
-            get => viewModel; 
+        public DvhVM ViewModel
+        {
+            get => viewModel;
             set
             {
                 Content = value?.Canvas;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Models
@@ -32,6 +27,7 @@ namespace LazyContouring.Models
 
         public StructureSetModel DuplicateStructureSet()
         {
+            patient.BeginModifications();
             StructureSetModel result = null;
             if (StructureSet != null)
             {
@@ -63,7 +59,13 @@ namespace LazyContouring.Models
             }
         }
 
+        public override string ToString()
+        {
+            return Id;
+        }
+
         public StructureSet StructureSet => structureSet;
+        public string Id => structureSet.Id;
         public ObservableCollection<StructureVariable> Structures => structures ?? (structures = InitStructures());
     }
 }

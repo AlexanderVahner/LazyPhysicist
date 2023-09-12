@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using VMS.TPS.Common.Model.API;
@@ -67,7 +67,7 @@ namespace LazyContouring.Graphics
                 // Release the back buffer and make it available for display.
                 CTBitmap.Unlock();
             }
-        } 
+        }
 
         public int[,] GetVoxels(int planeIndex)
         {

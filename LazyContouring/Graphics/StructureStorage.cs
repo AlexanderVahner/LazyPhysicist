@@ -56,8 +56,8 @@ namespace LazyContouring.Graphics
         public Structure Structure => structure;
         public Path Path => path ?? (path = new Path() { Data = Geometry });
         public PathGeometry Geometry => geometry ?? (geometry = new PathGeometry());
-        public Color Color 
-        { 
+        public Color Color
+        {
             get => color;
             set
             {
@@ -65,21 +65,21 @@ namespace LazyContouring.Graphics
                 StrokeBrush = new SolidColorBrush(color);
             }
         }
-        public Brush StrokeBrush 
-        { 
+        public Brush StrokeBrush
+        {
             get => strokeBrush;
             set
             {
                 strokeBrush = value;
-            } 
+            }
         }
-        public double StrokeThickness 
-        { 
+        public double StrokeThickness
+        {
             get => strokeThickness;
             set
             {
                 strokeThickness = value;
-            } 
+            }
         }
 
     }

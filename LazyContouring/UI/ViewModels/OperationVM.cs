@@ -1,16 +1,6 @@
-﻿using LazyContouring.Models;
-using LazyContouring.Operations;
+﻿using LazyContouring.Operations;
 using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace LazyContouring.UI.ViewModels
 {

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-
-namespace LazyContouring.Graphics
+﻿namespace LazyContouring.Graphics
 {
     public sealed class VoxelToPixelConverter : IVoxelToPixelConverter
     {
-        private int windowWidth = 2000;
-        private int windowLevel = 2000;
+        private int windowWidth = 1500;
+        private int windowLevel = 1250;
         private int blackValue;
         private int whiteValue;
+        private double pixelColorStep;
+        public VoxelToPixelConverter()
+        {
+            SetupConverter();
+        }
 
         public int VoxelToBgra32(int value, byte opacity = 255)
         {
@@ -29,7 +27,7 @@ namespace LazyContouring.Graphics
             }
             else
             {
-                pixel = (int)((value - blackValue) * 255.0 / (whiteValue - blackValue));
+                pixel = (int)((value - blackValue) * pixelColorStep);
             }
 
             result = opacity << 24; // A
@@ -44,6 +42,7 @@ namespace LazyContouring.Graphics
         {
             blackValue = windowLevel - windowWidth / 2;
             whiteValue = windowLevel + windowWidth / 2;
+            pixelColorStep = 255.0 / windowWidth;
         }
 
         public int WindowWidth

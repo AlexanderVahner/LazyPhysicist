@@ -1,20 +1,8 @@
 ﻿using LazyContouring.Models;
-using LazyContouring.Operations;
 using LazyContouring.UI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LazyContouring.UI.Views
 {
@@ -30,44 +18,19 @@ namespace LazyContouring.UI.Views
 
         private void Viewbox_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (MainVM == null)
-            {
-                return;
-            }
 
-            if (e.Delta > 0)
-            {
-                MainVM.CurrentSlice++;
-                MainVM.SliceCanvas.CurrentSlice++;
-            }
-            else if (e.Delta < 0)
-            {
-                MainVM.CurrentSlice--;
-                MainVM.SliceCanvas.CurrentSlice--;
-            }
         }
 
-        private MainVM mainVM;
-        public MainVM MainVM
+        private MainVM vm;
+        public MainVM ViewModel
         {
-            get
-            {
-                if (mainVM == null)
-                {
-                    if (DataContext is MainVM vm)
-                    {
-                        mainVM = vm;
-                        SliceGrid.Children.Add(vm.SliceControl);
-                        //OperationsGrid.Children.Add(vm.OperationPage);
-                    }
-                }
-                return mainVM;
-            }
+            get => vm;
             set
             {
-                mainVM = value;
-                SliceGrid.Children.Add(value.SliceControl);
-                //OperationsGrid.Children.Add(value.OperationPage);
+                vm = value;
+                DataContext = vm;
+                SliceGrid.Children.Clear();
+                SliceGrid.Children.Add(vm.SliceControl);
             }
         }
 
@@ -89,7 +52,7 @@ namespace LazyContouring.UI.Views
 
         private void AddStringNodeDrop(object sender, DragEventArgs e)
         {
-            MainVM.AddNodeStringFromDrop(e.Data);
+            ViewModel.AddNodeStringFromDrop(e.Data);
         }
     }
 }

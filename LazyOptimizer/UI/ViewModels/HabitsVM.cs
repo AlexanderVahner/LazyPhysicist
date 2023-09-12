@@ -1,12 +1,10 @@
 ﻿using ESAPIInfo.Plan;
 using LazyOptimizer.App;
 using LazyOptimizer.Model;
-using LazyPhysicist.Common;
 using LazyOptimizer.UI.Views;
+using LazyPhysicist.Common;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.ComponentModel.Design;
 
 namespace LazyOptimizer.UI.ViewModels
 {

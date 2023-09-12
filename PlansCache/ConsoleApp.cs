@@ -57,7 +57,7 @@ namespace PlansCache
             {
 
                 Logger.Write(app, $"Welcome, {app.CurrentUser.Name}!", LogMessageType.Info);
-                
+
 
                 IEnumerable<PatientSummary> summaries;
 

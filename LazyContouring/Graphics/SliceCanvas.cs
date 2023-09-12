@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LazyContouring.Graphics
 {
@@ -13,7 +9,7 @@ namespace LazyContouring.Graphics
         private readonly StructureSetStorage structureSetStorage;
         private readonly ImageStorage imageStorage;
 
-        
+
 
         public SliceCanvas(StructureSetStorage structureSetStorage, ImageStorage imageStorage)
         {
@@ -23,11 +19,11 @@ namespace LazyContouring.Graphics
             Width = imageStorage.XSize;
             Height = imageStorage.YSize;
 
-            Children.Add(new Image() 
-            { 
-                Source = CTBitmap, 
-                Width = Width, 
-                Height = Height 
+            Children.Add(new Image()
+            {
+                Source = CTBitmap,
+                Width = Width,
+                Height = Height
             });
 
             foreach (var structure in structureSetStorage.Structures)

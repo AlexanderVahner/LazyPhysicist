@@ -1,11 +1,21 @@
-﻿using LazyContouring.Models;
-using LazyPhysicist.Common;
-using VMS.TPS.Common.Model.API;
+﻿using LazyPhysicist.Common;
+using System.Xml.Serialization;
 
 namespace LazyContouring.Operations
 {
     public enum OperationType { Empty, Assign, And, Or, Not, Sub, Xor, Wall, Margin, AsymmetricMargin, Crop, Unknown }
 
+    [XmlInclude(typeof(AndOperation))]
+    [XmlInclude(typeof(AssignOperation))]
+    [XmlInclude(typeof(AsymmetricMarginOperation))]
+    [XmlInclude(typeof(CropOperation))]
+    [XmlInclude(typeof(EmptyOperation))]
+    [XmlInclude(typeof(MarginOperation))]
+    [XmlInclude(typeof(NotOperation))]
+    [XmlInclude(typeof(OrOperation))]
+    [XmlInclude(typeof(SubOperation))]
+    [XmlInclude(typeof(WallOperation))]
+    [XmlInclude(typeof(XorOperation))]
     public abstract class Operation : Notifier
     {
         public void Execute(OperationNode node)

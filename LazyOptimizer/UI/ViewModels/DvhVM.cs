@@ -58,7 +58,7 @@ namespace LazyOptimizer.UI.ViewModels
 
 
         private IEnumerable<StructureVM> _structures;
-        
+
 
         public DvhVM()
         {
@@ -274,7 +274,7 @@ namespace LazyOptimizer.UI.ViewModels
         {
             for (double y = volumeGridStep; y < gridVolume; y += volumeGridStep)
             {
-               AddCaption(y.ToString("F0"), borderLeft - volumeCaptionMarginFromGrid, GridBottom - y * GridYMultiplier - volumeCaptionAlignment);
+                AddCaption(y.ToString("F0"), borderLeft - volumeCaptionMarginFromGrid, GridBottom - y * GridYMultiplier - volumeCaptionAlignment);
             }
 
             for (double x = doseGridStep; x <= gridDose; x += doseGridStep)
@@ -299,7 +299,7 @@ namespace LazyOptimizer.UI.ViewModels
             {
                 return;
             }
-                        
+
             for (double y = volumeGridStep; y < gridVolume; y += volumeGridStep)
             {
                 AddGridLine(GridLeft, GridTop + y * GridYMultiplier, GridRight, GridTop + y * GridYMultiplier);

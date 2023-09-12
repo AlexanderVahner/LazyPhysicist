@@ -2,13 +2,8 @@
 using LazyContouring.UI.ViewModels;
 using LazyContouring.UI.Views;
 using ScriptArgsNameSpace;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using VMS.TPS.Common.Model.API;
 
@@ -46,20 +41,12 @@ namespace VMS.TPS
             }
 
             var patientModel = new PatientModel(args.Patient);
-
-            var ssModel = new StructureSetModel(args.Patient) { StructureSet = args.StructureSet };
-
-            var mainVM = new MainVM(ssModel);
-            mainVM.Init();
-
-            var mainPage = new MainPage() { DataContext = mainVM };
-            mainPage.MainVM = mainVM;
+            var mainVM = new MainVM(patientModel, args);
+            var mainPage = new MainPage() { ViewModel = mainVM };
 
             args.Window.Content = mainPage;
             args.Window.Title = "LazyContouring";
             args.Window.WindowState = WindowState.Maximized;
-
-            mainVM.PaintSlice(100);
         }
     }
 }

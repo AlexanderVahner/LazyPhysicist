@@ -1,19 +1,9 @@
 ﻿using LazyContouring.Models;
 using LazyContouring.Operations;
-using LazyContouring.UI.Views;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -26,13 +16,13 @@ namespace LazyContouring.UI.ViewModels
         private StructureVariableVM structureVarVM;
 
         private Thickness mainBorderThickness;
-        private Brush borderBrush; 
+        private Brush borderBrush;
         private Visibility removeDropPlaceVisibility = Visibility.Collapsed;
 
         private readonly Brush defaultBorderBrush = new SolidColorBrush(Colors.Black);
         private readonly Thickness defaultBorderThickness = new Thickness(1);
         private readonly Thickness borderThicknessWihtStructure = new Thickness(3);
-        
+
 
         public OperationNodeVM()
         {
@@ -158,7 +148,7 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public EventHandler<OperationNode> ReplaceNeeded;
-        
+
         public OperationNode Node { get => node; set => SetNode(value); }
         public OperationVM OperationVM { get => operationVM; private set => SetProperty(ref operationVM, value); }
         public OperationNodeVM NodeLeftVM

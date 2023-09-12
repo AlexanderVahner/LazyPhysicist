@@ -1,14 +1,10 @@
 ﻿using LazyContouring.Graphics;
-using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using VMS.TPS.Common.Model.API;
+using VMS.TPS.Common.Model.Types;
 
 namespace LazyContouring.Models
 {
@@ -16,30 +12,36 @@ namespace LazyContouring.Models
     {
         private readonly Image image;
         private readonly int[,] voxelBuffer;
+        private readonly WriteableBitmap bitmap;
+        private int currentPlaneIndex;
         private readonly int xSize;
         private readonly int ySize;
         private readonly int zSize;
-        private readonly WriteableBitmap bitmap;
-        private int currentPlaneIndex;
+        private readonly double xRes;
+        private readonly double yRes;
+        private readonly double zRes;
+        private readonly VVector origin;
 
         public ImageModel(Image image)
         {
             this.image = image;
-            if (image != null)
-            {
-                xSize = image.XSize;
-                ySize = image.YSize;
-                zSize = image.ZSize;
-                voxelBuffer = new int[xSize, ySize];
+            xSize = image.XSize;
+            ySize = image.YSize;
+            zSize = image.ZSize;
+            xRes = image.XRes;
+            yRes = image.YRes;
+            zRes = image.ZRes;
+            origin = image.Origin;
 
-                bitmap = new WriteableBitmap(
-                    xSize,
-                    ySize,
-                    96,
-                    96,
-                    PixelFormats.Bgra32,
-                    null);
-            }
+            voxelBuffer = new int[xSize, ySize];
+
+            bitmap = new WriteableBitmap(
+                xSize,
+                ySize,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null);
         }
 
         private void SetPlane(int index)
@@ -48,46 +50,46 @@ namespace LazyContouring.Models
             {
                 currentPlaneIndex = 0;
             }
-            else if (index >= zSize)
+            else if (index >= ZSize)
             {
-                currentPlaneIndex = zSize - 1;
+                currentPlaneIndex = ZSize - 1;
             }
             else
             {
                 currentPlaneIndex = index;
             }
 
-            RepaintBitmap(currentPlaneIndex);
+            RepaintBitmap();
         }
 
-        public void RepaintBitmap(int index)
+        public void RepaintBitmap()
         {
-            Image.GetVoxels(index, voxelBuffer);
+            image.GetVoxels(currentPlaneIndex, voxelBuffer);
 
             try
             {
                 // Reserve the back buffer for updates.
-                PlaneBitmap.Lock();
+                bitmap.Lock();
 
                 unsafe
                 {
                     // Get a pointer to the back buffer.
-                    IntPtr pBackBuffer = PlaneBitmap.BackBuffer;
+                    IntPtr pBackBuffer = bitmap.BackBuffer;
 
-                    for (int y = 0; y < ySize; y++)
+                    for (int y = 0; y < xSize; y++)
                     {
-                        for (int x = 0; x < xSize; x++)
+                        for (int x = 0; x < ySize; x++)
                         {
                             *((int*)pBackBuffer) = Converter.VoxelToBgra32(voxelBuffer[x, y]);
 
                             pBackBuffer += 4;
 
                             // Specify the area of the bitmap that changed.
-                            //SliceBitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
+                            //bitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
                         }
                     }
                     // Specify the area of the bitmap that changed.
-                    PlaneBitmap.AddDirtyRect(new Int32Rect(0, 0, xSize, ySize));
+                    bitmap.AddDirtyRect(new Int32Rect(0, 0, xSize, ySize));
                 }
             }
             finally
@@ -97,9 +99,13 @@ namespace LazyContouring.Models
             }
         }
 
-        public int XSize { get => xSize; }
-        public int YSize { get => ySize; }
-        public int ZSize { get => zSize; }
+        public int XSize => xSize;
+        public int YSize => ySize;
+        public int ZSize => zSize;
+        public double XRes => xRes;
+        public double YRes => yRes;
+        public double ZRes => zRes;
+        public VVector Origin => origin;
         public IVoxelToPixelConverter Converter { get; set; } = new VoxelToPixelConverter();
         public int CurrentPlaneIndex { get => currentPlaneIndex; set => SetPlane(value); }
 

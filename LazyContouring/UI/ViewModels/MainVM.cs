@@ -1,95 +1,52 @@
-﻿using LazyContouring.Graphics;
-using LazyContouring.Models;
+﻿using LazyContouring.Models;
 using LazyContouring.Operations;
 using LazyContouring.UI.Views;
 using LazyPhysicist.Common;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using ScriptArgsNameSpace;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Xml.Linq;
-using VMS.TPS.Common.Model.API;
-using V = VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.UI.ViewModels
 {
     public sealed class MainVM : Notifier
     {
-        private StructureSetModel structureSetModel;
-        private StructureSet structureSet;
+        private StructureSetModel currentStructureSetModel;
+        private PatientModel patientModel;
+        private OperationsVM operationsVM;
+        private OperationPage operationPage;
+        private ViewPlaneVM viewPlaneVM;
+        private SlaveCollection<StructureVariable, StructureVariableVM> structures;
+        private SliceControl sliceControl;
+        private StructureVariableVM selectedStructure;
 
-
-        public int W;
-        public int H;
-        public int D;
-
-        public OperationPage OperationPage { get; set; }
-        private OperationsVM operations = new OperationsVM();
-        
-
-        SliceCanvas sliceCanvas;
-        public MainVM(StructureSetModel structureSetModel)
+        public MainVM(PatientModel patientModel, ScriptArgs args)
         {
-            this.structureSetModel = structureSetModel;
-            StructureSet = structureSetModel.StructureSet;
+            this.patientModel = patientModel;
+
+            operationsVM = new OperationsVM();
+            OperationPage = new OperationPage() { ViewModel = operationsVM };
+            sliceControl = new SliceControl();
+
+            CurrentStructureSet = patientModel.StructureSets.FirstOrDefault(ss => ss.Id == args.StructureSet.Id);
         }
-        public void Init()
+
+        private void SetCurrentStructureSet(StructureSetModel ss)
         {
-
-            sliceCanvas = new SliceCanvas(new StructureSetStorage(StructureSet), new ImageStorage(StructureSet.Image));
-            var sliceVm = new SliceVM(sliceCanvas);
-            SliceControl = new SliceControl() { DataContext = sliceVm };
-            SliceControl.ViewModel = sliceVm;
-
-            var node = new OperationNode()
+            currentStructureSetModel = ss;
+            if (ss == null)
             {
-                IsRootNode = true,
-                StructureVar = new StructureVariable { Structure = BodyStructure},
-                Operation = new AssignOperation(),
-                NodeLeft = new OperationNode()
-                {
-                    Operation = new SubOperation(),
-                    NodeLeft = new OperationNode()
-                    {
-                        Operation = new EmptyOperation(),
-                        StructureVar = new StructureVariable { Structure = BodyStructure}
-                    },
-                    NodeRight = new OperationNode()
-                    {
-                        Operation = new WallOperation(),
-                        NodeLeft = new OperationNode()
-                        {
-                            Operation = new EmptyOperation(),
-                            StructureVar = new StructureVariable { Structure = StructureBrain }
-                        }
-                    }
+                Structures.BreakFree();
+                sliceControl.ViewModel = null;
+            }
+            else
+            {
+                Structures.ObeyTheMaster(ss.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
+                sliceControl.ViewModel = new ViewPlaneVM() { StructureSet = currentStructureSetModel
+                    , CurrentPlaneIndex = 100 }; ///////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
 
-                    /*
-                     new OperationNode()
-                    {
-                        Operation = new EmptyOperation(),
-                        StructureVar = new StructureVariable { Structure = StructureBrain}
-                    }
-                     */
-                }
-            };
-
-
-
-            operations.AddOperationString(node);
-
-
-            OperationPage = new OperationPage() { DataContext = operations };
-            OperationPage.ViewModel = operations;
+            NotifyPropertyChanged(nameof(CurrentStructureSet));
         }
 
         public void AddNodeStringFromDrop(IDataObject drop)
@@ -107,69 +64,24 @@ namespace LazyContouring.UI.ViewModels
                 Operation = new AssignOperation()
             };
 
-            operations.AddOperationString(node);
+            operationsVM.AddOperationString(node);
         }
 
-        public void PaintSlice(int slice)
+        public void SetSelectedStructure(StructureVariableVM value)
         {
-            sliceCanvas.CurrentSlice = slice;
+            if (selectedStructure?.StructureVariable != null) { selectedStructure.StructureVariable.IsSelected = false; }
+            selectedStructure = value;
+            if (selectedStructure?.StructureVariable != null) { selectedStructure.StructureVariable.IsSelected = true; }
 
+            NotifyPropertyChanged(nameof(SelectedStructure));
         }
 
-        public ObservableCollection<StructureSet> StructureSets => structureSetModel.StructureSets;
-        public StructureSet StructureSet 
-        {
-            get => structureSet;
-            set
-            {
-                structureSetModel.StructureSet = value;
-                SetProperty(ref structureSet, structureSetModel.StructureSet);
-            }
-        }
-        public SlaveCollection<StructureVariable, StructureVariableVM> Structures => 
-            new SlaveCollection<StructureVariable, StructureVariableVM>(structureSetModel.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
-
-
-        public SliceControl SliceControl { get; private set; }
-
-        public SliceCanvas SliceCanvas => sliceCanvas;
-        public Structure BodyStructure => StructureSet.Structures.FirstOrDefault(s => s.DicomType == "EXTERNAL");
-        public Structure StructureBrain => StructureSet.Structures.FirstOrDefault(s => s.Id == "Brain");
-
-
-
-        public MeshGeometry3D Mesh => BodyStructure.MeshGeometry;
-        public MeshGeometry3D MeshBrain => StructureBrain.MeshGeometry;
-
-        public V.Image CTImage => StructureSet.Image;
-        private int currentSlice;
-        public int CurrentSlice
-        {
-            get => currentSlice;
-            set
-            {
-                if (currentSlice == value || value < 0 || value > D)
-                {
-                    return;
-                }
-
-                PaintSlice(value);
-                SetProperty(ref currentSlice, value);
-            }
-        }
-
-        private Point3D cameraPosition = new Point3D(0, 0, 1000);
-        public Point3D CameraPosition { get => cameraPosition; set => SetProperty(ref cameraPosition, value); }
-
-        private Vector3D lookDirection = new Vector3D(0, 0, -1);
-        
-
-        public Vector3D LookDirection { get => lookDirection; set => SetProperty(ref lookDirection, value); }
-
-        public int Width => W;
-        public int Height => H;
-
-
+        public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
+        public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
+        public SlaveCollection<StructureVariable, StructureVariableVM> Structures => structures ?? (structures = new SlaveCollection<StructureVariable, StructureVariableVM>());
+        public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }
+        public OperationPage OperationPage { get => operationPage; set => SetProperty(ref operationPage, value); }
+        public SliceControl SliceControl { get => sliceControl; set => SetProperty(ref sliceControl, value); }
     }
 }
 

@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Xml.Serialization;
 using VMS.TPS.Common.Model.API;
+using VMS.TPS.Common.Model.Types;
 
 namespace LazyContouring.Models
 {
@@ -18,6 +20,7 @@ namespace LazyContouring.Models
         private bool isTemporary = false;
         private bool isVisible = true;
         private bool isNew;
+        private bool isSelected = false;
 
         private void SetStructure(Structure structure)
         {
@@ -32,6 +35,7 @@ namespace LazyContouring.Models
             NotifyPropertyChanged(nameof(SegmentVolume));
         }
 
+        [XmlIgnore]
         public Structure Structure { get => structure; set => SetStructure(value); }
         public string StructureId
         {
@@ -86,6 +90,7 @@ namespace LazyContouring.Models
             }
         }
 
+        [XmlIgnore]
         public SegmentVolume SegmentVolume
         {
             get => Structure?.SegmentVolume;
@@ -110,10 +115,13 @@ namespace LazyContouring.Models
             }
         }
 
+        public VVector[][] GetContoursOnImagePlane(int z) => structure?.GetContoursOnImagePlane(z);
+
         public bool CanEditSegmentVolume => Structure?.CanEditSegmentVolume(out _) ?? false;
         public bool IsNew { get => isNew; set => SetProperty(ref isNew, value); }
         public bool IsTemporary { get => isTemporary; set => SetProperty(ref isTemporary, value); }
         public bool IsEmpty => Structure?.IsEmpty ?? true;
         public bool IsVisible { get => isVisible; set => SetProperty(ref isVisible, value); }
+        public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
     }
 }

@@ -12,7 +12,7 @@ namespace LazyContouring.Operations
             {
                 result = CreateFromType(operationType);
             }
-            else if (operationName == "CropInner") 
+            else if (operationName == "CropInner")
             {
                 result = new CropOperation() { CropPart = CropPart.Inside };
             }

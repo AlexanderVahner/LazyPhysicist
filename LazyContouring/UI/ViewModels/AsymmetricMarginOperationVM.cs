@@ -1,6 +1,5 @@
 ﻿using LazyContouring.Operations;
 using LazyContouring.UI.Views;
-using System.Windows.Controls;
 
 namespace LazyContouring.UI.ViewModels
 {

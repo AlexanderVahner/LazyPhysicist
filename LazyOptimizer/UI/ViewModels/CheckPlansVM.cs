@@ -7,7 +7,7 @@ namespace LazyOptimizer.UI.ViewModels
     {
         public CheckPlansVM()
         {
-            
+
         }
         public MainVM MainVM { get; set; }
         public UserSettings Settings { get; set; }

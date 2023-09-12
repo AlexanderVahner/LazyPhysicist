@@ -1,13 +1,6 @@
 ﻿using LazyContouring.Models;
-using LazyContouring.Operations;
 using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace LazyContouring.UI.ViewModels
@@ -65,9 +58,10 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public StructureVariable StructureVariable { get => structureVar; set => SetStructureVariable(value); }
-        public string StructureId { 
-            get => structureId; 
-            set => SetProperty(ref structureId, value); 
+        public string StructureId
+        {
+            get => structureId;
+            set => SetProperty(ref structureId, value);
         }
 
         public Visibility CanEditVisibility => (StructureVariable?.CanEditSegmentVolume ?? true) ? Visibility.Hidden : Visibility.Visible;

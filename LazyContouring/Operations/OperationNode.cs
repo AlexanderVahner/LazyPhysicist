@@ -1,6 +1,7 @@
 ﻿using LazyContouring.Models;
 using LazyPhysicist.Common;
 using System.Linq;
+using System.Xml.Serialization;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations
@@ -47,7 +48,7 @@ namespace LazyContouring.Operations
                 NodeRight = newNode;
             }
 
-            
+
         }
 
         public void ReplaceNode(OperationNode newNode, NodeDirection direction)
@@ -69,7 +70,7 @@ namespace LazyContouring.Operations
                     }
                 }
             }
-            else 
+            else
             {
                 newNode.NodeLeft = direction == NodeDirection.Left ? NodeLeft.NodeLeft : NodeRight.nodeLeft;
 

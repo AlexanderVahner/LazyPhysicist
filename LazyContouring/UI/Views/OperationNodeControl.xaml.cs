@@ -1,21 +1,9 @@
-﻿using LazyContouring.Models;
-using LazyContouring.Operations;
+﻿using LazyContouring.Operations;
 using LazyContouring.UI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace LazyContouring.UI.Views
 {
@@ -84,7 +72,7 @@ namespace LazyContouring.UI.Views
             LeftDropCanvas.Visibility = vM.LeftNodeNedded ? Visibility.Visible : Visibility.Hidden;
             RightDropCanvas.Visibility = vM.RightNodeNedded ? Visibility.Visible : Visibility.Hidden;
 
-            MainGrid.ColumnDefinitions[1].Width = vM.LeftNodeNedded || vM.RightNodeNedded ? new GridLength(insertPlaceSize, GridUnitType.Pixel) : new GridLength(0); 
+            MainGrid.ColumnDefinitions[1].Width = vM.LeftNodeNedded || vM.RightNodeNedded ? new GridLength(insertPlaceSize, GridUnitType.Pixel) : new GridLength(0);
             MainGrid.ColumnDefinitions[2].Width = vM.LeftNodeNedded || vM.RightNodeNedded ? new GridLength(1, GridUnitType.Auto) : new GridLength(0);
 
             MainGrid.RowDefinitions[1].Height = vM.RightNodeNedded ? new GridLength(1, GridUnitType.Auto) : new GridLength(0);
@@ -140,7 +128,7 @@ namespace LazyContouring.UI.Views
 
             if (VM.RightNodeNedded)
             {
-                x1 = (e.NewSize.Width  - insertPlaceFromRightPosition) / 2;
+                x1 = (e.NewSize.Width - insertPlaceFromRightPosition) / 2;
                 double y1 = direction == NodeDirection.Left ? arrowsMarginY : 0;
                 double y2 = direction == NodeDirection.Left ? e.NewSize.Height : arrowsMarginY;
 

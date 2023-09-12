@@ -7,7 +7,7 @@ namespace LazyOptimizer.UI.ViewModels
     {
         public SettingsVM()
         {
-            
+
         }
         public UserSettings Settings { get; set; }
     }

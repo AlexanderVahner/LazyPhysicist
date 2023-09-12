@@ -2,7 +2,6 @@
 using LazyOptimizer.UI.Views;
 using LazyPhysicist.Common;
 using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -131,7 +130,7 @@ namespace LazyOptimizer.UI.ViewModels
                     RefreshPlansClick?.Invoke(this, Context);
                 },
                 o => RefreshPlansClick != null
-            );        
+            );
 
         public void SelectTab(Page selectedPage)
         {

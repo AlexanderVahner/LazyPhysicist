@@ -17,7 +17,7 @@ namespace LazyOptimizer.UI.ViewModels
         }
         public double? Dose => SourceModel.Dose;
         public double? Volume => SourceModel.Volume;
-        public double? ParameterA =>SourceModel.ParameterA;
+        public double? ParameterA => SourceModel.ParameterA;
         public string VolumeString => ObjectiveType == ObjectiveType.Point ? SourceModel.Volume.ToString() : "";
         public string ParameterAString => ObjectiveType == ObjectiveType.EUD ? SourceModel.ParameterA.ToString() : "";
         public ObjectiveType ObjectiveType => SourceModel.ObjType;

@@ -1,7 +1,4 @@
 ﻿using LazyOptimizer.App;
-using LazyPhysicist.Common;
-using System;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace LazyOptimizer.UI.Views

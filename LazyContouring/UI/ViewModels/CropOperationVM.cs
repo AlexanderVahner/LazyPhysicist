@@ -1,8 +1,6 @@
 ﻿using LazyContouring.Images;
 using LazyContouring.Operations;
 using LazyContouring.UI.Views;
-using System.Collections.Generic;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace LazyContouring.UI.ViewModels
@@ -40,7 +38,8 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public BitmapImage BitmapImage { get => bitmapImage; set => SetProperty(ref bitmapImage, value); }
-        public bool InsideChecked { 
+        public bool InsideChecked
+        {
             get => insideChecked;
             set
             {
@@ -50,7 +49,8 @@ namespace LazyContouring.UI.ViewModels
                 UpdateCropPart();
             }
         }
-        public bool OutsideChecked { 
+        public bool OutsideChecked
+        {
             get => outsideChecked;
             set
             {
