@@ -33,7 +33,7 @@
                     </Grid.RowDefinitions>
 
                     <DockPanel Margin="3">
-                        <Button Margin="3 0 0 0" DockPanel.Dock="Right">
+                        <Button Margin="3 0 0 0" DockPanel.Dock="Right" Command="{Binding DuplicateStructureSetCommand}">
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Duplicate-outline.512.png"/>
                             </Viewbox>

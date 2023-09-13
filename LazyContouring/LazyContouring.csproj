@@ -64,6 +64,7 @@
     <Compile Include="LazyContouring.cs" />
     <Compile Include="Models\ContourModel.cs" />
     <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Operations\OperationTemplate.cs" />
     <Compile Include="UI\ViewModels\ViewPlaneVM.cs" />
     <Compile Include="Models\PatientModel.cs" />
     <Compile Include="Models\StructureSetModel.cs" />

@@ -17,9 +17,6 @@ namespace LazyContouring.UI.ViewModels
         private BitmapImage executeButtonImage;
         private readonly BitmapImage executeImage = ImageLoader.GetImage("Ionic-Ionicons-Caret-forward-circle.512.png");
         private readonly BitmapImage undoExecuteImage = ImageLoader.GetImage("Ionic-Ionicons-Arrow-undo-circle-outline.512.png");
-        private readonly Grid grid = new Grid();
-
-        public OperationStringVM() { }
 
         private void SetNode(OperationNode node)
         {
@@ -46,7 +43,7 @@ namespace LazyContouring.UI.ViewModels
             }
             else if (CanExecute)
             {
-                Xml.WriteXmlFromObject("test.xml", Node);
+                //Xml.WriteXmlFromObject("test.xml", Node);
                 Node.Materialize(null);
                 
                 ExecuteButtonImage = undoExecuteImage;
@@ -58,10 +55,27 @@ namespace LazyContouring.UI.ViewModels
             o => CanExecute
         );
 
+        public MetaCommand DuplicateCommand => new MetaCommand(
+            o => OperationsVM.DuplicateOperationString(this)
+        );
+
+        public MetaCommand MoveUpCommand => new MetaCommand(
+            o => OperationsVM.MoveOperationStringUp(this)
+        );
+        public MetaCommand MoveDownCommand => new MetaCommand(
+            o => OperationsVM.MoveOperationStringDown(this)
+        );
+
+        public MetaCommand RemoveCommand => new MetaCommand(
+            o => OperationsVM.RemoveOperationString(this)
+        );
+
         public bool CanExecute => Executed || (assignOperation?.CanExecute(node) ?? false);
         public bool Executed => assignOperation?.Executed ?? false;
         public BitmapImage ExecuteButtonImage { get => executeButtonImage; set => SetProperty(ref executeButtonImage, value); }
         public OperationNode Node { get => node; set => SetNode(value); }
         public UIElement NodeElement { get => nodeElement; set => SetProperty(ref nodeElement, value); }
+
+        public OperationsVM OperationsVM { get; set; }
     }
 }

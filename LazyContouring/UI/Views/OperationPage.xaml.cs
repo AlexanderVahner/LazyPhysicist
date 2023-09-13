@@ -21,7 +21,6 @@ namespace LazyContouring.UI.Views
             {
                 vm = value;
                 DataContext = vm;
-                MainGrid.Children.Add(vm.UIElement);
             }
         }
     }

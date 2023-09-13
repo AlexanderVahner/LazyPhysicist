@@ -1,10 +1,12 @@
 ﻿using LazyContouring.Graphics;
 using LazyContouring.Models;
 using LazyPhysicist.Common;
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using VMS.TPS.Common.Model.Types;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -97,6 +99,11 @@ namespace LazyContouring.UI.ViewModels
             }
 
             NotifyPropertyChanged(nameof(CurrentPlaneIndex));
+        }
+
+        public int PlaneIndexOf(double z)
+        {
+            return (int)((z - ImageModel.Origin.z) / ImageModel.ZRes);
         }
 
         public StructureSetModel StructureSet { get => structureSet; set => SetStructureSet(value); }

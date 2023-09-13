@@ -9,5 +9,12 @@
       Title="OperationPage">
 
     <Grid x:Name="MainGrid">
+        <ListBox ItemsSource="{Binding Operations}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <local:OperationStringControl DataContext="{Binding}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Page>

@@ -13,7 +13,7 @@ namespace LazyContouring.Models
         private PathFigure[] segments;
         private readonly Path path;
         private readonly PathGeometry geometry = new PathGeometry();
-        private const double defaultThickness = 1;
+        private const double defaultThickness = 0.7;
         private const double selectedThickness = 2;
         private int currentPlaneIndex;
 

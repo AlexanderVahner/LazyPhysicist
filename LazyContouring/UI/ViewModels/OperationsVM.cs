@@ -1,36 +1,55 @@
 ﻿using LazyContouring.Operations;
 using LazyContouring.UI.Views;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Linq;
 
 namespace LazyContouring.UI.ViewModels
 {
     public sealed class OperationsVM
     {
-        private readonly Grid grid = new Grid();
-
-        public OperationsVM()
+        public OperationStringVM AddOperationString(OperationNode node)
         {
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.Background = new SolidColorBrush(Color.FromRgb(230, 230, 230));
-            var view = new ScrollViewer();
-            view.Content = grid;
-
-            UIElement = view;
+            var opString = new OperationStringVM() { Node = node, OperationsVM = this };
+            Operations.Add(opString);
+            return opString;
         }
 
-        public void AddOperationString(OperationNode node)
+        public void RemoveOperationString(OperationStringVM value)
         {
-            grid.RowDefinitions.Add(new RowDefinition());
-
-            var opString = new OperationStringVM() { Node = node };
-            var opStringUI = new OperationStringControl { DataContext = opString };
-            Grid.SetRow(opStringUI, grid.RowDefinitions.Count - 1);
-            Grid.SetColumn(opStringUI, grid.ColumnDefinitions.Count - 1);
-            grid.Children.Add(opStringUI);
+            Operations.Remove(value);
         }
 
-        public UIElement UIElement { get; set; }
+        public void DuplicateOperationString(OperationStringVM value)
+        {
+            var newOpString = AddOperationString((OperationNode)value.Node.Clone());
+            int index = Operations.IndexOf(value);
+            if (index < Operations.Count - 1)
+            {
+                Operations.Move(Operations.IndexOf(newOpString), index + 1);
+            }
+        }
+
+        public void MoveOperationStringUp(OperationStringVM value)
+        {
+            int index = Operations.IndexOf(value);
+            if (index > 0)
+            {
+                Operations.Move(index, index - 1);
+            } 
+        }
+
+        public void MoveOperationStringDown(OperationStringVM value)
+        {
+            int index = Operations.IndexOf(value);
+            if (index < Operations.Count - 1)
+            {
+                Operations.Move(index, index + 1);
+            }
+        }
+
+        public ObservableCollection<OperationStringVM> Operations { get; private set; } = new ObservableCollection<OperationStringVM>();
     }
 }

@@ -13,6 +13,7 @@ namespace LazyContouring.Models
         {
             this.patient = patient;
 
+            NotifyPropertyChanged(nameof(CanModifyData));
             InitStructureSets();
         }
 
@@ -40,5 +41,6 @@ namespace LazyContouring.Models
         }
 
         public ObservableCollection<StructureSetModel> StructureSets { get; } = new ObservableCollection<StructureSetModel>();
+        public bool CanModifyData => patient.CanModifyData();
     }
 }

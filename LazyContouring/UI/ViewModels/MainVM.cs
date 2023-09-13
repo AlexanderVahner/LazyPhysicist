@@ -12,12 +12,12 @@ namespace LazyContouring.UI.ViewModels
     public sealed class MainVM : Notifier
     {
         private StructureSetModel currentStructureSetModel;
-        private PatientModel patientModel;
-        private OperationsVM operationsVM;
+        private readonly PatientModel patientModel;
+        private readonly OperationsVM operationsVM;
         private OperationPage operationPage;
-        private ViewPlaneVM viewPlaneVM;
         private SlaveCollection<StructureVariable, StructureVariableVM> structures;
         private SliceControl sliceControl;
+        private ViewPlaneVM viewPlaneVM;
         private StructureVariableVM selectedStructure;
 
         public MainVM(PatientModel patientModel, ScriptArgs args)
@@ -42,8 +42,10 @@ namespace LazyContouring.UI.ViewModels
             else
             {
                 Structures.ObeyTheMaster(ss.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
-                sliceControl.ViewModel = new ViewPlaneVM() { StructureSet = currentStructureSetModel
-                    , CurrentPlaneIndex = 100 }; ///////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                viewPlaneVM = new ViewPlaneVM() { StructureSet = currentStructureSetModel }; 
+                sliceControl.ViewModel = viewPlaneVM;
+
+                viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(viewPlaneVM.ImageModel.UserOrigin.z);
             }
 
             NotifyPropertyChanged(nameof(CurrentStructureSet));
@@ -71,10 +73,27 @@ namespace LazyContouring.UI.ViewModels
         {
             if (selectedStructure?.StructureVariable != null) { selectedStructure.StructureVariable.IsSelected = false; }
             selectedStructure = value;
-            if (selectedStructure?.StructureVariable != null) { selectedStructure.StructureVariable.IsSelected = true; }
+            if (selectedStructure?.StructureVariable != null) 
+            { 
+                selectedStructure.StructureVariable.IsSelected = true;
+                viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(selectedStructure.StructureVariable.Structure.CenterPoint.z);
+            }
 
             NotifyPropertyChanged(nameof(SelectedStructure));
         }
+
+        public void DuplicateStructureSet(StructureSetModel ss)
+        {
+            if (ss == null) { return; }
+
+            var newSs = ss.DuplicateStructureSet();
+            CurrentStructureSet = newSs;
+        }
+
+        public MetaCommand DuplicateStructureSetCommand => new MetaCommand(
+            o => DuplicateStructureSet(CurrentStructureSet),
+            o => CurrentStructureSet != null && patientModel.CanModifyData
+        );
 
         public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
         public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }

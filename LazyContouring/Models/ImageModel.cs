@@ -22,6 +22,9 @@ namespace LazyContouring.Models
         private readonly double zRes;
         private readonly VVector origin;
 
+        public int minVoxelValue = 0;
+        public int maxVoxelValue = 0;
+
         public ImageModel(Image image)
         {
             this.image = image;
@@ -35,6 +38,8 @@ namespace LazyContouring.Models
 
             voxelBuffer = new int[xSize, ySize];
 
+            //GetHist();
+
             bitmap = new WriteableBitmap(
                 xSize,
                 ySize,
@@ -42,6 +47,31 @@ namespace LazyContouring.Models
                 96,
                 PixelFormats.Bgra32,
                 null);
+        }
+
+        private void GetHist()
+        {
+            for (int z = 0; z < zSize; z++)
+            {
+                image.GetVoxels(currentPlaneIndex, voxelBuffer);
+                for (int x = 0; x < xSize; x++)
+                {
+                    for (int y = 0; y < ySize; y++)
+                    {
+                        int value = voxelBuffer[x, y];
+                        if (value < minVoxelValue)
+                        {
+                            minVoxelValue = value;
+                            continue;
+                        }
+                        if (value > maxVoxelValue)
+                        {
+                            maxVoxelValue = value;
+                            continue;
+                        }
+                    }
+                }
+            }
         }
 
         private void SetPlane(int index)
@@ -94,6 +124,8 @@ namespace LazyContouring.Models
             }
         }
 
+        
+
         public int XSize => xSize;
         public int YSize => ySize;
         public int ZSize => zSize;
@@ -101,6 +133,7 @@ namespace LazyContouring.Models
         public double YRes => yRes;
         public double ZRes => zRes;
         public VVector Origin => origin;
+        public VVector UserOrigin => image.UserOrigin;
         public IVoxelToPixelConverter Converter { get; set; }
         public int CurrentPlaneIndex { get => currentPlaneIndex; set => SetPlane(value); }
 
