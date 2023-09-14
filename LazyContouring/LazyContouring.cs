@@ -12,7 +12,6 @@ using VMS.TPS.Common.Model.API;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0")]
 
-// TODO: Uncomment the following line if the script requires write access.
 [assembly: ESAPIScript(IsWriteable = true)]
 
 namespace VMS.TPS
@@ -29,6 +28,8 @@ namespace VMS.TPS
                 CurrentUser = context.CurrentUser,
                 Patient = context.Patient,
                 StructureSet = context.StructureSet,
+                Course = context.Course,
+                Plan = context.ExternalPlanSetup,
                 Window = window
             });
         }

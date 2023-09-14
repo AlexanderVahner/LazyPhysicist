@@ -23,9 +23,9 @@ namespace PluginTesterNameSpace
             Course course = patient?.Courses.FirstOrDefault(c => c.Id == "C1");
             ExternalPlanSetup plan = course?.ExternalPlanSetups.FirstOrDefault(p => p.Id == "CV1");
 
-            if (structureSet == null)
+            if (patient == null)
             {
-                MessageBox.Show("Structure Set ins't open");
+                MessageBox.Show("Patient insn't open");
                 return;
             }
 
@@ -35,6 +35,8 @@ namespace PluginTesterNameSpace
                 CurrentUser = App.CurrentUser,
                 Patient = patient,
                 StructureSet = structureSet,
+                Course = course,
+                Plan = plan,
                 Window = Window
             });
         }

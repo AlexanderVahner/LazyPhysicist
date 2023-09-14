@@ -64,7 +64,15 @@
     <Compile Include="LazyContouring.cs" />
     <Compile Include="Models\ContourModel.cs" />
     <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Operations\ContextConditions\ContextCondition.cs" />
+    <Compile Include="Operations\ContextConditions\DiagnosisCondition.cs" />
+    <Compile Include="Operations\ContextConditions\ImageSliceThicknessCondition.cs" />
+    <Compile Include="Operations\ContextConditions\PlanTechniqueCondition.cs" />
+    <Compile Include="Operations\ContextConditions\StructureCondition.cs" />
+    <Compile Include="Operations\ContextConditions\ConditionGroup.cs" />
+    <Compile Include="Operations\TemplateManager.cs" />
     <Compile Include="Operations\OperationTemplate.cs" />
+    <Compile Include="Operations\ContextConditions\ConditionTreeNode.cs" />
     <Compile Include="UI\ViewModels\ViewPlaneVM.cs" />
     <Compile Include="Models\PatientModel.cs" />
     <Compile Include="Models\StructureSetModel.cs" />
