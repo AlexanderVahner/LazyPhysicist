@@ -12,7 +12,17 @@ namespace LazyContouring.Operations.ContextConditions
     public enum StructureConditionType { ExactId, RegexId, DicomType }
     public sealed class StructureCondition : ContextCondition
     {
-        protected override bool CheckCondition(ScriptArgs args)
+        public static readonly List<StructureConditionTypeStruct> StrucutreConditionTypes = new List<StructureConditionTypeStruct>
+        {
+            new StructureConditionTypeStruct(StructureConditionType.ExactId, "Exact Id"),
+            new StructureConditionTypeStruct(StructureConditionType.RegexId, "Regex by Id"),
+            new StructureConditionTypeStruct(StructureConditionType.DicomType, "Dicom type")
+        };
+
+        private string searchText;
+        private StructureConditionTypeStruct searchType = StrucutreConditionTypes[0];
+
+        protected override bool Check(ScriptArgs args)
         {
             return args?.StructureSet?.Structures.FirstOrDefault(s => CheckStructure(s)) != null;
         }
@@ -23,7 +33,7 @@ namespace LazyContouring.Operations.ContextConditions
 
             if (structure != null)
             {
-                switch (SearchType)
+                switch (SearchType.ConditionType)
                 {
                     case StructureConditionType.ExactId:
                         result = structure?.Id == SearchText;
@@ -40,8 +50,23 @@ namespace LazyContouring.Operations.ContextConditions
             return result;
         }
 
-        public string SearchText { get; set; }
-        public StructureConditionType SearchType { get; set; } = StructureConditionType.ExactId;
+        public string SearchText { get => searchText; set => SetProperty(ref searchText, value); }
+        public StructureConditionTypeStruct SearchType { get => searchType; set => SetProperty(ref searchType, value); }
+    }
 
+    public readonly struct StructureConditionTypeStruct
+    {
+        public readonly StructureConditionType ConditionType;
+        public readonly string StringSearchType;
+
+        public StructureConditionTypeStruct(StructureConditionType conditionType, string stringSearchType)
+        {
+            ConditionType = conditionType;
+            StringSearchType = stringSearchType;
+        }
+        public override string ToString()
+        {
+            return StringSearchType;
+        }
     }
 }

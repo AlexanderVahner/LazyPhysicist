@@ -9,11 +9,13 @@ namespace LazyContouring.Operations.ContextConditions
 {
     public sealed class ImageSliceThicknessCondition : ContextCondition
     {
-        protected override bool CheckCondition(ScriptArgs args)
+        private double sliceThickness = 1.0;
+
+        protected override bool Check(ScriptArgs args)
         {
             return (args.StructureSet?.Image?.ZRes ?? -1.0) == SliceThickness;
         }
 
-        public double SliceThickness { get; set; } = 1.0;
+        public double SliceThickness { get => sliceThickness; set => SetProperty(ref sliceThickness, value); }
     }
 }

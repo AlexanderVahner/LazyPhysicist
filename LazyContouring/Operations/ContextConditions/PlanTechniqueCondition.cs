@@ -9,7 +9,7 @@ namespace LazyContouring.Operations.ContextConditions
 {
     public sealed class PlanTechniqueCondition : ContextCondition
     {
-        protected override bool CheckCondition(ScriptArgs args)
+        protected override bool Check(ScriptArgs args)
         {
             throw new NotImplementedException();
         }

@@ -73,6 +73,9 @@
     <Compile Include="Operations\TemplateManager.cs" />
     <Compile Include="Operations\OperationTemplate.cs" />
     <Compile Include="Operations\ContextConditions\ConditionTreeNode.cs" />
+    <Compile Include="UI\ViewModels\Operations\ConditionNodeVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\ContextConditions\ConditionGroupVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\ContextConditions\StructureConditionVM.cs" />
     <Compile Include="UI\ViewModels\ViewPlaneVM.cs" />
     <Compile Include="Models\PatientModel.cs" />
     <Compile Include="Models\StructureSetModel.cs" />
@@ -121,6 +124,9 @@
     <Compile Include="UI\Views\AsymmetricMarginControl.xaml.cs">
       <DependentUpon>AsymmetricMarginControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml.cs">
+      <DependentUpon>ConditionGroupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\CropOperationControl.xaml.cs">
       <DependentUpon>CropOperationControl.xaml</DependentUpon>
     </Compile>
@@ -142,6 +148,9 @@
     <Compile Include="UI\Views\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\TemplateSetupWindow.xaml.cs">
+      <DependentUpon>TemplateSetupWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\WallOperationControl.xaml.cs">
       <DependentUpon>WallOperationControl.xaml</DependentUpon>
     </Compile>
@@ -158,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\AsymmetricMarginControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,6 +199,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\SliceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\TemplateSetupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

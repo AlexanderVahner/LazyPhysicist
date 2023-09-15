@@ -9,12 +9,15 @@ namespace LazyContouring.Operations.ContextConditions
 {
     public sealed class DiagnosisCondition : ContextCondition
     {
-        protected override bool CheckCondition(ScriptArgs args)
+        private string codeShouldStartsWith = "";
+
+        protected override bool Check(ScriptArgs args)
         {
-            return CodeShouldStartsWith == "" || 
-                args.Course?.Diagnoses?.FirstOrDefault(d => d.Code.ToUpper().StartsWith(CodeShouldStartsWith.Trim().ToUpper())) != null;
+            string code = CodeShouldStartsWith.Trim().ToUpper();
+            return code == "" ||
+                args.Course?.Diagnoses?.FirstOrDefault(d => d.Code.ToUpper().StartsWith(code)) != null;
         }
 
-        public string CodeShouldStartsWith { get; set; } = "";
+        public string CodeShouldStartsWith { get => codeShouldStartsWith; set => SetProperty(ref codeShouldStartsWith, value); }
     }
 }

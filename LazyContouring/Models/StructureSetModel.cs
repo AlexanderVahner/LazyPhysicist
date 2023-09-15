@@ -5,7 +5,7 @@ namespace LazyContouring.Models
 {
     public sealed class StructureSetModel
     {
-        private StructureSet structureSet;
+        private readonly StructureSet structureSet;
         private readonly Patient patient;
         private ObservableCollection<StructureVariable> structures;
 

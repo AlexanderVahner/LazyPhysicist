@@ -1,16 +1,38 @@
-﻿using System;
+﻿using ScriptArgsNameSpace;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazyContouring.Operations
+namespace LazyContouring.Operations.ContextConditions
 {
-    public enum TemplateGroupType { Or, And }
+    public enum ConditionGroupType { Or, And }
     public sealed class ConditionGroup : ConditionTreeNode
     {
-        public ObservableCollection<ConditionTreeNode> Children { get; set; } = new ObservableCollection<ConditionTreeNode>();
-        public TemplateGroupType Type { get; set; } = TemplateGroupType.And;
+        public ConditionGroup()
+        {
+            Children = new ObservableCollection<ConditionTreeNode>();
+        }
+
+        protected override bool CheckNodeDefinition(ScriptArgs args)
+        {
+            if (Children.Count == 0)
+            {
+                return true;
+            }
+
+            if (GroupType == ConditionGroupType.Or)
+            {
+                return Children.FirstOrDefault(c => c.CheckNode(args)) != null;
+            }
+
+            // "And" type
+            return Children.FirstOrDefault(c => !c.CheckNode(args)) == null;
+        }
+
+        public ConditionGroupType GroupType { get; set; } = ConditionGroupType.And;
+        
     }
 }
