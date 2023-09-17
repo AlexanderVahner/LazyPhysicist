@@ -20,10 +20,10 @@ namespace LazyContouring.UI.ViewModels
         private ViewPlaneVM viewPlaneVM;
         private StructureVariableVM selectedStructure;
 
-        public MainVM(PatientModel patientModel, ScriptArgs args)
+        public MainVM(PatientModel patientModel, UserSettings userSettings, ScriptArgs args)
         {
             this.patientModel = patientModel;
-
+            UserSettings = userSettings;
             operationsVM = new OperationsVM();
             OperationPage = new OperationPage() { ViewModel = operationsVM };
             sliceControl = new SliceControl();
@@ -101,6 +101,7 @@ namespace LazyContouring.UI.ViewModels
         public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }
         public OperationPage OperationPage { get => operationPage; set => SetProperty(ref operationPage, value); }
         public SliceControl SliceControl { get => sliceControl; set => SetProperty(ref sliceControl, value); }
+        public UserSettings UserSettings { get; }
     }
 }
 

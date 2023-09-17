@@ -41,13 +41,17 @@ namespace VMS.TPS
                 return;
             }
 
+            var appSettings = AppSettings.ReadAppSettings();
+            var userSettings = UserSettings.ReadUserSettings(appSettings.UserPath, args.CurrentUser.Id);
+
             var patientModel = new PatientModel(args.Patient);
-            var mainVM = new MainVM(patientModel, args);
+            var mainVM = new MainVM(patientModel, userSettings, args);
             var mainPage = new MainPage() { ViewModel = mainVM };
 
             args.Window.Content = mainPage;
             args.Window.Title = "LazyContouring";
             args.Window.WindowState = WindowState.Maximized;
+            args.Window.Closing += (s, e) => userSettings.Save();
         }
     }
 }

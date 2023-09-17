@@ -12,6 +12,6 @@ namespace LazyContouring.Operations
     {
         public ObservableCollection<OperationNode> RootNodes { get; set; } = new ObservableCollection<OperationNode>();
         public bool IsAutomatic { get; set; }
-        public ObservableCollection<ConditionTreeNode> ContextConditions { get; set; } = new ObservableCollection<ConditionTreeNode>();
+        public ObservableCollection<ConditionTreeNode> ContextConditionNodes { get; set; } = new ObservableCollection<ConditionTreeNode> { new ConditionGroup() };
     }
 }
