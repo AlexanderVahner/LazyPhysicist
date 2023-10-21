@@ -29,7 +29,15 @@ namespace LazyContouring.Models
 
             if (File.Exists(settingsFullFileName))
             {
-                Xml.ReadXmlToObject(settingsFullFileName, ref settings);
+                try
+                {
+                    Xml.ReadXmlToObject(settingsFullFileName, ref settings);
+                }
+                catch
+                {
+                    settings = new UserSettings();
+                }
+                
             }
             else
             {

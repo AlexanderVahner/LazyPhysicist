@@ -54,12 +54,12 @@ namespace LazyContouring.Models
                     }
                     finally
                     {
-                        StructureId = Structure.Id;
+                        structureId = Structure.Id;
                     }
                 }
                 else
                 {
-                    StructureId = value;
+                    structureId = value;
                 }
                 NotifyPropertyChanged(nameof(StructureId));
 
@@ -90,27 +90,23 @@ namespace LazyContouring.Models
             }
         }
 
-        [XmlIgnore]
-        public SegmentVolume SegmentVolume
+        public SegmentVolume GetSegmentVolume() => Structure?.SegmentVolume;
+        public void SetSegmentVolume(SegmentVolume value)
         {
-            get => Structure?.SegmentVolume;
-            set
+            if (Structure != null)
             {
-                if (Structure != null)
+                try
                 {
-                    try
-                    {
-                        Structure.SegmentVolume = value;
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
-                    finally
-                    {
-                        NotifyPropertyChanged(nameof(SegmentVolume));
-                        NotifyPropertyChanged(nameof(IsEmpty));
-                    }
+                    Structure.SegmentVolume = value;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                finally
+                {
+                    NotifyPropertyChanged("SegmentVolume");
+                    NotifyPropertyChanged(nameof(IsEmpty));
                 }
             }
         }

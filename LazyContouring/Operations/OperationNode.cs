@@ -138,9 +138,10 @@ namespace LazyContouring.Operations
             };
         }
 
+        [XmlIgnore]
         public SegmentVolume SegmentVolume
         {
-            get => segmentVolume ?? StructureVar?.SegmentVolume;
+            get => segmentVolume ?? StructureVar?.GetSegmentVolume();
             set => segmentVolume = value;
         }
 

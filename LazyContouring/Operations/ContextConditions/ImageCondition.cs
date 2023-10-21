@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace LazyContouring.Operations.ContextConditions
 {
-    public sealed class ImageSliceThicknessCondition : ContextCondition
+    public sealed class ImageCondition : ContextCondition
     {
-        private double sliceThickness = 1.0;
+        private double sliceThickness = 1;
 
         protected override bool Check(ScriptArgs args)
         {

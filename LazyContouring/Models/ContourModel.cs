@@ -36,7 +36,7 @@ namespace LazyContouring.Models
         {
             switch (e.PropertyName)
             {
-                case nameof(structure.SegmentVolume):
+                case "SegmentVolume":
                     Repaint();
                     break;
                 case nameof(structure.Color):

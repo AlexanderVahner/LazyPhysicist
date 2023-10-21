@@ -9,8 +9,7 @@ using System.Xml.Serialization;
 namespace LazyContouring.Operations.ContextConditions
 {
     [XmlInclude(typeof(DiagnosisCondition))]
-    [XmlInclude(typeof(ImageSliceThicknessCondition))]
-    [XmlInclude(typeof(PlanTechniqueCondition))]
+    [XmlInclude(typeof(ImageCondition))]
     [XmlInclude(typeof(StructureCondition))]
     public abstract class ContextCondition : ConditionTreeNode
     {

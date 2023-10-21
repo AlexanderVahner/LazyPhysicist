@@ -13,8 +13,8 @@ namespace LazyContouring.Operations
                 return;
             }
 
-            prevSegmentVolume = node.StructureVar.SegmentVolume;
-            node.StructureVar.SegmentVolume = node.NodeLeft.SegmentVolume;
+            prevSegmentVolume = node.StructureVar.GetSegmentVolume();
+            node.StructureVar.SetSegmentVolume(node.NodeLeft.SegmentVolume);
             Executed = true;
         }
 
@@ -25,7 +25,7 @@ namespace LazyContouring.Operations
                 return;
             }
 
-            node.StructureVar.SegmentVolume = prevSegmentVolume;
+            node.StructureVar.SetSegmentVolume(prevSegmentVolume);
             Executed = false;
         }
 

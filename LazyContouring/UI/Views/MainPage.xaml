@@ -85,35 +85,35 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="0" CornerRadius="5" BorderBrush="Black" BorderThickness="1" Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="0" CornerRadius="5"  Background="White" Padding="3">
                             <Border.ToolTip>Create union of structures</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/OrOperation.png" 
                                        Tag="Or"  PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="1" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="1" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Keep the overlapping parts</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/AndOperation.png" 
                                        Tag="And" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="2" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="2" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Substract</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/SubOperation.png" 
                                        Tag="Sub" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="3" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="3" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Keep the non overlapping parts</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/XorOperation.png" 
                                        Tag="Xor" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="4" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="0" Grid.Column="4" CornerRadius="5"  Background="White" Padding="3">
                             <Border.ToolTip>Invert</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/NotOperation.png" 
@@ -121,35 +121,35 @@
                             </Viewbox>
                         </Border>
 
-                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="0" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="0" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Add margin</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/MarginOperation.png" 
                                        Tag="Margin" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="1" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="1" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Crop outside</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/CropOuterOperation.png" 
                                        Tag="CropOuter" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="2" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="2" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Crop inside</Border.ToolTip>
                             <Viewbox>
                                 <Image Source="/LazyContouring.esapi;component/Images/CropInnerOperation.png" 
                                        Tag="CropInner" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="3" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="3" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Add asymmetric margin</Border.ToolTip>
                             <Viewbox Width="40.1">
                                 <Image Source="/LazyContouring.esapi;component/Images/AsymmetricMarginOperation.png" 
                                        Tag="AsymmetricMargin" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
                             </Viewbox>
                         </Border>
-                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="4" CornerRadius="5" BorderBrush="Black" BorderThickness="1"  Background="White" Padding="3">
+                        <Border Margin="3 3 0 0" Grid.Row="1" Grid.Column="4" CornerRadius="5" Background="White" Padding="3">
                             <Border.ToolTip>Create a wall</Border.ToolTip>
                             <Viewbox >
                                 <Image Source="/LazyContouring.esapi;component/Images/WallOperation.png" 
@@ -166,12 +166,12 @@
 
                 <Grid Grid.Column="2" Width="250">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Cool features place" Height="150" TextAlignment="Center"/>
+                    <TextBlock Text="Cool features place" TextAlignment="Center"/>
                     
                     <Grid Grid.Row="1" Margin="3">
                         <Grid.RowDefinitions>
@@ -180,22 +180,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Text="Templates" Padding="3"/>
-                        
-                        <ListBox Grid.Row="1">
-                            <ListBoxItem>
-                                <TextBlock Text="PTVpn"/>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <TextBlock Text="Breast"/>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <TextBlock Text="HN 66/60/54"/>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <TextBlock Text="etc..."/>
-                            </ListBoxItem>
-                        </ListBox>
+                        <local:TemplatesListControl Grid.Row="1"/>
 
                         <Grid Grid.Row="2" Margin="0 0 0 5">
                             <Grid.ColumnDefinitions>
@@ -219,14 +204,23 @@
                                     <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
                                 </Viewbox>
                             </Button>
-                            <Button Margin="3 3 0 3" Grid.Column="2">
+                            <Button Margin="3 3 0 3" Grid.Column="2" Command="{Binding SaveNodesAsTemplateCommand}">
                                 <Viewbox>
                                     <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Save-outline.512.png"/>
                                 </Viewbox>
                             </Button>
                             <Button Margin="3 3 0 3" Grid.Column="3">
                                 <Viewbox>
-                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Enter-outline.512.png"/>
+                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Enter-outline.512.png" RenderTransformOrigin="0.5,0.5">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="90"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
                                 </Viewbox>
                             </Button>
                         </Grid>

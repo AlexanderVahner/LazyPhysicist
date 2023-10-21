@@ -4,7 +4,7 @@
     {
         protected override void Method(OperationNode node)
         {
-            node.SegmentVolume = node.StructureVar?.SegmentVolume;
+            node.SegmentVolume = node.StructureVar?.GetSegmentVolume();
         }
 
         public override OperationType OperationType => OperationType.Empty;

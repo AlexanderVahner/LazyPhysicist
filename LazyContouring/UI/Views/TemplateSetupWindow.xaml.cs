@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LazyContouring.Operations;
+using LazyContouring.UI.ViewModels;
+using LazyContouring.UI.ViewModels.Operations.ContextConditions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +22,26 @@ namespace LazyContouring.UI.Views
     /// </summary>
     public partial class TemplateSetupWindow : Window
     {
+        private OperationTemplateVM vM;
+
         public TemplateSetupWindow()
         {
             InitializeComponent();
+        }
+
+        public OperationTemplateVM ViewModel 
+        { 
+            get => vM;
+            set
+            {
+                vM = value;
+                DataContext = vM;
+            }
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            ViewModel.SelectedNodeVM = e.NewValue as ConditionNodeVM;
         }
     }
 }

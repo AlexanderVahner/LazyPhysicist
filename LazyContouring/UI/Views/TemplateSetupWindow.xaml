@@ -3,37 +3,66 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LazyContouring.UI.Views"
+        xmlns:local="clr-namespace:LazyContouring.UI.Views" 
+        xmlns:viewmodels="clr-namespace:LazyContouring.UI.ViewModels" 
+        xmlns:contextconditioncontrols="clr-namespace:LazyContouring.UI.Views.ContextConditionControls"
+        d:DataContext="{d:DesignInstance Type=viewmodels:OperationTemplateVM}"
         mc:Ignorable="d"
         Title="Template Setup" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Column="0" ItemsSource="{Binding Children}">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="True" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <Button Content="Button" />
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-                    <HierarchicalDataTemplate.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="Button 2"  />
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
+            <StackPanel>
+                <TextBlock Text="Template Name:" Margin="3"/>
+                <TextBox Text="{Binding OperationTemplate.Name}" Margin="3 0 3 0"/>
+                <CheckBox Content="Is Automatic" IsChecked="{Binding OperationTemplate.IsAutomatic}" Grid.Row="0" Margin="3 6 3 3"/>
+                <TextBlock Text="Conditions:" Margin="3" />
+                
+                <DockPanel Grid.Row="1">
+                    <Button Content="Remove" Command="{Binding RemoveConditionCommand}" DockPanel.Dock="Right" Margin="3" Padding="2"/>
+                    
+                    <StackPanel  Orientation="Horizontal">
+                        <Button Content="+ Group" Command="{Binding AddGroupCommand}" Margin="3" Padding="2"/>
+                        <Button Content="+ Structure" Command="{Binding AddStructureConditionCommand}" Margin="3" Padding="2"/>
+                        <Button Content="+ Diagnosis" Command="{Binding AddDiagnosisConditionCommand}" Margin="3" Padding="2"/>
+                        <Button Content="+ Image" Command="{Binding AddImageConditionCommand}" Margin="3" Padding="2"/>
+                    </StackPanel>
+                </DockPanel>
+                
+            </StackPanel>
 
-        </TreeView>
 
-        <GridSplitter Width="5" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
+            <TreeView Grid.Row="1" ItemsSource="{Binding ConditionNodeVM}" Margin="3 0 3 3" SelectedItemChanged="TreeView_SelectedItemChanged">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildrenConditionNodes}">
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate>
+                                <contextconditioncontrols:ConditionNodeControl DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
 
-        <local:OperationPage Grid.Column="1" />
+            </TreeView>
+        </Grid>
+        
+
+        <GridSplitter Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
+
+        <!--<local:OperationPage Grid.Column="1" />-->
     </Grid>
 </Window>

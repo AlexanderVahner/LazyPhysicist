@@ -68,16 +68,18 @@
     <Compile Include="Models\UserSettings.cs" />
     <Compile Include="Operations\ContextConditions\ContextCondition.cs" />
     <Compile Include="Operations\ContextConditions\DiagnosisCondition.cs" />
-    <Compile Include="Operations\ContextConditions\ImageSliceThicknessCondition.cs" />
-    <Compile Include="Operations\ContextConditions\PlanTechniqueCondition.cs" />
+    <Compile Include="Operations\ContextConditions\ImageCondition.cs" />
     <Compile Include="Operations\ContextConditions\StructureCondition.cs" />
     <Compile Include="Operations\ContextConditions\ConditionGroup.cs" />
     <Compile Include="Operations\TemplateManager.cs" />
     <Compile Include="Operations\OperationTemplate.cs" />
     <Compile Include="Operations\ContextConditions\ConditionTreeNode.cs" />
     <Compile Include="UI\ViewModels\Operations\ConditionNodeVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\ContextConditions\DiagnosisConditionVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\ConditionGroupVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\ContextConditions\ImageConditionVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\StructureConditionVM.cs" />
+    <Compile Include="UI\ViewModels\Operations\TemplateManagerVM.cs" />
     <Compile Include="UI\ViewModels\OperationTemplateVM.cs" />
     <Compile Include="UI\ViewModels\ViewPlaneVM.cs" />
     <Compile Include="Models\PatientModel.cs" />
@@ -130,6 +132,18 @@
     <Compile Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml.cs">
       <DependentUpon>ConditionGroupControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\ContextConditionControls\ConditionNodeControl.xaml.cs">
+      <DependentUpon>ConditionNodeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\ContextConditionControls\DiagnosisConditionControl.xaml.cs">
+      <DependentUpon>DiagnosisConditionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\ContextConditionControls\ImageConditionControl.xaml.cs">
+      <DependentUpon>ImageConditionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\ContextConditionControls\StructureConditionControl.xaml.cs">
+      <DependentUpon>StructureConditionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\CropOperationControl.xaml.cs">
       <DependentUpon>CropOperationControl.xaml</DependentUpon>
     </Compile>
@@ -154,6 +168,9 @@
     <Compile Include="UI\Views\TemplateSetupWindow.xaml.cs">
       <DependentUpon>TemplateSetupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\TemplatesListControl.xaml.cs">
+      <DependentUpon>TemplatesListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\WallOperationControl.xaml.cs">
       <DependentUpon>WallOperationControl.xaml</DependentUpon>
     </Compile>
@@ -174,6 +191,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ContextConditionControls\ConditionNodeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ContextConditionControls\DiagnosisConditionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ContextConditionControls\ImageConditionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ContextConditionControls\StructureConditionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -206,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\TemplateSetupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\TemplatesListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

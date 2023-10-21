@@ -1,5 +1,6 @@
 ﻿using LazyContouring.Models;
 using LazyContouring.Operations;
+using LazyContouring.UI.ViewModels.Operations;
 using LazyContouring.UI.Views;
 using LazyPhysicist.Common;
 using ScriptArgsNameSpace;
@@ -14,6 +15,7 @@ namespace LazyContouring.UI.ViewModels
         private StructureSetModel currentStructureSetModel;
         private readonly PatientModel patientModel;
         private readonly OperationsVM operationsVM;
+        private readonly TemplateManagerVM templateManagerVM;
         private OperationPage operationPage;
         private SlaveCollection<StructureVariable, StructureVariableVM> structures;
         private SliceControl sliceControl;
@@ -25,6 +27,7 @@ namespace LazyContouring.UI.ViewModels
             this.patientModel = patientModel;
             UserSettings = userSettings;
             operationsVM = new OperationsVM();
+            templateManagerVM = new TemplateManagerVM(userSettings.TemplateManager);
             OperationPage = new OperationPage() { ViewModel = operationsVM };
             sliceControl = new SliceControl();
 
@@ -90,9 +93,27 @@ namespace LazyContouring.UI.ViewModels
             CurrentStructureSet = newSs;
         }
 
+        public void SaveNodesAsTemplate()
+        {
+            if (operationsVM.Operations.Count == 0)
+            {
+                return;
+            }
+
+            var template = UserSettings.TemplateManager.CreateTemplate(operationsVM.GetCurrentNodes());
+            UserSettings.TemplateManager.SaveTemplate(template);
+
+            var templateSetupWindow = new TemplateSetupWindow { ViewModel = new OperationTemplateVM(template) };
+            templateSetupWindow.ShowDialog();
+        }
+
         public MetaCommand DuplicateStructureSetCommand => new MetaCommand(
             o => DuplicateStructureSet(CurrentStructureSet),
             o => CurrentStructureSet != null && patientModel.CanModifyData
+        );
+
+        public MetaCommand SaveNodesAsTemplateCommand => new MetaCommand(
+            o => SaveNodesAsTemplate()
         );
 
         public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
@@ -100,6 +121,7 @@ namespace LazyContouring.UI.ViewModels
         public SlaveCollection<StructureVariable, StructureVariableVM> Structures => structures ?? (structures = new SlaveCollection<StructureVariable, StructureVariableVM>());
         public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }
         public OperationPage OperationPage { get => operationPage; set => SetProperty(ref operationPage, value); }
+        public TemplateManagerVM TemplateManagerVM => templateManagerVM;
         public SliceControl SliceControl { get => sliceControl; set => SetProperty(ref sliceControl, value); }
         public UserSettings UserSettings { get; }
     }
