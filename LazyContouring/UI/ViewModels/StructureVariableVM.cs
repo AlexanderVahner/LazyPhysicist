@@ -1,5 +1,6 @@
 ﻿using LazyContouring.Models;
 using LazyPhysicist.Common;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -67,5 +68,6 @@ namespace LazyContouring.UI.ViewModels
         public Visibility CanEditVisibility => (StructureVariable?.CanEditSegmentVolume ?? true) ? Visibility.Hidden : Visibility.Visible;
         public Brush StrokeBrush { get => strokeBrush; set => SetProperty(ref strokeBrush, value); }
         public Brush FillBrush { get => fillBrush; set => SetProperty(ref fillBrush, value); }
+        public List<string> DicomTypesAvailableForCreate => StructureVariable.DicomTypesAvailableForCreate;
     }
 }

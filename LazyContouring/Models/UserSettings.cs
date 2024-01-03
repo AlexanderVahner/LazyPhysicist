@@ -2,11 +2,7 @@
 using LazyContouring.Operations;
 using LazyPhysicist.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyContouring.Models
 {
@@ -37,7 +33,7 @@ namespace LazyContouring.Models
                 {
                     settings = new UserSettings();
                 }
-                
+
             }
             else
             {

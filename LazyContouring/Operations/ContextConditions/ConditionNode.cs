@@ -1,18 +1,13 @@
 ﻿using LazyPhysicist.Common;
 using ScriptArgsNameSpace;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace LazyContouring.Operations.ContextConditions
 {
     [XmlInclude(typeof(ConditionGroup))]
     [XmlInclude(typeof(ContextCondition))]
-    public abstract class ConditionTreeNode : Notifier
+    public abstract class ConditionNode : Notifier
     {
         public bool CheckNode(ScriptArgs args)
         {
@@ -21,6 +16,6 @@ namespace LazyContouring.Operations.ContextConditions
 
         protected abstract bool CheckNodeDefinition(ScriptArgs args);
 
-        public ObservableCollection<ConditionTreeNode> Children { get; set; }
+        public ObservableCollection<ConditionNode> Children { get; set; }
     }
 }

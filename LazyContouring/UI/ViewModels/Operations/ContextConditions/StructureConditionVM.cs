@@ -1,27 +1,24 @@
 ﻿using LazyContouring.Operations.ContextConditions;
-using LazyPhysicist.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyContouring.UI.ViewModels.Operations.ContextConditions
 {
-    public sealed class StructureConditionVM : Notifier
+    public sealed class StructureConditionVM : ConditionNodeVM
     {
         private readonly StructureCondition structureCondition;
 
-        public StructureConditionVM(StructureCondition structureCondition)
+        public StructureConditionVM(StructureCondition structureCondition) : base(structureCondition)
         {
             this.structureCondition = structureCondition;
-            structureCondition.PropertyChanged += (s, e) => NotifyPropertyChanged(nameof(Title));
+            Title = "The SS should " + (StructureCondition.ShouldBe ? "" : "NOT ") + "have this structure:";
+            structureCondition.PropertyChanged += (s, e) => Title = "The SS should " + (StructureCondition.ShouldBe ? "" : "NOT ") + "have this structure:";
         }
 
-        public string Title => "The SS should " + (StructureCondition.ShouldBe ? "" : "NOT") + " have this structure:";
         public StructureCondition StructureCondition => structureCondition;
-
-        public List<StructureConditionTypeStruct> StructureConditionTypes => StructureCondition.StrucutreConditionTypes;
+        public List<StructureConditionType> StructureConditionTypes => Enum.GetValues(typeof(StructureConditionType)).Cast<StructureConditionType>().ToList();
+        public List<string> StructureConditionDicomTypes => StructureCondition.StrucutreDicomTypes;
     }
 
 

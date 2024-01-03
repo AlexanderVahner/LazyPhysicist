@@ -172,77 +172,64 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Cool features place" TextAlignment="Center"/>
-                    
-                    <Grid Grid.Row="1" Margin="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
 
-                        <local:TemplatesListControl Grid.Row="1"/>
-
-                        <Grid Grid.Row="2" Margin="0 0 0 5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                            </Grid.RowDefinitions>
-
-                            <Button Margin="3 3 0 3" Grid.Column="0">
-                                <Viewbox>
-                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
-                                </Viewbox>
-                            </Button>
-
-                            <Button Margin="3 3 0 3" Grid.Column="0">
-                                <Viewbox>
-                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
-                                </Viewbox>
-                            </Button>
-                            <Button Margin="3 3 0 3" Grid.Column="2" Command="{Binding SaveNodesAsTemplateCommand}">
-                                <Viewbox>
-                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Save-outline.512.png"/>
-                                </Viewbox>
-                            </Button>
-                            <Button Margin="3 3 0 3" Grid.Column="3">
-                                <Viewbox>
-                                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Enter-outline.512.png" RenderTransformOrigin="0.5,0.5">
-                                        <Image.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform/>
-                                                <SkewTransform/>
-                                                <RotateTransform Angle="90"/>
-                                                <TranslateTransform/>
-                                            </TransformGroup>
-                                        </Image.RenderTransform>
-                                    </Image>
-                                </Viewbox>
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    <local:TemplatesListControl Grid.Row="1"/>
                 </Grid>
                 
             </Grid>
         </Grid>
 
         <GridSplitter Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ResizeBehavior="CurrentAndNext"/>
-        
-        <Grid x:Name="OperationsGrid" Grid.Row="1">
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
-            <Border Grid.Row="1">
+
+            <StackPanel Grid.Column="0" Width="36" Margin="3">
+                <Button Margin="0 0 0 3" Grid.Column="0">
+                    <Button.ToolTip>Execute all</Button.ToolTip>
+                    <Viewbox>
+                        <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Play-forward-circle.512.png"/>
+                    </Viewbox>
+                </Button>
+                
+                <Button Grid.Column="2" Command="{Binding SaveNodesAsTemplateCommand}">
+                    <Button.ToolTip>Save as template</Button.ToolTip>
+                    <Viewbox>
+                        <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Save-outline.512.png"/>
+                    </Viewbox>
+                </Button>
+                
+                <Border Margin="0 3 0 0" Grid.Row="0" Grid.Column="4" CornerRadius="5"  Background="White" Padding="3">
+                    <Border.ToolTip>Drop at the joint to remove the branch</Border.ToolTip>
+                    <Viewbox>
+                        <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Skull-outline.512.png" 
+                                       Tag="Remove" PreviewMouseLeftButtonDown="OperationBox_PreviewMouseLeftButtonDown"/>
+                    </Viewbox>
+                </Border>
+            </StackPanel>
+
+            <Grid x:Name="OperationsGrid" Grid.Column="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Frame Content="{Binding OperationPage}" NavigationUIVisibility="Hidden"/>
+                
+            </Grid>
+
+            <Border Grid.Row="1" Grid.ColumnSpan="2">
                 <TextBlock Text="Drop a structure here to add an expression." Padding="3" Background="LimeGreen"
                            AllowDrop="True" Drop="AddStringNodeDrop"/>
             </Border>
         </Grid>
+        
 
 
         

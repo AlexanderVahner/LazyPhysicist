@@ -1,11 +1,6 @@
 ﻿using LazyContouring.Operations;
-using LazyContouring.UI.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Xml.Linq;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -39,7 +34,7 @@ namespace LazyContouring.UI.ViewModels
             if (index > 0)
             {
                 Operations.Move(index, index - 1);
-            } 
+            }
         }
 
         public void MoveOperationStringDown(OperationStringVM value)
@@ -53,9 +48,9 @@ namespace LazyContouring.UI.ViewModels
 
         public IEnumerable<OperationNode> GetCurrentNodes()
         {
-            foreach(var opStringVM in Operations) 
+            foreach (var opStringVM in Operations)
             {
-                yield return opStringVM.Node;            
+                yield return opStringVM.Node;
             }
         }
 

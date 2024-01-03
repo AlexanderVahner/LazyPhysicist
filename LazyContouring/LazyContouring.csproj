@@ -73,7 +73,7 @@
     <Compile Include="Operations\ContextConditions\ConditionGroup.cs" />
     <Compile Include="Operations\TemplateManager.cs" />
     <Compile Include="Operations\OperationTemplate.cs" />
-    <Compile Include="Operations\ContextConditions\ConditionTreeNode.cs" />
+    <Compile Include="Operations\ContextConditions\ConditionNode.cs" />
     <Compile Include="UI\ViewModels\Operations\ConditionNodeVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\DiagnosisConditionVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\ConditionGroupVM.cs" />
@@ -165,6 +165,9 @@
     <Compile Include="UI\Views\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\StructureVariableEditWindow.xaml.cs">
+      <DependentUpon>StructureVariableEditWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\TemplateSetupWindow.xaml.cs">
       <DependentUpon>TemplateSetupWindow.xaml</DependentUpon>
     </Compile>
@@ -238,6 +241,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\StructureVariableEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\TemplateSetupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,6 +291,8 @@
     <Resource Include="Images\Ionic-Ionicons-Play-forward-circle.512.png" />
     <Content Include="Images\Ionic-Ionicons-Play-forward-circle.svg" />
     <Content Include="Images\Ionic-Ionicons-Save-outline.svg" />
+    <None Include="Images\Ionic-Ionicons-Skull-outline.512.png" />
+    <None Include="Images\Ionic-Ionicons-Skull-outline.svg" />
     <Content Include="Images\Operations.svg" />
     <Content Include="Images\OperationsCut.svg" />
     <Resource Include="Images\OrOperation.png" />

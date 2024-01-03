@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LazyContouring.UI.Views" 
-             xmlns:operations="clr-namespace:LazyContouring.UI.ViewModels.Operations" xmlns:viewmodels="clr-namespace:LazyContouring.UI.ViewModels"
+             xmlns:viewmodels="clr-namespace:LazyContouring.UI.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:MainVM}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -12,13 +11,64 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Templates:" Margin="3"/>
         <TabControl Grid.Row="1">
-            <TabItem Header="Manual" Content="{Binding TemplateManagerVM.TemplateManager.ManualTemplates}"/>
-            <TabItem Header="Automatic" Content="{Binding TemplateManagerVM.TemplateManager.ManualTemplates}"/>
+            <TabItem Header="Manual">
+                <ListBox ItemsSource="{Binding TemplateManagerVM.TemplateManager.ManualTemplates}" SelectedItem="{Binding SelectedTemplate}" MouseDoubleClick="ListBox_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Automatic">
+                <ListBox ItemsSource="{Binding TemplateManagerVM.TemplateManager.AutomaticTemplates}" SelectedItem="{Binding SelectedTemplate}" MouseDoubleClick="ListBox_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
         </TabControl>
+
+        <Grid Grid.Row="2" Margin="0 0 0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+
+            <Button Margin="3 3 0 3" Grid.Column="0">
+                <Viewbox>
+                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Enter-outline.512.png" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                </Viewbox>
+            </Button>
+
+            <Button Command="{Binding RemoveTemplateCommand}" Margin="3 3 0 3" Grid.Column="1">
+                <Viewbox>
+                    <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Close-circle-outline.512.png" RenderTransformOrigin="0.5,0.5">
+                    </Image>
+                </Viewbox>
+            </Button>
+        </Grid>
 
     </Grid>
 </UserControl>

@@ -1,10 +1,8 @@
-﻿using Common;
-using LazyContouring.Images;
+﻿using LazyContouring.Images;
 using LazyContouring.Operations;
 using LazyContouring.UI.Views;
 using LazyPhysicist.Common;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace LazyContouring.UI.ViewModels
@@ -45,7 +43,7 @@ namespace LazyContouring.UI.ViewModels
             {
                 //Xml.WriteXmlFromObject("test.xml", Node);
                 Node.Materialize(null);
-                
+
                 ExecuteButtonImage = undoExecuteImage;
             }
         }

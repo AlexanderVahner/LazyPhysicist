@@ -1,12 +1,10 @@
 ﻿using LazyContouring.Graphics;
 using LazyContouring.Models;
 using LazyPhysicist.Common;
-using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using VMS.TPS.Common.Model.Types;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -27,7 +25,7 @@ namespace LazyContouring.UI.ViewModels
             ImageModel = new ImageModel(structureSet.StructureSet.Image) { Converter = new VoxelToPixelConverter() };
             PlaneCount = ImageModel.ZSize;
             PlaneBitmap = ImageModel.PlaneBitmap;
-            
+
 
             planeImage = new Image()
             {

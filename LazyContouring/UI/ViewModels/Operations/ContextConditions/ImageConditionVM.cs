@@ -1,22 +1,15 @@
 ﻿using LazyContouring.Operations.ContextConditions;
-using LazyPhysicist.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyContouring.UI.ViewModels.Operations.ContextConditions
 {
-    public sealed class ImageConditionVM : Notifier
+    public sealed class ImageConditionVM : ConditionNodeVM
     {
-        public ImageConditionVM(ImageCondition inageCondition)
+        public ImageConditionVM(ImageCondition imageCondition) : base(imageCondition)
         {
-            ImageCondition = inageCondition;
-            inageCondition.PropertyChanged += (s, e) => NotifyPropertyChanged(nameof(Title));
+            ImageCondition = imageCondition;
+            Title = "Image slice thickness should " + (ImageCondition.ShouldBe ? "" : "NOT ") + "be:";
+            imageCondition.PropertyChanged += (s, e) => Title = "Image slice thickness should " + (ImageCondition.ShouldBe ? "" : "NOT ") + "be:";
         }
-
-        public string Title => "Image slice thickness must " + (ImageCondition.ShouldBe ? "" : "NOT") + " be:";
 
         public ImageCondition ImageCondition { get; }
     }

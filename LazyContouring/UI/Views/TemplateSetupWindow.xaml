@@ -5,10 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LazyContouring.UI.Views" 
         xmlns:viewmodels="clr-namespace:LazyContouring.UI.ViewModels" 
+        xmlns:ccVm="clr-namespace:LazyContouring.UI.ViewModels.Operations.ContextConditions" 
         xmlns:contextconditioncontrols="clr-namespace:LazyContouring.UI.Views.ContextConditionControls"
         d:DataContext="{d:DesignInstance Type=viewmodels:OperationTemplateVM}"
         mc:Ignorable="d"
-        Title="Template Setup" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Template Setup" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="ItemsControl" x:Key="ConditionItemsStyle">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <DataTemplate DataType="{x:Type ccVm:ConditionGroupVM}">
+            <contextconditioncontrols:ConditionGroupControl DataContext="{Binding}"/>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -28,36 +55,30 @@
                 <TextBlock Text="Conditions:" Margin="3" />
                 
                 <DockPanel Grid.Row="1">
-                    <Button Content="Remove" Command="{Binding RemoveConditionCommand}" DockPanel.Dock="Right" Margin="3" Padding="2"/>
+                    
                     
                     <StackPanel  Orientation="Horizontal">
                         <Button Content="+ Group" Command="{Binding AddGroupCommand}" Margin="3" Padding="2"/>
-                        <Button Content="+ Structure" Command="{Binding AddStructureConditionCommand}" Margin="3" Padding="2"/>
-                        <Button Content="+ Diagnosis" Command="{Binding AddDiagnosisConditionCommand}" Margin="3" Padding="2"/>
-                        <Button Content="+ Image" Command="{Binding AddImageConditionCommand}" Margin="3" Padding="2"/>
+                        
                     </StackPanel>
                 </DockPanel>
                 
             </StackPanel>
 
-
-            <TreeView Grid.Row="1" ItemsSource="{Binding ConditionNodeVM}" Margin="3 0 3 3" SelectedItemChanged="TreeView_SelectedItemChanged">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="True" />
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding ChildrenConditionNodes}">
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <DataTemplate>
-                                <contextconditioncontrols:ConditionNodeControl DataContext="{Binding}"/>
-                            </DataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-
-            </TreeView>
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding ConditionNodeVM.ChildrenConditionNodes}" Style="{StaticResource ConditionItemsStyle}" Margin="3 0 3 3" >
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </Grid>
         
 

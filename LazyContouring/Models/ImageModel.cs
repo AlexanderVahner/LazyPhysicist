@@ -124,7 +124,7 @@ namespace LazyContouring.Models
             }
         }
 
-        
+
 
         public int XSize => xSize;
         public int YSize => ySize;

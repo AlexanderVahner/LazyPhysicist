@@ -1,9 +1,4 @@
 ﻿using ScriptArgsNameSpace;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace LazyContouring.Operations.ContextConditions
@@ -11,7 +6,7 @@ namespace LazyContouring.Operations.ContextConditions
     [XmlInclude(typeof(DiagnosisCondition))]
     [XmlInclude(typeof(ImageCondition))]
     [XmlInclude(typeof(StructureCondition))]
-    public abstract class ContextCondition : ConditionTreeNode
+    public abstract class ContextCondition : ConditionNode
     {
         private bool shouldBe = true;
 

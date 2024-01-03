@@ -211,6 +211,26 @@ namespace LazyContouring.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Ionic_Ionicons_Skull_outline {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Skull_outline", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Ionic_Ionicons_Skull_outline_512 {
+            get {
+                object obj = ResourceManager.GetObject("Ionic_Ionicons_Skull_outline_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap MarginOperation {

@@ -1,11 +1,6 @@
-﻿using LazyContouring.Operations;
-using LazyContouring.Operations.ContextConditions;
-using System;
+﻿using LazyContouring.Operations.ContextConditions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LazyContouring.Operations
 {
@@ -17,21 +12,21 @@ namespace LazyContouring.Operations
         public OperationTemplate CreateTemplate(IEnumerable<OperationNode> nodes)
         {
             OperationTemplate template = new OperationTemplate();
-            template.ChildrenConditionNodes.Add(new ConditionGroup());
+            template.ConditionNodes.Add(new ConditionGroup());
 
             foreach (OperationNode node in nodes)
             {
-                template.RootNodes.Add((OperationNode)node.Clone());
+                template.OperationNodes.Add((OperationNode)node.Clone());
             }
 
-            return template.RootNodes.Count == 0 ? null : template;
+            return template.OperationNodes.Count == 0 ? null : template;
         }
 
-        public void SaveTemplate(OperationTemplate template) 
+        public void SaveTemplate(OperationTemplate template)
         {
-            if (template == null || template.RootNodes.Count == 0) 
-            { 
-                return; 
+            if (template == null || template.OperationNodes.Count == 0)
+            {
+                return;
             }
 
             automaticTemplates.Remove(template);

@@ -11,12 +11,12 @@ namespace LazyContouring.Models
 {
     public sealed class StructureVariable : Notifier
     {
-        public static List<string> DicomTypesAvailableForCreate = new List<string> { "CONTROL", "PTV", "CTV", "GTV", "ORGAN", "FIXATION" };
+        public static readonly List<string> DicomTypesAvailableForCreate = new List<string> { "CONTROL", "PTV", "CTV", "GTV", "ORGAN", "FIXATION" };
 
         private Structure structure;
         private string structureId = "";
         private string dicomType = "CONTROL";
-        private Color color = Colors.Magenta;
+        private Color color = Colors.Gray;
         private bool isTemporary = false;
         private bool isVisible = true;
         private bool isNew;
@@ -37,6 +37,7 @@ namespace LazyContouring.Models
 
         [XmlIgnore]
         public Structure Structure { get => structure; set => SetStructure(value); }
+
         public string StructureId
         {
             get => structureId;
@@ -65,6 +66,7 @@ namespace LazyContouring.Models
 
             }
         }
+
         public string DicomType
         {
             get => dicomType;
@@ -77,6 +79,7 @@ namespace LazyContouring.Models
                 NotifyPropertyChanged(nameof(DicomType));
             }
         }
+
         public Color Color
         {
             get => color;
@@ -105,7 +108,7 @@ namespace LazyContouring.Models
                 }
                 finally
                 {
-                    NotifyPropertyChanged("SegmentVolume");
+                    NotifyPropertyChanged(nameof(SegmentVolume));
                     NotifyPropertyChanged(nameof(IsEmpty));
                 }
             }

@@ -1,26 +1,40 @@
 ﻿using ScriptArgsNameSpace;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Operations.ContextConditions
-{
-    public enum StructureConditionType { ExactId, RegexId, DicomType }
+{    
+    public enum StructureConditionType { ExactId, IdStartsWith, RegexId }
+
     public sealed class StructureCondition : ContextCondition
     {
-        public static readonly List<StructureConditionTypeStruct> StrucutreConditionTypes = new List<StructureConditionTypeStruct>
+        public const string AnyDicomType = "<any>";
+
+        public static readonly List<string> StrucutreDicomTypes = new List<string>
         {
-            new StructureConditionTypeStruct(StructureConditionType.ExactId, "Exact Id"),
-            new StructureConditionTypeStruct(StructureConditionType.RegexId, "Regex by Id"),
-            new StructureConditionTypeStruct(StructureConditionType.DicomType, "Dicom type")
+            AnyDicomType,
+            "EXTERNAL",
+            "ORGAN",
+            "PTV",
+            "CTV",
+            "GTV",
+            "BOOST",
+            "SUPPORT", 
+            "FIXATION", 
+            "REGISTRATION",
+            "AVOIDANCE",
+            "CAVITY", 
+            "CONTRAST_AGENT", 
+            "IRRAD_VOLUME", 
+            "TREATED_VOLUME", 
+            "DOSE_REGION"
         };
 
-        private string searchText;
-        private StructureConditionTypeStruct searchType = StrucutreConditionTypes[0];
+        private string searchText = "";
+        private string searchDicomType = AnyDicomType;
+        private StructureConditionType searchType = StructureConditionType.ExactId;
 
         protected override bool Check(ScriptArgs args)
         {
@@ -29,44 +43,38 @@ namespace LazyContouring.Operations.ContextConditions
 
         private bool CheckStructure(Structure structure)
         {
-            bool result = false;
+            bool result = false;            
 
-            if (structure != null)
+            if (structure == null)
             {
-                switch (SearchType.ConditionType)
-                {
-                    case StructureConditionType.ExactId:
-                        result = structure?.Id == SearchText;
-                        break;
-                    case StructureConditionType.RegexId:
-                        result = Regex.IsMatch(structure.Id, SearchText);
-                        break;
-                    case StructureConditionType.DicomType:
-                        result = structure?.DicomType == SearchText;
-                        break;
-                }
+                return false;
             }
 
-            return result;
+            string desiredId = SearchText?.Trim().ToUpper() ?? "";
+            string desiredDicomType = SearchDicomType?.Trim().ToUpper() ?? "";
+
+            bool IsDicomTypeMatch = desiredDicomType == AnyDicomType
+                || desiredDicomType == ""
+                || structure.DicomType.ToUpper() == desiredDicomType;
+
+            switch (SearchType)
+            {
+                case StructureConditionType.ExactId:
+                    result = desiredId == "" || structure.Id.Trim().ToUpper() == desiredId;
+                    break;
+                case StructureConditionType.IdStartsWith:
+                    result = desiredId == "" || structure.Id.Trim().ToUpper().StartsWith(desiredId);
+                    break;
+                case StructureConditionType.RegexId:
+                    result = desiredId == "" || Regex.IsMatch(structure.Id, desiredId);
+                    break;
+            }
+
+            return result && IsDicomTypeMatch;
         }
 
         public string SearchText { get => searchText; set => SetProperty(ref searchText, value); }
-        public StructureConditionTypeStruct SearchType { get => searchType; set => SetProperty(ref searchType, value); }
-    }
-
-    public readonly struct StructureConditionTypeStruct
-    {
-        public readonly StructureConditionType ConditionType;
-        public readonly string StringSearchType;
-
-        public StructureConditionTypeStruct(StructureConditionType conditionType, string stringSearchType)
-        {
-            ConditionType = conditionType;
-            StringSearchType = stringSearchType;
-        }
-        public override string ToString()
-        {
-            return StringSearchType;
-        }
+        public string SearchDicomType { get => searchDicomType; set => SetProperty(ref searchDicomType, value); }
+        public StructureConditionType SearchType { get => searchType; set => SetProperty(ref searchType, value); }
     }
 }

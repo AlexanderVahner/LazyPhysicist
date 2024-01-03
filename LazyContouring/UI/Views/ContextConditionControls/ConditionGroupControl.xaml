@@ -5,12 +5,78 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LazyContouring.UI.Views.ContextConditionControls" 
              xmlns:contextconditions="clr-namespace:LazyContouring.UI.ViewModels.Operations.ContextConditions" 
+             xmlns:contextconditioncontrols="clr-namespace:LazyContouring.UI.Views.ContextConditionControls"
              d:DataContext="{d:DesignInstance Type=contextconditions:ConditionGroupVM}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Group" Margin="3"/>
-        <RadioButton IsChecked="{Binding AndChecked}" Content="All is true" Margin="5"/>
-        <RadioButton IsChecked="{Binding OrChecked}" Content="One at least" Margin="5"/>
-    </StackPanel>
+    <UserControl.Resources>
+        <Style TargetType="ItemsControl" x:Key="ConditionItemsStyle">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate DataType="{x:Type contextconditions:StructureConditionVM}">
+            <contextconditioncontrols:StructureConditionControl DataContext="{Binding}"/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type contextconditions:DiagnosisConditionVM}">
+            <contextconditioncontrols:DiagnosisConditionControl DataContext="{Binding}"/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type contextconditions:ImageConditionVM}">
+            <contextconditioncontrols:ImageConditionControl DataContext="{Binding}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <Button Command="{Binding SelfRemoveCommand}" Width="20" DockPanel.Dock="Right" BorderBrush="{x:Null}" Margin="2">
+                <Button.Background>
+                    <ImageBrush ImageSource="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Close-circle-outline.512.png" Stretch="UniformToFill"/>
+                </Button.Background>
+                <Button.Foreground>
+                    <ImageBrush ImageSource="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Close-circle-outline.512.png" Stretch="UniformToFill"/>
+                </Button.Foreground>
+            </Button>
+
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Group" Margin="3"/>
+                <RadioButton IsChecked="{Binding AndChecked}" Content="All is true" Margin="5"/>
+                <RadioButton IsChecked="{Binding OrChecked}" Content="One at least" Margin="5"/>
+            </StackPanel>
+        </DockPanel>
+
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button Content="+ Structure" Command="{Binding AddStructureConditionCommand}" FontSize="10" Margin="3 0 0 0" Padding="3 0 3 0"/>
+            <Button Content="+ Diagnosis" Command="{Binding AddDiagnosisConditionCommand}" FontSize="10" Margin="3 0 0 0" Padding="3 0 3 0"/>
+            <Button Content="+ Image" Command="{Binding AddImageConditionCommand}" FontSize="10" Margin="3 0 0 0" Padding="3 0 3 0"/>
+            <Button Content="Remove" Command="{Binding RemoveConditionCommand}" FontSize="10" Margin="3 0 0 0" Padding="3 0 3 0"/>
+        </StackPanel>
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding ChildrenConditionNodes}" SelectedItem="{Binding SelectedNodeVM}" Margin="3 3 3 3" />
+    </Grid>
+
 </UserControl>

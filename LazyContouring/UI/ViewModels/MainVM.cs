@@ -21,6 +21,7 @@ namespace LazyContouring.UI.ViewModels
         private SliceControl sliceControl;
         private ViewPlaneVM viewPlaneVM;
         private StructureVariableVM selectedStructure;
+        private OperationTemplate selectedTemplate;
 
         public MainVM(PatientModel patientModel, UserSettings userSettings, ScriptArgs args)
         {
@@ -45,7 +46,7 @@ namespace LazyContouring.UI.ViewModels
             else
             {
                 Structures.ObeyTheMaster(ss.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
-                viewPlaneVM = new ViewPlaneVM() { StructureSet = currentStructureSetModel }; 
+                viewPlaneVM = new ViewPlaneVM() { StructureSet = currentStructureSetModel };
                 sliceControl.ViewModel = viewPlaneVM;
 
                 viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(viewPlaneVM.ImageModel.UserOrigin.z);
@@ -76,8 +77,8 @@ namespace LazyContouring.UI.ViewModels
         {
             if (selectedStructure?.StructureVariable != null) { selectedStructure.StructureVariable.IsSelected = false; }
             selectedStructure = value;
-            if (selectedStructure?.StructureVariable != null) 
-            { 
+            if (selectedStructure?.StructureVariable != null)
+            {
                 selectedStructure.StructureVariable.IsSelected = true;
                 viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(selectedStructure.StructureVariable.Structure.CenterPoint.z);
             }
@@ -103,7 +104,30 @@ namespace LazyContouring.UI.ViewModels
             var template = UserSettings.TemplateManager.CreateTemplate(operationsVM.GetCurrentNodes());
             UserSettings.TemplateManager.SaveTemplate(template);
 
+            OpenTemplateSetupWindow(template);
+        }
+
+        public void RemoveTemplate(OperationTemplate template)
+        {
+            if (SelectedTemplate == null) 
+            { 
+                return; 
+            }
+
+            if (SelectedTemplate.IsAutomatic)
+            {
+                templateManagerVM.TemplateManager.AutomaticTemplates.Remove(template);
+            }
+            else
+            {
+                templateManagerVM.TemplateManager.ManualTemplates.Remove(template);
+            }
+        }
+
+        public void OpenTemplateSetupWindow(OperationTemplate template)
+        {
             var templateSetupWindow = new TemplateSetupWindow { ViewModel = new OperationTemplateVM(template) };
+            templateSetupWindow.Closing += (s, e) => UserSettings.TemplateManager.SaveTemplate(template);
             templateSetupWindow.ShowDialog();
         }
 
@@ -116,12 +140,27 @@ namespace LazyContouring.UI.ViewModels
             o => SaveNodesAsTemplate()
         );
 
+        public MetaCommand RemoveTemplateCommand => new MetaCommand(
+            o => RemoveTemplate(SelectedTemplate),
+            o => SelectedTemplate != null
+        );
+
+        public MetaCommand AddStructureCommand => new MetaCommand(
+            o => 
+            {
+
+                //CurrentStructureSet?.AddStructure();
+            },
+            o => CurrentStructureSet != null
+        );
+
         public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
         public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
         public SlaveCollection<StructureVariable, StructureVariableVM> Structures => structures ?? (structures = new SlaveCollection<StructureVariable, StructureVariableVM>());
         public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }
         public OperationPage OperationPage { get => operationPage; set => SetProperty(ref operationPage, value); }
         public TemplateManagerVM TemplateManagerVM => templateManagerVM;
+        public OperationTemplate SelectedTemplate { get => selectedTemplate; set => SetProperty(ref selectedTemplate, value); }
         public SliceControl SliceControl { get => sliceControl; set => SetProperty(ref sliceControl, value); }
         public UserSettings UserSettings { get; }
     }

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using LazyContouring.Operations;
+using LazyContouring.UI.ViewModels;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LazyContouring.UI.Views
 {
@@ -23,6 +12,15 @@ namespace LazyContouring.UI.Views
         public TemplatesListControl()
         {
             InitializeComponent();
+        }
+
+        private void ListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is ListBox lb && lb.SelectedItem != null)
+            {
+                (DataContext as MainVM)?.OpenTemplateSetupWindow((OperationTemplate)lb.SelectedItem);
+            }
+
         }
     }
 }
