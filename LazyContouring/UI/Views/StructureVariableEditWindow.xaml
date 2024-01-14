@@ -7,8 +7,8 @@
         xmlns:vm="clr-namespace:LazyContouring.UI.ViewModels" 
         d:DataContext="{d:DesignInstance Type=vm:StructureVariableVM}"
         mc:Ignorable="d"
-        Title="Structure Edit" Height="Auto" Width="Auto" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-    <Grid Margin="5">
+        Title="Edit Structure" Height="Auto" Width="Auto" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
@@ -21,16 +21,18 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Id" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="3"/>
-        <TextBox Text="{Binding StructureVariable.StructureId}" Grid.Row="0" Grid.Column="1"/>
+        <TextBox Name="txtId" Text="{Binding StructureVariable.StructureId}" Grid.Row="0" Grid.Column="1" Margin="3" MinWidth="150"/>
 
         <TextBlock Text="Dicom Type" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="3"/>
-        <ComboBox Text="{Binding StructureVariable.DicomType}"
+        <ComboBox Name="cmbDicomType"
+                  SelectedItem="{Binding StructureVariable.DicomType}"
                   ItemsSource="{Binding DicomTypesAvailableForCreate}" 
                   IsEditable="True"
                   IsReadOnly="True" 
+                  Margin="3"
                   Grid.Row="1" Grid.Column="1"/>
 
-        <TextBlock Text="Color" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="3"/>
+        <!--<TextBlock Text="Color" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="3"/>
         <StackPanel Grid.Row="2" Grid.Column="1">
             <TextBlock Text="For Eclipse v16+ only." Margin="3"/>
             <Grid>
@@ -42,8 +44,16 @@
                 <TextBlock Background="{Binding StrokeBrush}"/>
                 <Button Content="..." Padding="5 0 5 0" Margin="0,0,3,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="20" Click="PickColorButton_Click"/>
             </Grid>
-        </StackPanel>
+        </StackPanel>-->
 
-        <Button Content="Save" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3"/>
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3 10 3 3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Ok" IsDefault="True" Click="ButtonOk_Click"/>
+            <Button Content="Cancel" IsDefault="False" Margin="3 0 0 0"  Grid.Column="1" Click="ButtonCancel_Click"/>
+        </Grid>
     </Grid>
 </Window>

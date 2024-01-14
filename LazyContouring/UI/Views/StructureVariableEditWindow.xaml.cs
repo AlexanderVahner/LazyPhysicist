@@ -28,5 +28,18 @@ namespace LazyContouring.UI.Views
         {
             MessageBox.Show("Sorry. Not implemented yet.", "Oups...");
         }
+
+        public string Id => txtId.Text;
+        public string DicomType => cmbDicomType.Text;
+
+        private void ButtonOk_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
+
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
     }
 }

@@ -54,18 +54,18 @@ namespace LazyContouring.UI.ViewModels
         );
 
         public MetaCommand DuplicateCommand => new MetaCommand(
-            o => OperationsVM.DuplicateOperationString(this)
+            o => StructureSetVM.DuplicateOperationString(this)
         );
 
         public MetaCommand MoveUpCommand => new MetaCommand(
-            o => OperationsVM.MoveOperationStringUp(this)
+            o => StructureSetVM.MoveOperationStringUp(this)
         );
         public MetaCommand MoveDownCommand => new MetaCommand(
-            o => OperationsVM.MoveOperationStringDown(this)
+            o => StructureSetVM.MoveOperationStringDown(this)
         );
 
         public MetaCommand RemoveCommand => new MetaCommand(
-            o => OperationsVM.RemoveOperationString(this)
+            o => StructureSetVM.RemoveOperationString(this)
         );
 
         public bool CanExecute => Executed || (assignOperation?.CanExecute(node) ?? false);
@@ -74,6 +74,6 @@ namespace LazyContouring.UI.ViewModels
         public OperationNode Node { get => node; set => SetNode(value); }
         public UIElement NodeElement { get => nodeElement; set => SetProperty(ref nodeElement, value); }
 
-        public OperationsVM OperationsVM { get; set; }
+        public StructureSetVM StructureSetVM { get; set; }
     }
 }

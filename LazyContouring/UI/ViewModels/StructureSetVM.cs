@@ -1,16 +1,30 @@
-﻿using LazyContouring.Operations;
+﻿using LazyContouring.Models;
+using LazyContouring.Operations;
 using LazyPhysicist.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LazyContouring.UI.ViewModels
 {
-    public sealed class OperationsVM : Notifier
+    public sealed class StructureSetVM : Notifier
     {
+        private readonly StructureSetModel structureSetModel;
         private ObservableCollection<OperationStringVM> operations;
+        private SlaveCollection<StructureVariable, StructureVariableVM> structures;
+
+        public StructureSetVM(StructureSetModel structureSetModel)
+        {
+            this.structureSetModel = structureSetModel;
+        }
+
+        
         public OperationStringVM AddOperationString(OperationNode node)
         {
-            var opString = new OperationStringVM() { Node = node, StructureSetVM = null }; // Can be deleted
+            var opString = new OperationStringVM() { Node = node, StructureSetVM = this };
             Operations.Add(opString);
             return opString;
         }
@@ -56,10 +70,17 @@ namespace LazyContouring.UI.ViewModels
             }
         }
 
-        public ObservableCollection<OperationStringVM> Operations 
-        { 
-            get => operations ?? (operations = new ObservableCollection<OperationStringVM>()); 
-            set => SetProperty(ref operations, value); 
-        }
+        public override string ToString() => structureSetModel.Id;
+
+        private SlaveCollection<StructureVariable, StructureVariableVM> InitStructures() =>
+            new SlaveCollection<StructureVariable, StructureVariableVM>(
+                structureSetModel.Structures, 
+                m => new StructureVariableVM(m), 
+                s => s.StructureVariable);
+
+        public string Id => structureSetModel.Id;
+        public StructureSetModel StructureSetModel => structureSetModel;
+        public SlaveCollection<StructureVariable, StructureVariableVM> Structures => structures ?? (structures = InitStructures());
+        public ObservableCollection<OperationStringVM> Operations => operations ?? (operations = new ObservableCollection<OperationStringVM>());
     }
 }

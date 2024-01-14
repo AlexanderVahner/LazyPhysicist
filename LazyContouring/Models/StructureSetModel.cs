@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using LazyContouring.Operations;
+using System.Collections.ObjectModel;
 using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.Models
@@ -8,6 +9,7 @@ namespace LazyContouring.Models
         private readonly StructureSet structureSet;
         private readonly Patient patient;
         private ObservableCollection<StructureVariable> structures;
+        private ObservableCollection<OperationNode> operations;
 
         public StructureSetModel(StructureSet ss)
         {
@@ -67,5 +69,6 @@ namespace LazyContouring.Models
         public StructureSet StructureSet => structureSet;
         public string Id => structureSet.Id;
         public ObservableCollection<StructureVariable> Structures => structures ?? (structures = InitStructures());
+        public ObservableCollection<OperationNode> Operations => operations ?? (operations = new ObservableCollection<OperationNode>());
     }
 }

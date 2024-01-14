@@ -12,12 +12,12 @@ namespace LazyContouring.UI.ViewModels
 {
     public sealed class MainVM : Notifier
     {
-        private StructureSetModel currentStructureSetModel;
         private readonly PatientModel patientModel;
         private readonly OperationsVM operationsVM;
         private readonly TemplateManagerVM templateManagerVM;
+        private StructureSetVM currentStructureSetModel;
         private OperationPage operationPage;
-        private SlaveCollection<StructureVariable, StructureVariableVM> structures;
+        private ObservableCollection<StructureVariableVM> structures;
         private SliceControl sliceControl;
         private ViewPlaneVM viewPlaneVM;
         private StructureVariableVM selectedStructure;
@@ -32,21 +32,24 @@ namespace LazyContouring.UI.ViewModels
             OperationPage = new OperationPage() { ViewModel = operationsVM };
             sliceControl = new SliceControl();
 
-            CurrentStructureSet = patientModel.StructureSets.FirstOrDefault(ss => ss.Id == args.StructureSet.Id);
+            StructureSets = new SlaveCollection<StructureSetModel, StructureSetVM>(patientModel.StructureSets, m => new StructureSetVM(m), s => s.StructureSetModel);
+            CurrentStructureSet = StructureSets.FirstOrDefault(ss => ss.Id == args.StructureSet.Id);
         }
 
-        private void SetCurrentStructureSet(StructureSetModel ss)
+        private void SetCurrentStructureSet(StructureSetVM ss)
         {
             currentStructureSetModel = ss;
             if (ss == null)
             {
-                Structures.BreakFree();
+                Structures.Clear();
+                operationsVM.Operations.Clear();
                 sliceControl.ViewModel = null;
             }
             else
             {
-                Structures.ObeyTheMaster(ss.Structures, m => new StructureVariableVM(m), s => s.StructureVariable);
-                viewPlaneVM = new ViewPlaneVM() { StructureSet = currentStructureSetModel };
+                Structures = ss.Structures;
+                operationsVM.Operations = ss.Operations;
+                viewPlaneVM = new ViewPlaneVM() { StructureSet = ss.StructureSetModel };
                 sliceControl.ViewModel = viewPlaneVM;
 
                 viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(viewPlaneVM.ImageModel.UserOrigin.z);
@@ -70,7 +73,8 @@ namespace LazyContouring.UI.ViewModels
                 Operation = new AssignOperation()
             };
 
-            operationsVM.AddOperationString(node);
+            CurrentStructureSet.AddOperationString(node);
+            //operationsVM.AddOperationString(node);
         }
 
         public void SetSelectedStructure(StructureVariableVM value)
@@ -91,7 +95,7 @@ namespace LazyContouring.UI.ViewModels
             if (ss == null) { return; }
 
             var newSs = ss.DuplicateStructureSet();
-            CurrentStructureSet = newSs;
+            CurrentStructureSet = new StructureSetVM(newSs);
         }
 
         public void SaveNodesAsTemplate()
@@ -132,7 +136,7 @@ namespace LazyContouring.UI.ViewModels
         }
 
         public MetaCommand DuplicateStructureSetCommand => new MetaCommand(
-            o => DuplicateStructureSet(CurrentStructureSet),
+            o => DuplicateStructureSet(CurrentStructureSet.StructureSetModel),
             o => CurrentStructureSet != null && patientModel.CanModifyData
         );
 
@@ -148,15 +152,24 @@ namespace LazyContouring.UI.ViewModels
         public MetaCommand AddStructureCommand => new MetaCommand(
             o => 
             {
+                var newStructureVar = new StructureVariable() { IsNew = true, };
+                var newStructureVarVM = new StructureVariableVM(newStructureVar);
+                var structureEditWindow = new StructureVariableEditWindow() { DataContext = newStructureVarVM };
 
-                //CurrentStructureSet?.AddStructure();
+                if (structureEditWindow.ShowDialog() ?? false)
+                {
+                    CurrentStructureSet?.StructureSetModel.AddStructure(newStructureVar);
+                }
+                
             },
             o => CurrentStructureSet != null
         );
 
-        public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
-        public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
-        public SlaveCollection<StructureVariable, StructureVariableVM> Structures => structures ?? (structures = new SlaveCollection<StructureVariable, StructureVariableVM>());
+        //public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
+        public SlaveCollection<StructureSetModel, StructureSetVM> StructureSets { get; }
+        //public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
+        public StructureSetVM CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
+        public ObservableCollection<StructureVariableVM> Structures { get => structures; set => SetProperty(ref structures, value); }
         public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }
         public OperationPage OperationPage { get => operationPage; set => SetProperty(ref operationPage, value); }
         public TemplateManagerVM TemplateManagerVM => templateManagerVM;
