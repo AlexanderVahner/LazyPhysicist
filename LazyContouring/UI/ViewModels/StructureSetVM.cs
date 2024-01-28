@@ -21,7 +21,34 @@ namespace LazyContouring.UI.ViewModels
             this.structureSetModel = structureSetModel;
         }
 
-        
+        public void LoadOperationStringsFromTempalte(OperationTemplate template)
+        {
+            foreach (var node in template.OperationNodes) 
+            {
+                var newNode = (OperationNode)node.Clone();
+                AddOperationString(newNode);                
+            }
+
+            var allNodes = Operations.SelectMany(opVM => opVM.Node.GetAllNodes().Where(n => n.StructureVar != null)).ToList();
+
+            foreach (var structure in structureSetModel.Structures)
+            {
+                var searchId = structure.StructureId.ToUpper().Replace(" ", "").Replace("-", "").Replace("_", "");
+                var firstFound = allNodes.FirstOrDefault(n => searchId == n.StructureVar.StructureId.ToUpper().Replace(" ", "").Replace("-", "").Replace("_", ""));
+                if (firstFound != null)
+                {
+                    var oldId = firstFound.StructureVar.StructureId;
+                    foreach (var node in allNodes)
+                    {
+                        if (node.StructureVar.StructureId == oldId)
+                        {
+                            node.StructureVar = structure;
+                        }
+                    }
+                }
+            }
+        }
+
         public OperationStringVM AddOperationString(OperationNode node)
         {
             var opString = new OperationStringVM() { Node = node, StructureSetVM = this };
@@ -62,13 +89,6 @@ namespace LazyContouring.UI.ViewModels
             }
         }
 
-        public IEnumerable<OperationNode> GetCurrentNodes()
-        {
-            foreach (var opStringVM in Operations)
-            {
-                yield return opStringVM.Node;
-            }
-        }
 
         public override string ToString() => structureSetModel.Id;
 

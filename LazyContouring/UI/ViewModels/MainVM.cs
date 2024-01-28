@@ -111,6 +111,13 @@ namespace LazyContouring.UI.ViewModels
             OpenTemplateSetupWindow(template);
         }
 
+        public void LoadNodesFromTemplate()
+        {
+            if (CurrentStructureSet == null || SelectedTemplate == null) { return; }
+
+            CurrentStructureSet.LoadOperationStringsFromTempalte(SelectedTemplate);
+        }
+
         public void RemoveTemplate(OperationTemplate template)
         {
             if (SelectedTemplate == null) 
@@ -142,6 +149,11 @@ namespace LazyContouring.UI.ViewModels
 
         public MetaCommand SaveNodesAsTemplateCommand => new MetaCommand(
             o => SaveNodesAsTemplate()
+        );
+
+        public MetaCommand LoadNodesFromTemplateCommand => new MetaCommand(
+            o => LoadNodesFromTemplate(),
+            o => SelectedTemplate != null
         );
 
         public MetaCommand RemoveTemplateCommand => new MetaCommand(

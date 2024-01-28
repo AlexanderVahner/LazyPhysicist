@@ -9,7 +9,7 @@ using VMS.TPS.Common.Model.Types;
 
 namespace LazyContouring.Models
 {
-    public sealed class StructureVariable : Notifier
+    public sealed class StructureVariable : Notifier, IComparable<StructureVariable>
     {
         public static readonly List<string> DicomTypesAvailableForCreate = new List<string> { "CONTROL", "PTV", "CTV", "GTV", "ORGAN", "FIXATION" };
 
@@ -115,6 +115,15 @@ namespace LazyContouring.Models
         }
 
         public VVector[][] GetContoursOnImagePlane(int z) => structure?.GetContoursOnImagePlane(z);
+
+        public int CompareTo(StructureVariable other)
+        {
+            if (other == null)
+                return 1;
+
+            else
+                return StructureId.CompareTo(other.StructureId);
+        }
 
         public bool CanEditSegmentVolume => Structure?.CanEditSegmentVolume(out _) ?? false;
         public bool IsNew { get => isNew; set => SetProperty(ref isNew, value); }

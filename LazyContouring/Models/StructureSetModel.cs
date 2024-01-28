@@ -69,6 +69,5 @@ namespace LazyContouring.Models
         public StructureSet StructureSet => structureSet;
         public string Id => structureSet.Id;
         public ObservableCollection<StructureVariable> Structures => structures ?? (structures = InitStructures());
-        public ObservableCollection<OperationNode> Operations => operations ?? (operations = new ObservableCollection<OperationNode>());
     }
 }

@@ -1,6 +1,8 @@
 ﻿using LazyContouring.Models;
 using LazyPhysicist.Common;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using VMS.TPS.Common.Model.API;
@@ -123,6 +125,25 @@ namespace LazyContouring.Operations
             if (structureSet.CanAddStructure(StructureVar.DicomType, StructureVar.StructureId))
             {
                 StructureVar.Structure = structureSet.AddStructure(StructureVar.DicomType, StructureVar.StructureId);
+            }
+        }
+
+        public IEnumerable<OperationNode> GetAllNodes()
+        {
+            yield return this;
+            if (NodeLeft != null)
+            {
+                foreach (var ln in NodeLeft.GetAllNodes())
+                {
+                    yield return ln;
+                }
+            }
+            if (NodeRight != null)
+            {
+                foreach (var rn in NodeRight.GetAllNodes())
+                {
+                    yield return rn;
+                }
             }
         }
 

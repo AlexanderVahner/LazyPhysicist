@@ -84,6 +84,6 @@
 
         <GridSplitter Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
 
-        <!--<local:OperationPage Grid.Column="1" />-->
+        <Frame Content="{Binding OperationPage}" Grid.Column="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
