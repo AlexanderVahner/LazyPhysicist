@@ -41,9 +41,7 @@ namespace LazyContouring.UI.ViewModels
             }
             else if (CanExecute)
             {
-                //Xml.WriteXmlFromObject("test.xml", Node);
-                Node.Materialize(null);
-
+                Node.Materialize();
                 ExecuteButtonImage = undoExecuteImage;
             }
         }

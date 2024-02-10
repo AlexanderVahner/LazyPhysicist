@@ -29,24 +29,35 @@ namespace LazyContouring.UI.ViewModels
                 AddOperationString(newNode);                
             }
 
-            var allNodes = Operations.SelectMany(opVM => opVM.Node.GetAllNodes().Where(n => n.StructureVar != null)).ToList();
+            var allStructureNodes = Operations.SelectMany(opVM => opVM.Node.GetAllNodes());
 
-            foreach (var structure in structureSetModel.Structures)
-            {
-                var searchId = structure.StructureId.ToUpper().Replace(" ", "").Replace("-", "").Replace("_", "");
-                var firstFound = allNodes.FirstOrDefault(n => searchId == n.StructureVar.StructureId.ToUpper().Replace(" ", "").Replace("-", "").Replace("_", ""));
-                if (firstFound != null)
-                {
-                    var oldId = firstFound.StructureVar.StructureId;
-                    foreach (var node in allNodes)
-                    {
-                        if (node.StructureVar.StructureId == oldId)
-                        {
-                            node.StructureVar = structure;
-                        }
-                    }
-                }
-            }
+            // Assign the SS structures to new nodes
+            var assinged = allStructureNodes
+                        .Where(n => n.StructureVar != null)
+                        .GroupBy(n => PrepareId(n.StructureVar.StructureId))
+                        .Join(
+                            structureSetModel.Structures, 
+                            grouped => grouped.Key, 
+                            ss => PrepareId(ss.StructureId),
+                            (group, ssStr) => {
+                                group.ToList().ForEach(sv => sv.StructureVar = ssStr); // Effect
+                                //return new { Group = group, Struct = ssStr }; // Debug
+                                return true;
+                            });
+
+            // Now we need to union new "unknown structure" nodes
+            //var unioned = allStructureNodes
+            //            .Where(n => n.StructureVar != null && n.StructureVar.Structure == null)
+            //            .GroupBy(n => n.StructureVar)
+            //            .Select(group => { 
+            //                group.ToList().ForEach(g => g.StructureVar = group.Key); // Effect
+            //                return true;
+            //            });
+
+            return;
+
+            string PrepareId(string id) 
+                => id.ToUpper().Replace(" ", "").Replace("-", "").Replace("_", "");
         }
 
         public OperationStringVM AddOperationString(OperationNode node)

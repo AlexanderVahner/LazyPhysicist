@@ -6,12 +6,14 @@ using System.IO;
 
 namespace LazyContouring.Models
 {
-    public sealed class UserSettings
+    public sealed class UserSettings : Notifier
     {
         private static string currentUserId;
         private static string userPath;
         private static string settingsFileName;
         private static string settingsFullFileName;
+
+        private double structureVolumeHighResThreshold = 5;
 
         public static UserSettings ReadUserSettings(string settingsPath, string userId)
         {
@@ -49,6 +51,7 @@ namespace LazyContouring.Models
         }
 
         public TemplateManager TemplateManager { get; set; } = new TemplateManager();
+        public double StructureVolumeHighResThreshold { get => structureVolumeHighResThreshold; set => SetProperty(ref structureVolumeHighResThreshold, value); }
 
     }
 }

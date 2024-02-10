@@ -19,13 +19,8 @@ namespace LazyContouring.Operations
         private OperationNode nodeLeft;
         private OperationNode nodeRight;
 
-        public void Materialize(StructureSet structureSet)
+        public void Materialize()
         {
-            /*if (Operation.StructureNedded)
-            {
-                FindOrCreateStructure(structureSet);
-            }*/
-
             Operation.Execute(this);
         }
 

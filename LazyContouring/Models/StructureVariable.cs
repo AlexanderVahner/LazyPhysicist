@@ -33,10 +33,20 @@ namespace LazyContouring.Models
             NotifyPropertyChanged(nameof(DicomType));
             NotifyPropertyChanged(nameof(Color));
             NotifyPropertyChanged(nameof(SegmentVolume));
+            NotifyPropertyChanged(nameof(VolumeCC));
         }
 
         [XmlIgnore]
         public Structure Structure { get => structure; set => SetStructure(value); }
+
+        public int CompareTo(StructureVariable other)
+        {
+            if (other == null)
+                return 1;
+
+            else
+                return StructureId.CompareTo(other.StructureId);
+        }
 
         public string StructureId
         {
@@ -93,6 +103,9 @@ namespace LazyContouring.Models
             }
         }
 
+        
+        
+
         public SegmentVolume GetSegmentVolume() => Structure?.SegmentVolume;
         public void SetSegmentVolume(SegmentVolume value)
         {
@@ -110,26 +123,21 @@ namespace LazyContouring.Models
                 {
                     NotifyPropertyChanged(nameof(SegmentVolume));
                     NotifyPropertyChanged(nameof(IsEmpty));
+                    NotifyPropertyChanged(nameof(VolumeCC));
                 }
             }
         }
 
         public VVector[][] GetContoursOnImagePlane(int z) => structure?.GetContoursOnImagePlane(z);
-
-        public int CompareTo(StructureVariable other)
-        {
-            if (other == null)
-                return 1;
-
-            else
-                return StructureId.CompareTo(other.StructureId);
-        }
-
+        [XmlIgnore]
+        public double VolumeCC { get => Structure?.Volume ?? 0; set { } }
         public bool CanEditSegmentVolume => Structure?.CanEditSegmentVolume(out _) ?? false;
         public bool IsNew { get => isNew; set => SetProperty(ref isNew, value); }
         public bool IsTemporary { get => isTemporary; set => SetProperty(ref isTemporary, value); }
         public bool IsEmpty => Structure?.IsEmpty ?? true;
         public bool IsVisible { get => isVisible; set => SetProperty(ref isVisible, value); }
         public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
+        [XmlIgnore]
+        public bool IsHighRes => Structure?.IsHighResolution ?? false;
     }
 }

@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StaticSettings.cs" />
     <Compile Include="Graphics\IVoxelToPixelConverter.cs" />
     <Compile Include="Graphics\VoxelToPixelConverter.cs" />
     <Compile Include="Images\ImageLoader.cs" />

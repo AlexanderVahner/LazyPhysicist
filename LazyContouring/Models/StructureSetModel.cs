@@ -9,7 +9,7 @@ namespace LazyContouring.Models
         private readonly StructureSet structureSet;
         private readonly Patient patient;
         private ObservableCollection<StructureVariable> structures;
-        private ObservableCollection<OperationNode> operations;
+        //private ObservableCollection<OperationNode> operations;
 
         public StructureSetModel(StructureSet ss)
         {

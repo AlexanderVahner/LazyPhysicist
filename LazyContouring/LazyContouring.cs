@@ -1,4 +1,5 @@
-﻿using LazyContouring.Models;
+﻿using LazyContouring;
+using LazyContouring.Models;
 using LazyContouring.UI.ViewModels;
 using LazyContouring.UI.Views;
 using ScriptArgsNameSpace;
@@ -43,6 +44,7 @@ namespace VMS.TPS
 
             var appSettings = AppSettings.ReadAppSettings();
             var userSettings = UserSettings.ReadUserSettings(appSettings.UserPath, args.CurrentUser.Id);
+            StaticSettings.UserSettings = userSettings;
 
             var patientModel = new PatientModel(args.Patient);
             var mainVM = new MainVM(patientModel, userSettings, args);

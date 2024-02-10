@@ -3,6 +3,7 @@ using LazyPhysicist.Common;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using VMS.TPS.Common.Model.API;
 
 namespace LazyContouring.UI.ViewModels
 {
@@ -12,11 +13,25 @@ namespace LazyContouring.UI.ViewModels
         private Brush strokeBrush;
         private Brush fillBrush;
         private string structureId;
-        private readonly Brush defaultStrokeBrush = new SolidColorBrush(Colors.DarkGray);
+        private static readonly Brush defaultStrokeBrush = Brushes.DarkGray;
+        private static readonly Brush HighResNeededColor = Brushes.OrangeRed;
+        private static readonly Brush IsHighResColor = Brushes.DarkGray;
 
         public StructureVariableVM(StructureVariable structureVar)
         {
             StructureVariable = structureVar;
+            StaticSettings.UserSettings.PropertyChanged += UserSettings_PropertyChanged; ;
+        }
+
+        private void UserSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(StaticSettings.UserSettings.StructureVolumeHighResThreshold):
+                    NotifyPropertyChanged(nameof(HighResAttentionColor));
+                    NotifyPropertyChanged(nameof(HighResAttentionVisibility));
+                    break;
+            }
         }
 
         private void SetStructureVariable(StructureVariable strVar)
@@ -43,20 +58,32 @@ namespace LazyContouring.UI.ViewModels
         {
             switch (e.PropertyName)
             {
-                case (nameof(StructureVariable.StructureId)):
+                case nameof(StructureVariable.StructureId):
                     StructureId = StructureVariable?.StructureId ?? "Empty";
                     break;
-                case (nameof(StructureVariable.Color)):
+                case nameof(StructureVariable.VolumeCC):
+                    NotifyPropertyChanged(nameof(HighResAttentionColor));
+                    NotifyPropertyChanged(nameof(HighResAttentionVisibility));
+                    break;
+                case nameof(StructureVariable.Color):
                     StrokeBrush = new SolidColorBrush(this.structureVar.Color);
                     break;
-                case (nameof(StructureVariable.IsEmpty)):
+                case nameof(StructureVariable.IsEmpty):
                     FillBrush = StructureVariable.IsEmpty ? null : new SolidColorBrush(this.structureVar.Color);
                     break;
-                case (nameof(StructureVariable.CanEditSegmentVolume)):
+                case nameof(StructureVariable.CanEditSegmentVolume):
                     NotifyPropertyChanged(nameof(CanEditVisibility));
                     break;
             }
         }
+
+        public bool IsHighResStructureNeeded() 
+            => !IsHighResStructure()
+            && (StructureVariable?.VolumeCC ?? 0) > 0 
+            && (StructureVariable?.VolumeCC ?? 0) < StaticSettings.UserSettings.StructureVolumeHighResThreshold;
+
+        public bool IsHighResStructure() 
+            => StructureVariable?.IsHighRes ?? false;
 
         public StructureVariable StructureVariable { get => structureVar; set => SetStructureVariable(value); }
         public string StructureId
@@ -65,7 +92,14 @@ namespace LazyContouring.UI.ViewModels
             set => SetProperty(ref structureId, value);
         }
 
-        public Visibility CanEditVisibility => (StructureVariable?.CanEditSegmentVolume ?? true) ? Visibility.Hidden : Visibility.Visible;
+        public Visibility CanEditVisibility => (StructureVariable?.CanEditSegmentVolume ?? true) ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility HighResAttentionVisibility => (IsHighResStructure() || IsHighResStructureNeeded()) ? Visibility.Visible : Visibility.Collapsed;
+        public Brush HighResAttentionColor => IsHighResStructure()
+            ? IsHighResColor
+            : IsHighResStructureNeeded()
+                ? HighResNeededColor
+                : Brushes.White;
+
         public Brush StrokeBrush { get => strokeBrush; set => SetProperty(ref strokeBrush, value); }
         public Brush FillBrush { get => fillBrush; set => SetProperty(ref fillBrush, value); }
 
