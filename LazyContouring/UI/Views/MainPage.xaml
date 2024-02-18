@@ -54,7 +54,10 @@
                                     <TextBlock Tag="{Binding StructureVariable}" PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown" 
                                               Text="{Binding StructureVariable.StructureId}" Margin="5 0 0 0"/>
                                     <TextBlock Text="🔒" FontSize="8" Foreground="Gray" Visibility="{Binding CanEditVisibility}" Margin="5 0 0 0" VerticalAlignment="Center"/>
-                                    <TextBlock Text=" HR " FontSize="8" Foreground="White" Background="{Binding HighResAttentionColor}" Visibility="{Binding HighResAttentionVisibility}" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    <TextBlock Text=" HR " FontSize="8" FontWeight="Bold" FontStretch="UltraCondensed" Foreground="White" 
+                                               Background="{Binding HighResAttentionColor}" 
+                                               Visibility="{Binding HighResAttentionVisibility}" 
+                                               Margin="5 0 0 0" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -165,14 +168,14 @@
                     
                 </Grid>
 
-                <Grid Grid.Column="2" Width="250">
+                <Grid Grid.Column="2" Width="Auto">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Cool features place" TextAlignment="Center"/>
+                    <local:HighResFutureControl/>
 
                     <local:TemplatesListControl Grid.Row="1"/>
                 </Grid>

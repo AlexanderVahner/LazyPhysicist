@@ -6,7 +6,5 @@
              xmlns:local="clr-namespace:LazyContouring.UI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Viewbox x:Name="PlaneViewBox" Grid.Row="0"/>
-    </Grid>
+    <Viewbox x:Name="PlaneViewBox" Stretch="Uniform"/>
 </UserControl>

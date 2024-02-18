@@ -135,6 +135,33 @@ namespace LazyContouring.UI.ViewModels
             }
         }
 
+        public void ConvertSelectedToHighRes()
+        {
+            ConvertStructureToHighRes(selectedStructure);
+        }
+
+        public void ConvertAllToHifhResSmallerThan(double volumeThreshold)
+        {
+            foreach (var structure in Structures)
+            {
+                if ((structure.StructureVariable?.VolumeCC ?? 0) > 0 
+                    && (structure.StructureVariable?.VolumeCC ?? 0) < volumeThreshold)
+                {
+                    ConvertStructureToHighRes(structure);
+                }
+            }
+        }
+
+        public void ConvertStructureToHighRes(StructureVariableVM structureVariableVM)
+        {
+            var structure = structureVariableVM?.StructureVariable?.Structure;
+            if (structure == null || !structure.CanConvertToHighResolution()) 
+            {
+                return;
+            }
+            structure.ConvertToHighResolution();
+        }
+
         public void OpenTemplateSetupWindow(OperationTemplate template)
         {
             var templateSetupWindow = new TemplateSetupWindow { ViewModel = new OperationTemplateVM(template) };
@@ -161,6 +188,16 @@ namespace LazyContouring.UI.ViewModels
             o => SelectedTemplate != null
         );
 
+        public MetaCommand ConvertStructureToHighResCommnd => new MetaCommand(
+            o => ConvertStructureToHighRes(SelectedStructure),
+            o => SelectedStructure != null && patientModel.CanModifyData
+        );
+
+        public MetaCommand ConvertAllToHifhResSmallerThanCommnd => new MetaCommand(
+            o => ConvertAllToHifhResSmallerThan(UserSettings.StructureVolumeHighResThreshold),
+            o => patientModel.CanModifyData
+        );
+
         public MetaCommand AddStructureCommand => new MetaCommand(
             o => 
             {
@@ -177,9 +214,7 @@ namespace LazyContouring.UI.ViewModels
             o => CurrentStructureSet != null
         );
 
-        //public ObservableCollection<StructureSetModel> StructureSets => patientModel.StructureSets;
         public SlaveCollection<StructureSetModel, StructureSetVM> StructureSets { get; }
-        //public StructureSetModel CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
         public StructureSetVM CurrentStructureSet { get => currentStructureSetModel; set => SetCurrentStructureSet(value); }
         public ObservableCollection<StructureVariableVM> Structures { get => structures; set => SetProperty(ref structures, value); }
         public StructureVariableVM SelectedStructure { get => selectedStructure; set => SetSelectedStructure(value); }

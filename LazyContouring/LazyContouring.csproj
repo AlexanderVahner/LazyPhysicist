@@ -75,6 +75,7 @@
     <Compile Include="Operations\TemplateManager.cs" />
     <Compile Include="Operations\OperationTemplate.cs" />
     <Compile Include="Operations\ContextConditions\ConditionNode.cs" />
+    <Compile Include="UI\ViewModels\MatchedAutoTemplatesVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ConditionNodeVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\DiagnosisConditionVM.cs" />
     <Compile Include="UI\ViewModels\Operations\ContextConditions\ConditionGroupVM.cs" />
@@ -149,11 +150,17 @@
     <Compile Include="UI\Views\CropOperationControl.xaml.cs">
       <DependentUpon>CropOperationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\HighResFutureControl.xaml.cs">
+      <DependentUpon>HighResFutureControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\MarginOperationControl.xaml.cs">
       <DependentUpon>MarginOperationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\MatchedAutoTemplatesWindow.xaml.cs">
+      <DependentUpon>MatchedAutoTemplatesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\OperationNodeControl.xaml.cs">
       <DependentUpon>OperationNodeControl.xaml</DependentUpon>
@@ -219,11 +226,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\HighResFutureControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\MarginOperationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\MatchedAutoTemplatesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
