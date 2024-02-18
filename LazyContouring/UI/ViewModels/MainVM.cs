@@ -13,6 +13,7 @@ namespace LazyContouring.UI.ViewModels
     public sealed class MainVM : Notifier
     {
         private readonly PatientModel patientModel;
+        private readonly ScriptArgs scriptArgs;
         private readonly OperationsVM operationsVM;
         private readonly TemplateManagerVM templateManagerVM;
         private StructureSetVM currentStructureSetModel;
@@ -27,13 +28,14 @@ namespace LazyContouring.UI.ViewModels
         {
             this.patientModel = patientModel;
             UserSettings = userSettings;
+            scriptArgs = args;
             operationsVM = new OperationsVM();
             templateManagerVM = new TemplateManagerVM(userSettings.TemplateManager);
             OperationPage = new OperationPage() { ViewModel = operationsVM };
             sliceControl = new SliceControl();
 
             StructureSets = new SlaveCollection<StructureSetModel, StructureSetVM>(patientModel.StructureSets, m => new StructureSetVM(m), s => s.StructureSetModel);
-            CurrentStructureSet = StructureSets.FirstOrDefault(ss => ss.Id == args.StructureSet.Id);
+            CurrentStructureSet = StructureSets.FirstOrDefault(ss => ss.Id == args.StructureSet.Id);           
         }
 
         private void SetCurrentStructureSet(StructureSetVM ss)
@@ -47,15 +49,48 @@ namespace LazyContouring.UI.ViewModels
             }
             else
             {
+                scriptArgs.StructureSet = ss.StructureSetModel.StructureSet;
                 Structures = ss.Structures;
                 operationsVM.Operations = ss.Operations;
                 viewPlaneVM = new ViewPlaneVM() { StructureSet = ss.StructureSetModel };
                 sliceControl.ViewModel = viewPlaneVM;
 
                 viewPlaneVM.CurrentPlaneIndex = viewPlaneVM.PlaneIndexOf(viewPlaneVM.ImageModel.UserOrigin.z);
+                CheckAutomaticTemplates(UserSettings.TemplateManager, scriptArgs);
             }
 
             NotifyPropertyChanged(nameof(CurrentStructureSet));
+        }
+
+        public void AddStructure()
+        {
+            var newStructureVar = new StructureVariable() { IsNew = true, };
+            var newStructureVarVM = new StructureVariableVM(newStructureVar);
+            var structureEditWindow = new StructureVariableEditWindow() { DataContext = newStructureVarVM };
+
+            if (structureEditWindow.ShowDialog() ?? false)
+            {
+                CurrentStructureSet?.StructureSetModel.AddStructure(newStructureVar);
+            }
+        }
+
+        public void CheckAutomaticTemplates(TemplateManager templateManager, ScriptArgs args)
+        {
+            var matchedWindowVM = new MatchedAutoTemplatesVM();
+            matchedWindowVM.LoadMatched(templateManager.AutomaticTemplates, args);
+            if (!matchedWindowVM.Items.Any())
+            {
+                return;
+            }
+
+            var matchedWindow = new MatchedAutoTemplatesWindow() { DataContext = matchedWindowVM };
+            if (matchedWindow.ShowDialog() ?? false)
+            {
+                foreach (var item in matchedWindowVM.Items.Where(i => i.IsChecked))
+                {
+                    LoadNodesFromTemplate(item.Template);
+                }
+            }
         }
 
         public void AddNodeStringFromDrop(IDataObject drop)
@@ -111,11 +146,11 @@ namespace LazyContouring.UI.ViewModels
             OpenTemplateSetupWindow(template);
         }
 
-        public void LoadNodesFromTemplate()
+        public void LoadNodesFromTemplate(OperationTemplate template)
         {
-            if (CurrentStructureSet == null || SelectedTemplate == null) { return; }
+            if (CurrentStructureSet == null || template == null) { return; }
 
-            CurrentStructureSet.LoadOperationStringsFromTempalte(SelectedTemplate);
+            CurrentStructureSet.LoadOperationStringsFromTempalte(template);
         }
 
         public void RemoveTemplate(OperationTemplate template)
@@ -140,7 +175,7 @@ namespace LazyContouring.UI.ViewModels
             ConvertStructureToHighRes(selectedStructure);
         }
 
-        public void ConvertAllToHifhResSmallerThan(double volumeThreshold)
+        public void ConvertAllToHighResSmallerThan(double volumeThreshold)
         {
             foreach (var structure in Structures)
             {
@@ -179,7 +214,7 @@ namespace LazyContouring.UI.ViewModels
         );
 
         public MetaCommand LoadNodesFromTemplateCommand => new MetaCommand(
-            o => LoadNodesFromTemplate(),
+            o => LoadNodesFromTemplate(SelectedTemplate),
             o => SelectedTemplate != null
         );
 
@@ -193,24 +228,13 @@ namespace LazyContouring.UI.ViewModels
             o => SelectedStructure != null && patientModel.CanModifyData
         );
 
-        public MetaCommand ConvertAllToHifhResSmallerThanCommnd => new MetaCommand(
-            o => ConvertAllToHifhResSmallerThan(UserSettings.StructureVolumeHighResThreshold),
+        public MetaCommand ConvertAllToHighResSmallerThanCommnd => new MetaCommand(
+            o => ConvertAllToHighResSmallerThan(UserSettings.StructureVolumeHighResThreshold),
             o => patientModel.CanModifyData
         );
 
         public MetaCommand AddStructureCommand => new MetaCommand(
-            o => 
-            {
-                var newStructureVar = new StructureVariable() { IsNew = true, };
-                var newStructureVarVM = new StructureVariableVM(newStructureVar);
-                var structureEditWindow = new StructureVariableEditWindow() { DataContext = newStructureVarVM };
-
-                if (structureEditWindow.ShowDialog() ?? false)
-                {
-                    CurrentStructureSet?.StructureSetModel.AddStructure(newStructureVar);
-                }
-                
-            },
+            o => AddStructure(),
             o => CurrentStructureSet != null
         );
 

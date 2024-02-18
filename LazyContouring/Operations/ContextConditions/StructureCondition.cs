@@ -37,9 +37,7 @@ namespace LazyContouring.Operations.ContextConditions
         private StructureConditionType searchType = StructureConditionType.ExactId;
 
         protected override bool Check(ScriptArgs args)
-        {
-            return args?.StructureSet?.Structures.FirstOrDefault(s => CheckStructure(s)) != null;
-        }
+            => args?.StructureSet?.Structures.Any(s => CheckStructure(s)) ?? false;
 
         private bool CheckStructure(Structure structure)
         {
@@ -53,7 +51,7 @@ namespace LazyContouring.Operations.ContextConditions
             string desiredId = SearchText?.Trim().ToUpper() ?? "";
             string desiredDicomType = SearchDicomType?.Trim().ToUpper() ?? "";
 
-            bool IsDicomTypeMatch = desiredDicomType == AnyDicomType
+            bool IsDicomTypeMatch = desiredDicomType == AnyDicomType.ToUpper()
                 || desiredDicomType == ""
                 || structure.DicomType.ToUpper() == desiredDicomType;
 
@@ -68,6 +66,11 @@ namespace LazyContouring.Operations.ContextConditions
                 case StructureConditionType.RegexId:
                     result = desiredId == "" || Regex.IsMatch(structure.Id, desiredId);
                     break;
+            }
+
+            if (result)
+            {
+                ;
             }
 
             return result && IsDicomTypeMatch;

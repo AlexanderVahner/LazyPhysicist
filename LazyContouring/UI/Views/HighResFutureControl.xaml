@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Command="{Binding ConvertAllToHifhResSmallerThanCommnd}" Content="Convert to High resolution all smaller than" Padding="3"/>
+            <Button Command="{Binding ConvertAllToHighResSmallerThanCommnd}" Content="Convert to High resolution all smaller than" Padding="3"/>
             <TextBox Text="{Binding UserSettings.StructureVolumeHighResThreshold, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Column="1" Width="30"/>
             <TextBlock Grid.Column="2" Text="cc" VerticalAlignment="Center" Margin="3"/>
         </Grid>
