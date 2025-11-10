@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:LazyContouring.UI.ViewModels" 
         d:DataContext="{d:DesignInstance Type=vm:StructureVariableVM}"
         mc:Ignorable="d"
-        Title="Edit Structure" Height="Auto" Width="Auto" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="Edit Structure" Height="Auto" Width="Auto" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition/>

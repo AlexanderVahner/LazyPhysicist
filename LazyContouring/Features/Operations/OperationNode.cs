@@ -100,6 +100,33 @@ namespace LazyContouring.Operations
             }
         }
 
+        public void DeleteStructureFromAllNodes(StructureVariable structureVariable)
+        {
+            if (NodeLeft != null)
+            {
+                if (NodeLeft.StructureVar == structureVariable)
+                {
+                    DeleteNode(NodeDirection.Left);
+                }
+                else
+                {
+                    NodeLeft.DeleteStructureFromAllNodes(structureVariable);
+                }
+            }
+
+            if (NodeRight != null)
+            {
+                if (NodeRight.StructureVar == structureVariable)
+                {
+                    DeleteNode(NodeDirection.Right);
+                }
+                else
+                {
+                    NodeRight.DeleteStructureFromAllNodes(structureVariable);
+                }
+            }
+        }
+
         public void FindOrCreateStructure(StructureSet structureSet)
         {
             if (StructureVar == null)

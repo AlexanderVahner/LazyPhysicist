@@ -175,7 +175,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <local:HighResFutureControl/>
+                    <local:HighResFeatureControl/>
 
                     <local:TemplatesListControl Grid.Row="1"/>
                 </Grid>
@@ -216,7 +216,7 @@
                     </Viewbox>
                 </Button>
 
-                <Border Margin="0 3 0 0" Grid.Row="2" Grid.Column="0" CornerRadius="5" Background="White" Padding="3" Height="36" Width="36">
+                <Border Margin="0 3 0 0" Grid.Row="2" CornerRadius="5" Background="White" Padding="3" Height="36" Width="36">
                     <Border.ToolTip>Drop at the joint to remove the branch</Border.ToolTip>
                     <Viewbox>
                         <Image Source="/LazyContouring.esapi;component/Images/Ionic-Ionicons-Skull-outline.512.png"

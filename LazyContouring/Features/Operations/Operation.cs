@@ -44,7 +44,11 @@ namespace LazyContouring.Operations
 
         public bool CanExecute(OperationNode node)
         {
-            return node != null && CheckStructure(node) && CheckLeftNode(node) && CheckRightNode(node) && AdditionalCheck(node);
+            return node != null 
+                && CheckStructure(node) 
+                && CheckLeftNode(node) 
+                && CheckRightNode(node) 
+                && AdditionalCheck(node);
         }
 
         private bool CheckStructure(OperationNode node)

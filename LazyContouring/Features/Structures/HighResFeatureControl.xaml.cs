@@ -18,9 +18,9 @@ namespace LazyContouring.UI.Views
     /// <summary>
     /// Interaction logic for HighResFutureControl.xaml
     /// </summary>
-    public partial class HighResFutureControl : UserControl
+    public partial class HighResFeatureControl : UserControl
     {
-        public HighResFutureControl()
+        public HighResFeatureControl()
         {
             InitializeComponent();
         }

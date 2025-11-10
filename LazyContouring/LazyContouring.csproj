@@ -59,49 +59,49 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StaticSettings.cs" />
-    <Compile Include="Graphics\IVoxelToPixelConverter.cs" />
-    <Compile Include="Graphics\VoxelToPixelConverter.cs" />
+    <Compile Include="Features\Images\IVoxelToPixelConverter.cs" />
+    <Compile Include="Features\Images\VoxelToPixelConverter.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="LazyContouring.cs" />
-    <Compile Include="Models\ContourModel.cs" />
-    <Compile Include="Models\ImageModel.cs" />
-    <Compile Include="Models\AppSettings.cs" />
-    <Compile Include="Models\UserSettings.cs" />
-    <Compile Include="Operations\ContextConditions\ContextCondition.cs" />
-    <Compile Include="Operations\ContextConditions\DiagnosisCondition.cs" />
-    <Compile Include="Operations\ContextConditions\ImageCondition.cs" />
-    <Compile Include="Operations\ContextConditions\StructureCondition.cs" />
-    <Compile Include="Operations\ContextConditions\ConditionGroup.cs" />
-    <Compile Include="Operations\TemplateManager.cs" />
-    <Compile Include="Operations\OperationTemplate.cs" />
-    <Compile Include="Operations\ContextConditions\ConditionNode.cs" />
-    <Compile Include="UI\ViewModels\MatchedAutoTemplatesVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\ConditionNodeVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\ContextConditions\DiagnosisConditionVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\ContextConditions\ConditionGroupVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\ContextConditions\ImageConditionVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\ContextConditions\StructureConditionVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\TemplateManagerVM.cs" />
-    <Compile Include="UI\ViewModels\OperationTemplateVM.cs" />
-    <Compile Include="UI\ViewModels\StructureSetVM.cs" />
-    <Compile Include="UI\ViewModels\ViewPlaneVM.cs" />
-    <Compile Include="Models\PatientModel.cs" />
-    <Compile Include="Models\StructureSetModel.cs" />
-    <Compile Include="Operations\AndOperation.cs" />
-    <Compile Include="Operations\AssignOperation.cs" />
-    <Compile Include="Operations\AsymmetricMarginOperation.cs" />
-    <Compile Include="Operations\CropOperation.cs" />
-    <Compile Include="Operations\EmptyOperation.cs" />
-    <Compile Include="Operations\MarginOperation.cs" />
-    <Compile Include="Operations\NotOperation.cs" />
-    <Compile Include="Operations\Operation.cs" />
-    <Compile Include="Operations\OperationCreator.cs" />
-    <Compile Include="Operations\OperationNode.cs" />
-    <Compile Include="Models\StructureVariable.cs" />
-    <Compile Include="Operations\OrOperation.cs" />
-    <Compile Include="Operations\SubOperation.cs" />
-    <Compile Include="Operations\WallOperation.cs" />
-    <Compile Include="Operations\XorOperation.cs" />
+    <Compile Include="Features\Structures\ContourModel.cs" />
+    <Compile Include="Features\Images\ImageModel.cs" />
+    <Compile Include="Features\Main\AppSettings.cs" />
+    <Compile Include="Features\Main\UserSettings.cs" />
+    <Compile Include="Features\ContextConditions\ContextCondition.cs" />
+    <Compile Include="Features\ContextConditions\DiagnosisCondition.cs" />
+    <Compile Include="Features\ContextConditions\ImageCondition.cs" />
+    <Compile Include="Features\ContextConditions\StructureCondition.cs" />
+    <Compile Include="Features\ContextConditions\ConditionGroup.cs" />
+    <Compile Include="Features\Templates\TemplateManager.cs" />
+    <Compile Include="Features\Templates\OperationTemplate.cs" />
+    <Compile Include="Features\ContextConditions\ConditionNode.cs" />
+    <Compile Include="Features\Templates\MatchedAutoTemplatesVM.cs" />
+    <Compile Include="Features\ContextConditions\ConditionNodeVM.cs" />
+    <Compile Include="Features\ContextConditions\DiagnosisConditionVM.cs" />
+    <Compile Include="Features\ContextConditions\ConditionGroupVM.cs" />
+    <Compile Include="Features\ContextConditions\ImageConditionVM.cs" />
+    <Compile Include="Features\ContextConditions\StructureConditionVM.cs" />
+    <Compile Include="Features\Templates\TemplateManagerVM.cs" />
+    <Compile Include="Features\Templates\OperationTemplateVM.cs" />
+    <Compile Include="Features\Structures\StructureSetVM.cs" />
+    <Compile Include="Features\Images\ViewPlaneVM.cs" />
+    <Compile Include="Features\Patients\PatientModel.cs" />
+    <Compile Include="Features\Structures\StructureSetModel.cs" />
+    <Compile Include="Features\Operations\Types\AndOperation.cs" />
+    <Compile Include="Features\Operations\Types\AssignOperation.cs" />
+    <Compile Include="Features\Operations\Types\AsymmetricMarginOperation.cs" />
+    <Compile Include="Features\Operations\Types\CropOperation.cs" />
+    <Compile Include="Features\Operations\Types\EmptyOperation.cs" />
+    <Compile Include="Features\Operations\Types\MarginOperation.cs" />
+    <Compile Include="Features\Operations\Types\NotOperation.cs" />
+    <Compile Include="Features\Operations\Operation.cs" />
+    <Compile Include="Features\Operations\OperationCreator.cs" />
+    <Compile Include="Features\Operations\OperationNode.cs" />
+    <Compile Include="Features\Structures\StructureVariable.cs" />
+    <Compile Include="Features\Operations\Types\OrOperation.cs" />
+    <Compile Include="Features\Operations\Types\SubOperation.cs" />
+    <Compile Include="Features\Operations\Types\WallOperation.cs" />
+    <Compile Include="Features\Operations\Types\XorOperation.cs" />
     <Compile Include="PluginTesterInitializer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -109,81 +109,81 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ScriptArgs.cs" />
-    <Compile Include="UI\ViewModels\Operations\AndOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\AssignOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\AsymmetricMarginOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\CropOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\EmptyOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\MarginOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\NotOperationVM.cs" />
-    <Compile Include="UI\ViewModels\OperationNodeVM.cs" />
-    <Compile Include="UI\ViewModels\OperationStringVM.cs" />
-    <Compile Include="UI\ViewModels\OperationsVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\OperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\OrOperationVM.cs" />
-    <Compile Include="UI\ViewModels\MainVM.cs" />
-    <Compile Include="UI\ViewModels\StructureVariableVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\SubOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\WallOperationVM.cs" />
-    <Compile Include="UI\ViewModels\Operations\XorOperationVM.cs" />
-    <Compile Include="UI\Views\AssignOperationControl.xaml.cs">
+    <Compile Include="Features\Operations\Types\AndOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\AssignOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\AsymmetricMarginOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\CropOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\EmptyOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\MarginOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\NotOperationVM.cs" />
+    <Compile Include="Features\Operations\OperationNodeVM.cs" />
+    <Compile Include="Features\Operations\OperationStringVM.cs" />
+    <Compile Include="Features\Operations\OperationsVM.cs" />
+    <Compile Include="Features\Operations\OperationVM.cs" />
+    <Compile Include="Features\Operations\Types\OrOperationVM.cs" />
+    <Compile Include="Features\Main\MainVM.cs" />
+    <Compile Include="Features\Structures\StructureVariableVM.cs" />
+    <Compile Include="Features\Operations\Types\SubOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\WallOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\XorOperationVM.cs" />
+    <Compile Include="Features\Operations\Types\AssignOperationControl.xaml.cs">
       <DependentUpon>AssignOperationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\AsymmetricMarginControl.xaml.cs">
+    <Compile Include="Features\Operations\Types\AsymmetricMarginControl.xaml.cs">
       <DependentUpon>AsymmetricMarginControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml.cs">
+    <Compile Include="Features\ContextConditions\ConditionGroupControl.xaml.cs">
       <DependentUpon>ConditionGroupControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ContextConditionControls\ConditionNodeControl.xaml.cs">
+    <Compile Include="Features\ContextConditions\ConditionNodeControl.xaml.cs">
       <DependentUpon>ConditionNodeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ContextConditionControls\DiagnosisConditionControl.xaml.cs">
+    <Compile Include="Features\ContextConditions\DiagnosisConditionControl.xaml.cs">
       <DependentUpon>DiagnosisConditionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ContextConditionControls\ImageConditionControl.xaml.cs">
+    <Compile Include="Features\ContextConditions\ImageConditionControl.xaml.cs">
       <DependentUpon>ImageConditionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ContextConditionControls\StructureConditionControl.xaml.cs">
+    <Compile Include="Features\ContextConditions\StructureConditionControl.xaml.cs">
       <DependentUpon>StructureConditionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\CropOperationControl.xaml.cs">
+    <Compile Include="Features\Operations\Types\CropOperationControl.xaml.cs">
       <DependentUpon>CropOperationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\HighResFutureControl.xaml.cs">
-      <DependentUpon>HighResFutureControl.xaml</DependentUpon>
+    <Compile Include="Features\Structures\HighResFeatureControl.xaml.cs">
+      <DependentUpon>HighResFeatureControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\MainPage.xaml.cs">
+    <Compile Include="Features\Main\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\MarginOperationControl.xaml.cs">
+    <Compile Include="Features\Operations\Types\MarginOperationControl.xaml.cs">
       <DependentUpon>MarginOperationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\MatchedAutoTemplatesWindow.xaml.cs">
+    <Compile Include="Features\Templates\MatchedAutoTemplatesWindow.xaml.cs">
       <DependentUpon>MatchedAutoTemplatesWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\OperationNodeControl.xaml.cs">
+    <Compile Include="Features\Operations\OperationNodeControl.xaml.cs">
       <DependentUpon>OperationNodeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\OperationPage.xaml.cs">
+    <Compile Include="Features\Operations\OperationPage.xaml.cs">
       <DependentUpon>OperationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\OperationStringControl.xaml.cs">
+    <Compile Include="Features\Operations\OperationStringControl.xaml.cs">
       <DependentUpon>OperationStringControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\SliceControl.xaml.cs">
+    <Compile Include="Features\Images\SliceControl.xaml.cs">
       <DependentUpon>SliceControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\StructureVariableEditWindow.xaml.cs">
+    <Compile Include="Features\Structures\StructureVariableEditWindow.xaml.cs">
       <DependentUpon>StructureVariableEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\TemplateSetupWindow.xaml.cs">
+    <Compile Include="Features\Templates\TemplateSetupWindow.xaml.cs">
       <DependentUpon>TemplateSetupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\TemplatesListControl.xaml.cs">
+    <Compile Include="Features\Templates\TemplatesListControl.xaml.cs">
       <DependentUpon>TemplatesListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\WallOperationControl.xaml.cs">
+    <Compile Include="Features\Operations\Types\WallOperationControl.xaml.cs">
       <DependentUpon>WallOperationControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -194,83 +194,83 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\AssignOperationControl.xaml">
+    <Page Include="Features\Operations\Types\AssignOperationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\AsymmetricMarginControl.xaml">
+    <Page Include="Features\Operations\Types\AsymmetricMarginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ContextConditionControls\ConditionGroupControl.xaml">
+    <Page Include="Features\ContextConditions\ConditionGroupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ContextConditionControls\ConditionNodeControl.xaml">
+    <Page Include="Features\ContextConditions\ConditionNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ContextConditionControls\DiagnosisConditionControl.xaml">
+    <Page Include="Features\ContextConditions\DiagnosisConditionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ContextConditionControls\ImageConditionControl.xaml">
+    <Page Include="Features\ContextConditions\ImageConditionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ContextConditionControls\StructureConditionControl.xaml">
+    <Page Include="Features\ContextConditions\StructureConditionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\CropOperationControl.xaml">
+    <Page Include="Features\Operations\Types\CropOperationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\HighResFutureControl.xaml">
+    <Page Include="Features\Structures\HighResFeatureControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\MainPage.xaml">
+    <Page Include="Features\Main\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\MarginOperationControl.xaml">
+    <Page Include="Features\Operations\Types\MarginOperationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\MatchedAutoTemplatesWindow.xaml">
+    <Page Include="Features\Templates\MatchedAutoTemplatesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\OperationNodeControl.xaml">
+    <Page Include="Features\Operations\OperationNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\OperationPage.xaml">
+    <Page Include="Features\Operations\OperationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\OperationStringControl.xaml">
+    <Page Include="Features\Operations\OperationStringControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\SliceControl.xaml">
+    <Page Include="Features\Images\SliceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\StructureVariableEditWindow.xaml">
+    <Page Include="Features\Structures\StructureVariableEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\TemplateSetupWindow.xaml">
+    <Page Include="Features\Templates\TemplateSetupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\TemplatesListControl.xaml">
+    <Page Include="Features\Templates\TemplatesListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\WallOperationControl.xaml">
+    <Page Include="Features\Operations\Types\WallOperationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,5 +323,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

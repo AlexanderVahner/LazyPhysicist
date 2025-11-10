@@ -74,6 +74,16 @@ namespace LazyContouring.UI.ViewModels
             }
         }
 
+        public void RemoveStructure()
+        {
+            if (SelectedStructure?.StructureVariable == null)
+            {
+                return;
+            }
+
+            
+        }
+
         public void CheckAutomaticTemplates(TemplateManager templateManager, ScriptArgs args)
         {
             var matchedWindowVM = new MatchedAutoTemplatesVM();
@@ -236,6 +246,11 @@ namespace LazyContouring.UI.ViewModels
         public MetaCommand AddStructureCommand => new MetaCommand(
             o => AddStructure(),
             o => CurrentStructureSet != null
+        );
+
+        public MetaCommand RemoveStructureCommand => new MetaCommand(
+            o => RemoveStructure(),
+            o => SelectedStructure != null
         );
 
         public SlaveCollection<StructureSetModel, StructureSetVM> StructureSets { get; }

@@ -6,7 +6,7 @@ using System.Linq;
 namespace LazyPhysicist.Common
 {
     /// <summary>
-    /// An ObservableCollection extension for binding TMaster Collection to TSlave Collection. Any changes in a TMaster Collection change a TSlave Collection. 
+    /// An ObservableCollection wrapper for binding TMaster Collection to TSlave Collection. Any changes in a TMaster Collection change a TSlave Collection. 
     /// Helpful for ViewModel Collections.
     /// </summary>
     public sealed class SlaveCollection<TMaster, TSlave> : ObservableCollection<TSlave>
